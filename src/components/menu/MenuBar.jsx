@@ -19,11 +19,9 @@ const MenuBar = () => {
     { to: "/home", text: "My Info" },
     { to: "/ListUsers", text: "Users" },
     { to: "/role", text: "Role" },
-    { to: "/branch", text: "Branch" },
+    
     { to: "/client", text: "Client" },
-    { to: "/task", text: "Task" },
-    { to: "/position", text: "Position" },
-    { to: "/leavetype", text: "Leave Type" },
+    
   ];
 
   const timesheetItems = [
