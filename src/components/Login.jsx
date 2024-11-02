@@ -1,4 +1,4 @@
-import Cookies from "js-cookie"; // Thêm thư viện js-cookie
+import Cookies from "js-cookie";
 import {
   Box,
   Button,
@@ -24,9 +24,14 @@ export default function Login() {
   };
 
   useEffect(() => {
-    const accessToken = Cookies.get("accessToken"); // Lấy token từ cookies
+    const accessToken = Cookies.get("accessToken");
     if (accessToken) {
-      navigate("/home");
+      const decodedToken = JSON.parse(atob(accessToken.split(".")[1])); // Giải mã payload
+      if (decodedToken.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/user");
+      }
     }
   }, [navigate]);
 
@@ -50,12 +55,16 @@ export default function Login() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Response body:", data);
-
-        // Lưu token vào cookies với thời hạn 7 ngày
         Cookies.set("accessToken", data.token, { expires: 7 });
-
-        //navigate("/home");
+        
+        // Giải mã thủ công để lấy vai trò từ payload
+        const decodedToken = JSON.parse(atob(data.token.split(".")[1]));
+        console.log("Payload:", decodedToken); 
+        if (decodedToken.roles === "admin") {
+          navigate("/Listusers");
+        } else {
+          navigate("/user");
+        }
       })
       .catch((error) => {
         setSnackBarMessage("Login failed. Please try again.");
@@ -98,7 +107,7 @@ export default function Login() {
           }}
         >
           <CardContent>
-            <Typography  variant="h5" component="h1" gutterBottom >
+            <Typography variant="h5" component="h1" gutterBottom>
               Welcome
             </Typography>
             <Box

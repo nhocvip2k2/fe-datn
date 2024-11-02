@@ -90,7 +90,7 @@ export default function Header() {
             color="inherit"
             aria-label="open drawer"
             sx={{ mr: 2 }}
-          > TIMESHEET
+          >PTIT STORE
 
           </IconButton>
 

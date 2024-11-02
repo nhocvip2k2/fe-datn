@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { format } from 'date-fns';
+import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../services/localStorageService";
 import Header from "./header/Header";
@@ -54,7 +56,7 @@ export default function ListUsers() {
 
   const getUsers = async (accessToken) => {
     try {
-      const response = await fetch("http://localhost:8080/users", {
+      const response = await fetch("https://distinguished-truth-production.up.railway.app/api/home/users", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -69,7 +71,7 @@ export default function ListUsers() {
       const data = await response.json();
       console.log(data);
 
-      setUsers(data.result);
+      setUsers(data.content);
       setError(null);
     } catch (error) {
       console.error("Error fetching users:", error.message);
@@ -96,7 +98,7 @@ export default function ListUsers() {
 
   const handleDeleteUser = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/users/${selectedUserId}`, {
+      const response = await fetch(`https://distinguished-truth-production.up.railway.app/api/home/user_id=${selectedUserId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -143,17 +145,8 @@ export default function ListUsers() {
           lastName: editUser.lastName,
           email: editUser.email,
           sex: editUser.sex,
-          position: { name: editUser.position },
-          branch: { name: editUser.branch },
-          type: editUser.type,
-          startdate: editUser.startdate,
-          salary: editUser.salary,
-          level: editUser.level,
-          salaryat: editUser.salaryat,
           address: editUser.address,
           phone: editUser.phone,
-          stopdate: editUser.stopdate,
-          basicTrainer: { id: editUser.basicTrainer },
           roles: [editUser.role],
           isactive: editUser.isactive.toString(),
         }),
@@ -195,12 +188,9 @@ export default function ListUsers() {
         body: JSON.stringify({
           username: searchParams.username,
           email: searchParams.email,
-          branch: { name: searchParams.branch },
-          type: searchParams.type,
-          level: searchParams.level,
+          sex: searchParams.sex,
           isactive: searchParams.isactive,
-          position: { name: searchParams.position },
-          basicTrainer: { name: searchParams.basicTrainer },
+          address: { name: searchParams.address },
         }),
       });
 
@@ -288,7 +278,7 @@ export default function ListUsers() {
               />
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 } } marginTop={2}>
       <FormControl sx={{ minWidth: 120 }}>
-        <InputLabel id="branch-label">Branch</InputLabel>
+        <InputLabel id="branch-label">Sex</InputLabel>
         <Select
           labelId="branch-label"
           name="branch"
@@ -299,34 +289,14 @@ export default function ListUsers() {
           <MenuItem value="">
             <em>All</em>
           </MenuItem>
-          <MenuItem value="HN1">HN1</MenuItem>
-          <MenuItem value="SG2">SG2</MenuItem>
-          <MenuItem value="HN2">HN2</MenuItem>
+          <MenuItem value="Male">Male</MenuItem>
+          <MenuItem value="Female">Female</MenuItem>
           {/* Thêm các tùy chọn khác tại đây */}
         </Select>
       </FormControl>
 
       <FormControl sx={{ minWidth: 120 }}>
-        <InputLabel id="type-label">Type</InputLabel>
-        <Select
-          labelId="type-label"
-          name="type"
-          value={searchParams.type}
-          onChange={handleSearchChange}
-          label="Type"
-        >
-          <MenuItem value="">
-            <em>All</em>
-          </MenuItem>
-          <MenuItem value="intern">Intern</MenuItem>
-          <MenuItem value="HR">HR</MenuItem>
-          <MenuItem value="HN2">HN2</MenuItem>
-          {/* Thêm các tùy chọn khác tại đây */}
-        </Select>
-      </FormControl>
-
-      <FormControl sx={{ minWidth: 120 }}>
-        <InputLabel id="level-label">Level</InputLabel>
+        <InputLabel id="level-label">Role</InputLabel>
         <Select
           labelId="level-label"
           name="level"
@@ -337,34 +307,14 @@ export default function ListUsers() {
           <MenuItem value="">
             <em>All</em>
           </MenuItem>
-          <MenuItem value="intern 0">Intern 0</MenuItem>
-          <MenuItem value="SG2">SG2</MenuItem>
-          <MenuItem value="HN2">HN2</MenuItem>
+          <MenuItem value="admin">Admin</MenuItem>
+          <MenuItem value="SG2">Customer</MenuItem>
           {/* Thêm các tùy chọn khác tại đây */}
         </Select>
       </FormControl>
 
       <FormControl sx={{ minWidth: 120 }}>
-        <InputLabel id="position-label">Position</InputLabel>
-        <Select
-          labelId="position-label"
-          name="position"
-          value={searchParams.position}
-          onChange={handleSearchChange}
-          label="Position"
-        >
-          <MenuItem value="">
-            <em>All</em>
-          </MenuItem>
-          <MenuItem value="IT">IT</MenuItem>
-          <MenuItem value="SG2">SG2</MenuItem>
-          <MenuItem value="HN2">HN2</MenuItem>
-          {/* Thêm các tùy chọn khác tại đây */}
-        </Select>
-      </FormControl>
-
-      <FormControl sx={{ minWidth: 120 }}>
-        <InputLabel id="basicTrainer-label">Basic Trainer</InputLabel>
+        <InputLabel id="basicTrainer-label">Address</InputLabel>
         <Select
           labelId="basicTrainer-label"
           name="basicTrainer"
@@ -375,8 +325,8 @@ export default function ListUsers() {
           <MenuItem value="">
             <em>All</em>
           </MenuItem>
-          <MenuItem value="hung">Hung</MenuItem>
-          <MenuItem value="SG2">SG2</MenuItem>
+          <MenuItem value="HN">HN</MenuItem>
+          <MenuItem value="ND">ND</MenuItem>
           <MenuItem value="HN2">HN2</MenuItem>
           {/* Thêm các tùy chọn khác tại đây */}
         </Select>
@@ -415,16 +365,11 @@ export default function ListUsers() {
                   <TableRow>
                     <TableCell>Username</TableCell>
                     <TableCell>Sex</TableCell>
-                    <TableCell>Position</TableCell>
-                    <TableCell>Branch</TableCell>
-                    <TableCell>Type</TableCell>
-                    <TableCell>Salary</TableCell>
-                    <TableCell>Level</TableCell>
-                    <TableCell>Salary At</TableCell>
                     <TableCell>Address</TableCell>
                     <TableCell>Phone</TableCell>
-                    <TableCell>Basic Trainer</TableCell>
                     <TableCell>Roles</TableCell>
+                    <TableCell>Creation Date</TableCell>
+                    <TableCell>Update Date</TableCell>
                     <TableCell>Active</TableCell>
                     <TableCell>Actions</TableCell>
                   </TableRow>
@@ -439,20 +384,16 @@ export default function ListUsers() {
                   ) : (
                     users.map((user) => (
                       <TableRow key={user.id}>
-                        <TableCell >{user.username}<br></br>{user.email}</TableCell>
+                        {/* <TableCell>{user.id}</TableCell> */}
+                        <TableCell >{user.name}<br></br>{user.email}</TableCell>
                         <TableCell>{user.sex}</TableCell>
-                        <TableCell>{user.position ? user.position.name : ''}</TableCell>
-                        <TableCell>{user.branch ? user.branch.name : ''}</TableCell>
-                        <TableCell>{user.type}</TableCell>
-                        <TableCell>{user.salary}</TableCell>
-                        <TableCell>{user.level}</TableCell>
-                        <TableCell>{user.salaryat}</TableCell>
                         <TableCell>{user.address}</TableCell>
                         <TableCell>{user.phone}</TableCell>
-                        <TableCell>{user.basicTrainer ? user.basicTrainer.name : ''}</TableCell>
-                        <TableCell> {user.roles.map(role => role.name)}</TableCell>
+                        <TableCell> {user.role}</TableCell>
+                        <TableCell> {format(new Date(user.createdAt), 'dd/MM/yyyy HH:mm:ss')}</TableCell>
+                        <TableCell> {format(new Date(user.updatedAt), 'dd/MM/yyyy HH:mm:ss')}</TableCell>
                         <TableCell>
-                          <Checkbox checked={user.isactive} disabled />
+                          <Checkbox checked={user.status} disabled />
                         </TableCell>
                         <TableCell>
                           <Button
@@ -495,7 +436,7 @@ export default function ListUsers() {
             <TextField
               label="First Name"
               name="firstName"
-              value={editUser.firstName}
+              value={editUser.name}
               onChange={handleChange}
               margin="normal"
               fullWidth
@@ -505,14 +446,6 @@ export default function ListUsers() {
               name="password"
               type="password"
               value={editUser.password}
-              onChange={handleChange}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Last Name"
-              name="lastName"
-              value={editUser.lastName}
               onChange={handleChange}
               margin="normal"
               fullWidth
@@ -533,62 +466,7 @@ export default function ListUsers() {
               margin="normal"
               fullWidth
             />
-            <TextField
-              label="Position"
-              name="position"
-              value={editUser.position}
-              onChange={handleChange}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Branch"
-              name="branch"
-              value={editUser.branch}
-              onChange={handleChange}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Type"
-              name="type"
-              value={editUser.type}
-              onChange={handleChange}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Start Date"
-              name="startdate"
-              value={editUser.startdate}
-              onChange={handleChange}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Salary"
-              name="salary"
-              value={editUser.salary}
-              onChange={handleChange}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Level"
-              name="level"
-              value={editUser.level}
-              onChange={handleChange}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Salary At"
-              name="salaryat"
-              value={editUser.salaryat}
-              onChange={handleChange}
-              margin="normal"
-              fullWidth
-            />
+            
             <TextField
               label="Address"
               name="address"
@@ -601,22 +479,6 @@ export default function ListUsers() {
               label="Phone"
               name="phone"
               value={editUser.phone}
-              onChange={handleChange}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Stop Date"
-              name="stopdate"
-              value={editUser.stopdate}
-              onChange={handleChange}
-              margin="normal"
-              fullWidth
-            />
-            <TextField
-              label="Basic Trainer"
-              name="basicTrainer"
-              value={editUser.basicTrainer}
               onChange={handleChange}
               margin="normal"
               fullWidth

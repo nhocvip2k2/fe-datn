@@ -25,8 +25,8 @@ const MenuBar = () => {
   ];
 
   const timesheetItems = [
-    { to: "/mytimesheet", text: "My TimeSheet" },
-    { to: "/myoff", text: "My Off Requests" },
+    { to: "/mytimesheet", text: "a" },
+    { to: "/myoff", text: "b" },
   ];
 
   return (
@@ -73,7 +73,7 @@ const MenuBar = () => {
       )}
 
       <Button onClick={handleToggleTimesheet} style={{ color: "white" }}>
-        Timesheet
+        User
       </Button>
       {showTimesheet && (
         <List>
