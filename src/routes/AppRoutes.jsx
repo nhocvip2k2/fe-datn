@@ -10,6 +10,7 @@ import RequireAuth from "../services/RequireAuth";
 import  ErrorMessage from "../components/ErrorMessage"
 import ProductDetails from "../components/Productdetails"
 import Home from "../components/customer/Home"
+import Details from "../components/customer/Details"
 const AppRoutes = () => {
   return (
     <Router>
@@ -23,6 +24,7 @@ const AppRoutes = () => {
         <Route path="/product/details/:id" element={< ProductDetails />} />
         <Route path="/ErrorMessage" element={<ErrorMessage />} />
         <Route path="/Home" element={<Home />} />
+        <Route path="/Details/:id" element={<Details />} />
         <Route
           path="/Accounts"
           element={

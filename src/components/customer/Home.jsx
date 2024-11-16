@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "../../home.css"; // Import file CSS
 import { getToken } from "../../services/Cookies";
+import Header from "../header/HeaderUser";
+import { useNavigate } from "react-router-dom"; // Hook để chuyển hướng
+
 const Home = () => {
   const [products, setProducts] = useState([]); // State để lưu trữ sản phẩm
   const [loading, setLoading] = useState(true); // State để theo dõi trạng thái tải dữ liệu
+  const navigate = useNavigate(); // Hook để chuyển hướng đến trang chi tiết
 
   // Fetch dữ liệu từ API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch("https://backend-h1zl.onrender.com/api/customer/products", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          });
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${getToken()}`, // Gửi token qua header
+          },
+        });
         const data = await response.json();
         setProducts(data.content); // Lưu dữ liệu vào state
         setLoading(false); // Đánh dấu đã tải xong
@@ -34,21 +38,13 @@ const Home = () => {
 
   return (
     <div className="container">
-      {/* Header */}
-      <header className="header">
-        <div className="logo">PtitStore</div>
-        <nav className="nav">
-          <a href="#products" className="nav-link">Shop</a>
-          <a href="#about" className="nav-link">About</a>
-          <a href="#contact" className="nav-link">Contact</a>
-        </nav>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
           <h1>Welcome to PtitStore</h1>
-          <p>hiiiiihhihhihhhhhhhhhihihihhgjhjhuhuhuhuhhhhhhhhhhhhh </p>
+          <p>hiiiiihhihhihhhhhhhhhihihihhgjhjhuhuhuhuhhhhhhhhhhhhh</p>
           <button className="button">Shop Now</button>
         </div>
       </section>
@@ -60,19 +56,31 @@ const Home = () => {
 
       {/* Product Grid */}
       <section id="products" className="product-grid">
-        {products.map((product) => (
-          <div key={product._id} className="product-card">
-            <img src="https://via.placeholder.com/150" alt={product.name} className="product-image" />
-            <h3>{product.name}</h3>
-            <p>{product.price}</p>
-            <button className="button">Add to Cart</button>
-          </div>
-        ))}
+        {products.length === 0 ? (
+          <p>Không có sản phẩm nào để hiển thị.</p>
+        ) : (
+          products.map((product) => (
+            <div
+              key={product.id}
+              className="product-card"
+              onClick={() => navigate(`/Details/${product.id}`)} // Chuyển hướng đến chi tiết sản phẩm
+            >
+              <img
+                src={product.image || "https://via.placeholder.com/150"} // Hiển thị ảnh từ API
+                alt={product.name}
+                className="product-image"
+              />
+              <h3>{product.name}</h3>
+              <p>{product.price} VND</p> {/* Format giá */}
+              <button className="button">View Details</button>
+            </div>
+          ))
+        )}
       </section>
 
       {/* Footer */}
       <footer className="footer">
-        <p>© 2024 BrandStore. All rights reserved.</p>
+        <p>© 2024 PtitStore. All rights reserved.</p>
       </footer>
     </div>
   );
