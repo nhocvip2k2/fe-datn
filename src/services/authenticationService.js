@@ -1,4 +1,4 @@
-import { removeToken } from "./localStorageService";
+import { removeToken } from "./Cookies";
 
 export const logOut = () => {
   removeToken();

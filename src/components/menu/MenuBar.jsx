@@ -16,10 +16,10 @@ const MenuBar = () => {
   };
 
   const adminItems = [
-    { to: "/home", text: "My Info" },
-    { to: "/ListUsers", text: "Users" },
+    { to: "/Dashboard", text: "Dashboard" },
+    { to: "/Accounts", text: "Accounts" },
     { to: "/role", text: "Role" },
-    
+    { to: "/Products", text: "Products" },
     { to: "/client", text: "Client" },
     
   ];
@@ -37,6 +37,7 @@ const MenuBar = () => {
       p={3}
       display="flex"
       flexDirection="column"
+      transition="margin-left 10s ease"
     >
       <Typography variant="h6" gutterBottom>
         Menu

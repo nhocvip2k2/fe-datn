@@ -1,4 +1,4 @@
-import Cookies from "js-cookie"; // Thêm thư viện js-cookie
+import Cookies from "js-cookie";
 import {
   Box,
   Button,
@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Register() {
   const navigate = useNavigate();
 
   const handleCloseSnackBar = (event, reason) => {
@@ -24,7 +24,7 @@ export default function Login() {
   };
 
   useEffect(() => {
-    const accessToken = Cookies.get("accessToken"); // Lấy token từ cookies
+    const accessToken = Cookies.get("accessToken");
     if (accessToken) {
       navigate("/home");
     }
@@ -32,11 +32,18 @@ export default function Login() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // Ô xác nhận mật khẩu
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (password !== confirmPassword) {
+      setSnackBarMessage("Mật khẩu không trùng khớp. Vui lòng kiểm tra lại.");
+      setSnackBarOpen(true);
+      return;
+    }
 
     fetch("https://distinguished-truth-production.up.railway.app/api/home/register", {
       method: "POST",
@@ -54,7 +61,7 @@ export default function Login() {
         navigate("/login");
       })
       .catch((error) => {
-        setSnackBarMessage("aa");
+        setSnackBarMessage("Đăng ký thất bại. Vui lòng thử lại.");
         setSnackBarOpen(true);
       });
   };
@@ -94,7 +101,7 @@ export default function Login() {
           }}
         >
           <CardContent>
-            <Typography  variant="h5" component="h1" gutterBottom >
+            <Typography variant="h5" component="h1" gutterBottom>
               Welcome
             </Typography>
             <Box
@@ -122,6 +129,15 @@ export default function Login() {
                 margin="normal"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+              />
+              <TextField
+                label="Confirm Password"
+                type="password"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
               <Button
                 type="submit"

@@ -7,5 +7,5 @@ export const getToken = () => {
 };
 
 export const removeToken = () => {
-  return localStorage.removeItem(KEY_TOKEN);
+  return Cookies.remove(KEY_TOKEN);
 };

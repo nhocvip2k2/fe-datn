@@ -27,10 +27,10 @@ export default function Login() {
     const accessToken = Cookies.get("accessToken");
     if (accessToken) {
       const decodedToken = JSON.parse(atob(accessToken.split(".")[1])); // Giải mã payload
-      if (decodedToken.role === "admin") {
-        navigate("/admin");
+      if (decodedToken.roles === "admin") {
+        navigate("/Dashboard");
       } else {
-        navigate("/user");
+        navigate("/home");
       }
     }
   }, [navigate]);
@@ -43,7 +43,7 @@ export default function Login() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    fetch("https://distinguished-truth-production.up.railway.app/api/home/login", {
+    fetch("https://backend-h1zl.onrender.com/api/home/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,9 +61,9 @@ export default function Login() {
         const decodedToken = JSON.parse(atob(data.token.split(".")[1]));
         console.log("Payload:", decodedToken); 
         if (decodedToken.roles === "admin") {
-          navigate("/Listusers");
+          navigate("/Dashboard");
         } else {
-          navigate("/user");
+          navigate("/home");
         }
       })
       .catch((error) => {

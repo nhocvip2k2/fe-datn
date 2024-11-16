@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { format } from 'date-fns';
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import { getToken } from "../services/localStorageService";
-import Header from "./header/Header";
-import MenuBar from "./menu/MenuBar";
+import { getToken } from "../../services/Cookies";
+import Header from "../header/Header";
+import Sidebar from "../menu/Sidebar";
+import MenuIcon from "@mui/icons-material/Menu";
 import {
   FormControl,
   InputLabel,
@@ -23,6 +24,7 @@ import {
   MenuItem,
   Snackbar,
   Checkbox,
+  IconButton,
   Dialog,
   DialogActions,
   DialogContent,
@@ -41,7 +43,11 @@ export default function ListUsers() {
   const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [editSuccess, setEditSuccess] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true); // Thêm state để quản lý trạng thái của MenuBar
 
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
   // Thêm các state cho tìm kiếm
   const [searchParams, setSearchParams] = useState({
     username: "",
@@ -54,12 +60,12 @@ export default function ListUsers() {
     basicTrainer: "",
   });
 
-  const getUsers = async (accessToken) => {
+  const getUsers = async () => {
     try {
-      const response = await fetch("https://distinguished-truth-production.up.railway.app/api/home/users", {
+      const response = await fetch("https://backend-h1zl.onrender.com/api/admin/users", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       });
 
@@ -92,13 +98,13 @@ export default function ListUsers() {
   };
 
   const handleEditUser = (user) => {
-    setEditUser({ ...user, isactive: user.isactive === "true" });
+    setEditUser({...user, isactive: user.isactive === "true" });
     handleCloseMenu();
   };
 
   const handleDeleteUser = async () => {
     try {
-      const response = await fetch(`https://distinguished-truth-production.up.railway.app/api/home/user_id=${selectedUserId}`, {
+      const response = await fetch(`https://backend-h1zl.onrender.com/api/home/user_id=${selectedUserId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -241,8 +247,13 @@ export default function ListUsers() {
   return (
     <>
       <Header />
-      <Box display="flex" flexDirection="row" height="100vh" bgcolor="#f0f2f5" marginTop={6}>
-        <MenuBar />
+
+      <Box display="flex" marginTop={8}>
+        {/* Sidebar */}
+        <Sidebar />
+
+        {/* Nội dung chính */}
+        
         {error ? (
           <Box
             sx={{

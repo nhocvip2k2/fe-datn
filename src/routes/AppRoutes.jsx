@@ -1,26 +1,44 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "../components/Login";
-import Home from "../components/Home";
-import ListUsers from "../components/ListUsers"
+import Accounts from "../components/admin/Accounts"
+import Dashboard from "../components/admin/Dashboard"
 import Register from "../components/Register"
 import Client from "../components/Client"
-import Role from "../components/Role"
-
+import Role from "../components/admin/Role"
+import Products from "../components/admin/Products"
+import RequireAuth from "../services/RequireAuth";
 import  ErrorMessage from "../components/ErrorMessage"
+import ProductDetails from "../components/Productdetails"
+import Home from "../components/customer/Home"
 const AppRoutes = () => {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/ListUsers" element={<ListUsers />} />
-        <Route path="/role" element={<Role />} />
+        <Route path="/Dashboard" element={<Dashboard />} />
+        <Route path="/Role" element={<Role />} />
         <Route path="/register" element={<Register />} />
         <Route path="/client" element={<Client />} />
-       
-       
+        <Route path="/Products" element={<Products />} />
+        <Route path="/product/details/:id" element={< ProductDetails />} />
         <Route path="/ErrorMessage" element={<ErrorMessage />} />
-        
+        <Route path="/Home" element={<Home />} />
+        <Route
+          path="/Accounts"
+          element={
+            <RequireAuth requiredRole="admin">
+              <Accounts />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/Dashboard"
+          element={
+            <RequireAuth requiredRole="admin">
+              <Dashboard />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </Router>
   );

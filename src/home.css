@@ -1,0 +1,127 @@
+/* General styles */
+.container {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+  }
+  
+  /* Header styles */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .nav {
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-link {
+    margin: 0 1rem;
+    color: white;
+    text-decoration: none;
+  }
+  
+  /* Hero section styles */
+  .hero-section {
+    height: 100vh; /* Chiều cao chiếm toàn bộ màn hình */
+    background-image: url("https://i0.wp.com/projectcaring.com/wp-content/uploads/2019/06/home-new-bg-free-img.jpg?ssl=1"); /* Link hình nền */
+    background-size: cover; /* Đảm bảo hình nền lấp đầy khung */
+    background-position: center; /* Đặt tâm của hình nền */
+    background-attachment: fixed; /* Tạo hiệu ứng parallax */
+    background-repeat: no-repeat; /* Không lặp lại hình nền */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Tạo bóng chữ */
+  }
+  
+  .hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .button {
+    padding: 0.5rem 1rem;
+    background-color: rgba(0, 0, 0, 0.7); /* Nền nút trong suốt */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Title for Product Grid */
+    .product-grid-title {
+        text-align: center;
+        margin: 2rem 0;
+    }
+    
+    .product-grid-title h2 {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+  /* Product grid styles */
+  /* Product Grid */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Cho phép tối đa 4 cột mỗi dòng */
+    gap: 1rem; /* Khoảng cách giữa các sản phẩm */
+    padding: 2rem;
+  }
+  
+  @media (max-width: 1200px) {
+    .product-grid {
+      grid-template-columns: repeat(3, 1fr); /* Trên màn hình nhỏ hơn, hiển thị 3 cột */
+    }
+  }
+  
+  @media (max-width: 900px) {
+    .product-grid {
+      grid-template-columns: repeat(2, 1fr); /* Trên màn hình nhỏ hơn nữa, hiển thị 2 cột */
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .product-grid {
+      grid-template-columns: 1fr; /* Trên màn hình rất nhỏ, hiển thị 1 cột */
+    }
+  }
+  
+  
+  .product-card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1rem;
+    text-align: center;
+    background-color: #fff;
+  }
+  
+  .product-image {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  
+  /* Footer styles */
+  .footer {
+    text-align: center;
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+  }
+  

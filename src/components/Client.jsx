@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { debounce } from "lodash";
-import { getToken } from "../services/localStorageService";
+import { getToken } from "../services/Cookies";
 import Header from "./header/Header";
 import MenuBar from "./menu/MenuBar";
 import {

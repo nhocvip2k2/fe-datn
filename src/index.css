@@ -1,8 +1,174 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Header */
+.MuiAppBar-root {
+  background-color: #1976d2; /* Màu xanh đậm */
 }
+
+.MuiTypography-root {
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+}
+
+.MuiButton-root {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px; /* Sidebar đầy đủ */
+  background-color: #f4f4f4;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 50px;
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 60px; /* Sidebar thu nhỏ chỉ hiện icon */
+}
+
+.sidebar .MuiListItem-root {
+  padding: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .MuiListItem-root:hover {
+  background-color: #1976d2;
+  color: white;
+}
+
+.sidebar .MuiListItemText-root {
+  padding-left: 10px;
+}
+
+.sidebar .MuiListItemText-root, .sidebar .MuiListItemIcon {
+  transition: opacity 0.3s ease;
+}
+
+.sidebar .MuiListItemText-root {
+  opacity: 1;
+}
+
+.sidebar.collapsed .MuiListItemText-root {
+  opacity: 0; /* Ẩn text khi thu nhỏ */
+}
+
+.sidebar .MuiTooltip-tooltip {
+  font-size: 12px;
+}
+
+/* Tooltip Style */
+.MuiTooltip-tooltip {
+  background-color: #1976d2;
+  color: #fff;
+  font-size: 12px;
+}
+
+/* Main content */
+.main-content {
+  margin-left: 250px; /* Để không bị che Sidebar */
+  transition: margin-left 0.3s ease;
+}
+
+.main-content .MuiTypography-root {
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+}
+
+.chart-container {
+  padding: 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container .MuiTypography-root {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Cards in the Dashboard */
+.MuiCard-root {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.MuiCardContent-root {
+  padding: 20px;
+}
+
+.MuiTypography-root {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.MuiTypography-colorTextSecondary {
+  font-size: 18px;
+  color: #555;
+  font-weight: 500;
+}
+
+/* Grid and Spacing */
+.MuiGrid-container {
+  margin-top: 20px;
+}
+
+.MuiGrid-item {
+  margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+  }
+
+  .sidebar {
+    width: 200px;
+  }
+}
+
+
+/* General layout */
+.main-layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* Main content area */
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+/* Sidebar styles */
+.sidebar {
+  width: 250px;
+  background-color: #f4f4f4;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 50px;
+  transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+/* When sidebar is collapsed, the main content will shift */
+.sidebar.collapsed + .main-content {
+  margin-left: 60px; /* Shift content right when sidebar is collapsed */
+}
+
+.sidebar + .main-content {
+  margin-left: 250px; /* Shift content left when sidebar is expanded */
+}
+
