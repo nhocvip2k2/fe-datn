@@ -11,6 +11,9 @@ import  ErrorMessage from "../components/ErrorMessage"
 import ProductDetails from "../components/Productdetails"
 import Home from "../components/customer/Home"
 import Details from "../components/customer/Details"
+import Cart from "../components/customer/Cart"
+import Checkout from "../components/customer/Checkout"
+import PaymentQR from "../components/customer/PaymentQR"
 const AppRoutes = () => {
   return (
     <Router>
@@ -25,6 +28,9 @@ const AppRoutes = () => {
         <Route path="/ErrorMessage" element={<ErrorMessage />} />
         <Route path="/Home" element={<Home />} />
         <Route path="/Details/:id" element={<Details />} />
+        <Route path="/Cart" element={<Cart />} />
+        <Route path="/Checkout" element={<Checkout />} />
+        <Route path="/PaymentQR" element={<PaymentQR />} />
         <Route
           path="/Accounts"
           element={

@@ -1,0 +1,35 @@
+/* Header styles */
+.header {
+    position: fixed;
+    /* Giữ cố định ở đầu trang */
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Rộng bằng toàn bộ nội dung */
+    background-color: black;
+    /* Nền đen */
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    /* Đảm bảo luôn nằm trên cùng */
+  }
+  
+  .logo {
+    margin-left: 20px;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .user-icon {
+    margin-right: 20px;
+    cursor: pointer;
+  }
+  
+  .user-icon i {
+    font-size: 1.8rem;
+  }
+  

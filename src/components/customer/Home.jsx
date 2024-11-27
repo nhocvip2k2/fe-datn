@@ -44,8 +44,8 @@ const Home = () => {
       <section className="hero-section">
         <div className="hero-content">
           <h1>Welcome to PtitStore</h1>
-          <p>hiiiiihhihhihhhhhhhhhihihihhgjhjhuhuhuhuhhhhhhhhhhhhh</p>
-          <button className="button">Shop Now</button>
+          <p>Ưu Đãi đến 50%</p>
+          <button className="button">Thuê ngay</button>
         </div>
       </section>
 

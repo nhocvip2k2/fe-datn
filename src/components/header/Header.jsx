@@ -6,6 +6,7 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import { getToken } from "../../services/Cookies";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import * as jwt_decode from "jwt-decode"; // Thư viện để giải mã JWT
 import { logOut } from "../../services/authenticationService";
@@ -17,13 +18,13 @@ export default function Header() {
 
   React.useEffect(() => {
     // Lấy token từ localStorage (hoặc sessionStorage)
-    const token = localStorage.getItem("token");
+    const accessToken = getToken();
 
-    if (token) {
+    if (accessToken) {
       try {
         // Giải mã token để lấy username
-        const decodedToken = jwt_decode(token);
-        setUsername(decodedToken.username); // Giả sử username được lưu trong token
+        const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
+        setUsername(decodedToken.name); // Giả sử username được lưu trong token
       } catch (error) {
         console.error("Token không hợp lệ:", error);
       }

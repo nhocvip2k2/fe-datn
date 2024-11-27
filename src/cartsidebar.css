@@ -1,0 +1,335 @@
+/* Sidebar */
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    /* Ẩn bên ngoài màn hình */
+    width: 550px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: right 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    /* Hiệu ứng mượt mà */
+    z-index: 1000;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    /* Đặt hướng của flex là cột */
+}
+
+.cart-sidebar.open {
+    right: 0;
+    /* Hiển thị sidebar */
+}
+
+/* Header của Sidebar */
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    height: 30px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Nội dung giỏ hàng */
+.cart-content {
+    padding: 16px;
+    flex-grow: 1;
+    /* Đẩy nội dung lên trên và chiếm không gian còn lại */
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart-item-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.cart-item-info {
+    flex: 1;
+    /* Chiếm khoảng trống giữa ảnh và nút xóa */
+    margin-left: 15px;
+}
+
+.cart-item-info h4 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.cart-item-info p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.remove-icon {
+    background: none;
+    border: none;
+    color: #ff4d4f;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 200px;
+}
+/* Sidebar */
+.cart-sidebar {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    /* Ẩn bên ngoài màn hình */
+    width: 550px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: right 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    /* Hiệu ứng mượt mà */
+    z-index: 1000;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    /* Đặt hướng của flex là cột */
+}
+
+.cart-sidebar.open {
+    right: 0;
+    /* Hiển thị sidebar */
+}
+
+/* Header của Sidebar */
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    height: 30px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #ddd;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Nội dung giỏ hàng */
+.cart-content1 {
+    display: block;
+    padding: 16px;
+    flex-grow: 1;
+    overflow-y: auto;  /* Cho phép cuộn dọc nếu có quá nhiều sản phẩm */
+}
+
+/* Các sản phẩm trong giỏ hàng */
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    width: 100%;  /* Đảm bảo mỗi sản phẩm chiếm toàn bộ chiều rộng */
+    box-sizing: border-box;  /* Đảm bảo padding không thay đổi chiều rộng */
+}
+
+/* Cải thiện khả năng hiển thị của ảnh sản phẩm */
+.cart-item-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+/* Thông tin sản phẩm */
+.cart-item-info {
+    flex: 1;
+    margin-left: 15px;
+}
+
+.cart-item-info h4 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.cart-item-info p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+/* Các nút xóa */
+.remove-icon {
+    background: none;
+    border: none;
+    color: #ff4d4f;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.remove-icon:hover {
+    color: #ff7875;
+}
+
+/* Tổng số tiền */
+.total-price-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px; /* Điều chỉnh kích thước chữ */
+    padding: 12px 24px; /* Điều chỉnh khoảng cách bên trong (padding) */
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+    color: #333;
+    height: 60px; /* Cố định chiều cao */
+    box-sizing: border-box; /* Đảm bảo padding không làm thay đổi chiều cao */
+}
+
+.total-price-label {
+    color: #666;
+    font-size: 16px; /* Điều chỉnh kích thước chữ nhạt hơn */
+}
+
+.total-price-value {
+    color: #333;
+    font-size: 18px; /* Điều chỉnh kích thước chữ giá */
+}
+
+/* Footer của Sidebar */
+.cart-footer {
+    padding: 10px 10px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+    /* Đẩy nút xuống cuối */
+}
+
+.action-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+}
+
+/* Overlay (nền tối) */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Nền tối 50% */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease;
+    /* Hiệu ứng mờ dần */
+    z-index: 999;
+    /* Nằm dưới sidebar */
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.remove-icon:hover {
+    color: #ff7875;
+}
+
+.cart-footer {
+    padding: 10px 10px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+    /* Đẩy nút xuống cuối */
+}
+
+.action-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.action-button:hover {
+    background-color: #0056b3;
+}
+
+/* Dòng tổng số tiền */
+.total-price-container {
+    display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 18px; /* Điều chỉnh kích thước chữ */
+  padding: 12px 24px; /* Điều chỉnh khoảng cách bên trong (padding) */
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  color: #333;
+  height: 60px; /* Cố định chiều cao */
+  box-sizing: border-box; /* Đảm bảo padding không làm thay đổi chiều cao */
+  }
+  
+  .total-price-label {
+    color: #666;
+    font-size: 16px; /* Điều chỉnh kích thước chữ nhạt hơn */
+  }
+  
+  .total-price-value {
+    color: #333;
+    font-size: 18px; /* Điều chỉnh kích thước chữ giá */
+  }
+  
+
+
+
+/* Overlay (nền tối) */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Nền tối 50% */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease;
+    /* Hiệu ứng mờ dần */
+    z-index: 999;
+    /* Nằm dưới sidebar */
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}

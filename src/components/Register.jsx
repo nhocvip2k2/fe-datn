@@ -45,7 +45,7 @@ export default function Register() {
       return;
     }
 
-    fetch("https://distinguished-truth-production.up.railway.app/api/home/register", {
+    fetch("https://backend-h1zl.onrender.com/api/home/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

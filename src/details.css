@@ -1,6 +1,6 @@
 /* Breadcrumb */
 .breadcrumb {
-    margin-top: 8px;
+    margin-top: 80px;
     margin-bottom: 20px;
     font-size: 14px;
     color: #555;
@@ -50,6 +50,7 @@
   }
   
   .button {
+    margin-top: 20px;
     padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
@@ -57,4 +58,71 @@
     border-radius: 5px;
     cursor: pointer;
   }
-  
+
+/* Container cho các nút */
+.type-buttons, .color-buttons {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap; /* Các nút sẽ xuống dòng nếu không đủ không gian */
+  gap: 15px; /* Khoảng cách giữa các nút */
+  align-items: center;
+  justify-content: flex-start; /* Căn nút về đầu dòng */
+}
+
+/* Tiêu đề */
+.type-buttons p, .color-buttons p {
+  flex-basis: 100%; /* Tiêu đề chiếm toàn bộ chiều ngang */
+  margin-bottom: 10px;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #4a4a4a;
+}
+
+/* Nút chung */
+.type-button, .color-button {
+  padding: 12px 25px;
+  font-size: 1em;
+  border: 2px solid #ddd;
+  border-radius: 30px; /* Bo tròn nút */
+  background-color: #f9f9f9;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover state */
+.type-button:hover, .color-button:hover {
+  background-color: #007bff; /* Màu xanh nhạt */
+  color: #fff;
+  border-color: #007bff;
+  transform: translateY(-3px); /* Tạo hiệu ứng nổi lên */
+}
+
+/* Active state */
+.type-button.active, .color-button.active {
+  background-color: #0056b3; /* Màu xanh đậm hơn */
+  color: white;
+  border-color: #0056b3;
+  font-weight: bold;
+  transform: scale(1.05); /* Tăng nhẹ kích thước */
+}
+
+/* Khi nút được focus */
+.type-button:focus, .color-button:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+/* Phần responsive */
+@media screen and (max-width: 768px) {
+  .type-buttons, .color-buttons {
+    justify-content: center; /* Căn giữa trên thiết bị nhỏ */
+  }
+
+  .type-button, .color-button {
+    padding: 10px 20px;
+    font-size: 0.9em;
+  }
+}
+

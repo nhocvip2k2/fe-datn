@@ -1,0 +1,146 @@
+/* Tổng quan */
+.cart-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+  }
+  
+  .cart-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Bố cục chính */
+  .cart-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  
+  /* Bảng sản phẩm */
+  .cart-table {
+    flex: 2;
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .cart-table th,
+  .cart-table td {
+    border: 1px solid #ddd;
+    padding: 15px;
+    text-align: center;
+  }
+  
+  .cart-table th {
+    background-color: #f8f8f8;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .product-info {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+  }
+  
+  .product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 15px;
+  }
+  
+  .cart-table input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+  }
+  
+  /* Nút xóa */
+  .cart-table button {
+    background: #ff4d4d;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .cart-table button:hover {
+    background: #e60000;
+  }
+  
+  /* Cart Totals */
+  .cart-summary {
+    flex: 1;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+  }
+  
+  .cart-summary h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;
+  }
+  
+  .summary-details p {
+    justify-content: space-between;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    display: flex;
+  }
+  .price {
+    font-weight: bold;  /* Làm đậm giá tiền */
+  }
+  .checkout-button {
+    display: block;
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+  }
+  
+  .checkout-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Giỏ hàng trống */
+  .empty-cart {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+  }
+  /* Shipping */
+  .shipping-info p {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .shipping-details {
+    display: flex;
+    flex-direction: column; /* Đặt các dòng thông tin theo cột */
+    align-items: flex-end; /* Căn phải các dòng thông tin */
+  }
+  
+  .shipping-details p {
+    margin: 5px 0; /* Khoảng cách giữa các dòng */
+  }
+  
+  
+  
