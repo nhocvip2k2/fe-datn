@@ -7,6 +7,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isCartOpen, setIsCartOpen] = useState(false); // Trạng thái sidebar
+  const [keyword, setKeyword] = useState(""); // Từ khóa tìm kiếm
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleCart = () => setIsCartOpen(!isCartOpen);
@@ -14,6 +15,13 @@ const Header = () => {
   const handleLogout = () => {
     logOut();
     window.location.href = "/login";
+  };
+
+  const handleSearch = () => {
+    if (keyword.trim()) {
+      // Chuyển hướng tới trang kết quả tìm kiếm
+      window.location.href = `/search?keyword=${encodeURIComponent(keyword)}`;
+    }
   };
 
   useEffect(() => {
@@ -32,6 +40,20 @@ const Header = () => {
     <>
       <header className="header">
         <div className="logo">PTIT STORE</div>
+        <div className="header-center">
+          {/* Ô tìm kiếm */}
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Tìm kiếm sản phẩm..."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()} // Xử lý khi nhấn Enter
+          />
+          <button className="search-btn" onClick={handleSearch}>
+            <i className="fas fa-search"></i>
+          </button>
+        </div>
         <div className="header-right">
           {/* Biểu tượng giỏ hàng */}
           <div className="cart-icon" onClick={toggleCart}>

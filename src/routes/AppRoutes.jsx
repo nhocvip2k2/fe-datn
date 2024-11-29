@@ -14,6 +14,7 @@ import Details from "../components/customer/Details"
 import Cart from "../components/customer/Cart"
 import Checkout from "../components/customer/Checkout"
 import PaymentQR from "../components/customer/PaymentQR"
+import Search from "../components/customer/Search"
 const AppRoutes = () => {
   return (
     <Router>
@@ -31,6 +32,7 @@ const AppRoutes = () => {
         <Route path="/Cart" element={<Cart />} />
         <Route path="/Checkout" element={<Checkout />} />
         <Route path="/PaymentQR" element={<PaymentQR />} />
+        <Route path="/Search" element={<Search />} />
         <Route
           path="/Accounts"
           element={
