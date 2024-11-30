@@ -5,7 +5,7 @@ import Header from "../header/HeaderUser";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Range } from "react-range";
 
-const StorePage = () => {
+const Categories = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [noResults, setNoResults] = useState(false);
@@ -14,17 +14,11 @@ const StorePage = () => {
   const [totalPages, setTotalPages] = useState(1);
 
   const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const keyword = searchParams.get("keyword");
-  if (keyword == null) {
-    keyword = '';
-  }
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `https://backend-h1zl.onrender.com/api/customer/products/search?keyword=${keyword}&page=${currentPage}`,
+          `https://backend-h1zl.onrender.com/api/customer/categories/1/products`,
           {
             method: "GET",
             headers: {
@@ -47,7 +41,7 @@ const StorePage = () => {
     };
 
     fetchProducts();
-  }, [keyword, currentPage]);
+  }, [ currentPage]);
 
   const renderPagination = () => {
     const pages = [];
@@ -55,8 +49,9 @@ const StorePage = () => {
       pages.push(
         <button
           key={i}
-          className={`pagination-button ${currentPage === i ? "active" : ""
-            }`}
+          className={`pagination-button ${
+            currentPage === i ? "active" : ""
+          }`}
           onClick={() => setCurrentPage(i)}
         >
           {i + 1}
@@ -70,10 +65,9 @@ const StorePage = () => {
     <>
       <Header />
       <div className="breadcrumb">
-        <a href="/home">Home</a> / <a href="/Search?keyword=">Store</a> /{" "}
-        {keyword && <span>Search results for "{keyword}"</span>}
+        <a href="/home">Home</a> / <a href="/store">Store</a> /{" "}
+        <span>Search results for </span>
       </div>
-
       <div className="store-content">
         <aside className="sidebar">
           <h3>Filter by Price</h3>
@@ -91,9 +85,11 @@ const StorePage = () => {
                   style={{
                     ...props.style,
                     height: "6px",
-                    background: `linear-gradient(to right, #ddd ${(priceRange[0] / 10000) * 100
-                      }%, #333 ${(priceRange[0] / 10000) * 100}%, #333 ${(priceRange[1] / 10000) * 100
-                      }%, #ddd ${(priceRange[1] / 10000) * 100}%)`,
+                    background: `linear-gradient(to right, #ddd ${
+                      (priceRange[0] / 10000) * 100
+                    }%, #333 ${(priceRange[0] / 10000) * 100}%, #333 ${
+                      (priceRange[1] / 10000) * 100
+                    }%, #ddd ${(priceRange[1] / 10000) * 100}%)`,
                   }}
                 >
                   {children}
@@ -118,14 +114,6 @@ const StorePage = () => {
               <span>{priceRange[1]} VND</span>
             </div>
           </div>
-          <h3>Categories</h3>
-          <ul>
-            <li><a href="/Điện thoại">Điện thoại</a></li>
-            <li><a href="/Tablet">Tablet</a></li>
-            <li><a href="/Đồng Hồ">Đồng Hồ</a></li>
-            <li><a href="/Âm Thanh">Âm Thanh</a></li>
-            <li><a href="/SmartHome">SmartHome</a></li>
-          </ul>
         </aside>
         <main className="product-list">
           {loading ? (
@@ -161,9 +149,11 @@ const StorePage = () => {
         </main>
       </div>
       <div className="pagination">{renderPagination()}</div>
-
+      <footer className="footer">
+        <p>&copy; 2024 Brandstore</p>
+      </footer>
     </>
   );
 };
 
-export default StorePage;
+export default Categories;
