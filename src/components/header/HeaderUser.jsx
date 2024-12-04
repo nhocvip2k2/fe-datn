@@ -16,7 +16,12 @@ const Header = () => {
     logOut();
     window.location.href = "/login";
   };
-
+  const handleProfile = () => {
+    window.location.href = "/profile";
+  };
+  const handleChangePassword = () => {
+    window.location.href = "/ChangePassword";
+  };
   const handleSearch = () => {
     if (keyword.trim()) {
       // Chuyển hướng tới trang kết quả tìm kiếm
@@ -39,7 +44,9 @@ const Header = () => {
   return (
     <>
       <header className="header">
-        <div className="logo">PTIT STORE</div>
+        <div className="logo">
+          <a href="/home">PTIT STORE</a>
+          </div>
         <div className="header-center">
           {/* Ô tìm kiếm */}
           <input
@@ -66,6 +73,8 @@ const Header = () => {
             <i className="fas fa-user-circle"></i>
             {isMenuOpen && (
               <div className="dropdown-menu">
+                <button onClick={handleProfile}>Profile</button>
+                <button onClick={handleChangePassword}>ChangePassword</button>
                 <button onClick={handleLogout}>Logout</button>
               </div>
             )}

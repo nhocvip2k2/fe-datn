@@ -33,7 +33,13 @@
     font-size: 1.5rem;
     font-weight: bold;
 }
+a {
+    text-decoration: none; /* Bỏ gạch chân */
+    color: white; /* Màu trắng */
+  }
+  
 
+  
 .user-icon {
     margin-right: 20px;
     cursor: pointer;

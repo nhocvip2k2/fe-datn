@@ -32,7 +32,7 @@ const Home = () => {
     fetchProducts(); // Gọi hàm fetch khi component render 
   }, []); // Chạy 1 lần khi component mount 
   const handleButtonClick = () => {
-    navigate("/search?keyword="); // Chuyển hướng đến đường dẫn
+    navigate("/search"); // Chuyển hướng đến đường dẫn
   };
   // Lắng nghe sự kiện cuộn để thay đổi trạng thái header
   useEffect(() => {
@@ -46,11 +46,7 @@ const Home = () => {
     };
   }, []);
 
-  // Hiển thị "Loading..." khi dữ liệu chưa được tải 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
+  
   return (
     <div className={`container hero-header ${isScrolled ? "scrolled" : ""}`}>
       <Header />

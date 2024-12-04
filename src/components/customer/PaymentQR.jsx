@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const PaymentQR = () => {
-  const [amount, setAmount] = useState(100000); // Giá trị mặc định
+  const [amount, setAmount] = useState(1000); // Giá trị mặc định
   const [des, setDes] = useState("góp gạch cho Thành"); // Giá trị mô tả mặc định
 
   const baseUrl = "https://qr.sepay.vn/img";

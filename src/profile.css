@@ -1,0 +1,127 @@
+/* Đặt nền tổng thể */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .profile-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 100px;
+  }
+  
+  .profile-header {
+    background: #4caf50;
+    color: #fff;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  
+  .profile-header h1 {
+    margin: 0;
+    font-size: 2rem;
+  }
+  
+  .profile-header p {
+    margin: 0.5rem 0 0;
+    font-size: 1rem;
+    opacity: 0.9;
+  }
+  
+  .profile-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+  
+  .profile-avatar {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .avatar-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #4caf50;
+  }
+  
+  .btn-edit-avatar {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-edit-avatar:hover {
+    background-color: #45a049;
+  }
+  
+  .profile-info .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .profile-info label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .profile-info input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .profile-info input:focus {
+    outline: none;
+    border-color: #4caf50;
+  }
+  
+  .actions {
+    margin-top: 1rem;
+    text-align: right;
+  }
+  
+  .btn-edit,
+  .btn-save {
+    padding: 0.75rem 1.5rem;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-edit:hover,
+  .btn-save:hover {
+    background-color: #45a049;
+  }
+  
+  input:disabled {
+    background-color: #f9f9f9;
+    color: #aaa;
+  }
+  .success-message {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.95rem;
+  }
+    

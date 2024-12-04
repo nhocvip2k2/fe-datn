@@ -5,43 +5,50 @@ import Header from "../header/HeaderUser";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Range } from "react-range";
 
-const Categories = () => {
+const StorePage = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [noResults, setNoResults] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 1000]);
+  const [priceRange, setPriceRange] = useState([0, 10000]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
   const navigate = useNavigate();
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch(
-          `https://backend-h1zl.onrender.com/api/customer/categories/1/products`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          }
-        );
-        const data = await response.json();
-        if (data.content.length === 0) {
-          setNoResults(true);
-        } else {
-          setProducts(data.content);
-          setTotalPages(data.totalPages);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const keyword = searchParams.get("keyword") || "";
+  const categoryId=searchParams.get("id");
+  const fetchProducts = async () => {
+    try {
+      setLoading(true); // Hiển thị trạng thái tải
+      const response = await fetch(
+        `https://backend-h1zl.onrender.com/api/customer/categories/${categoryId}/products/filter/?page=${currentPage}&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
         }
-      } catch (error) {
-        console.error("Lỗi khi lấy sản phẩm:", error);
-      } finally {
-        setLoading(false);
+      );
+      const data = await response.json();
+      if (data.content.length === 0) {
+        setNoResults(true);
+      } else {
+        setProducts(data.content);
+        setTotalPages(data.totalPages);
+        setNoResults(false);
       }
-    };
+    } catch (error) {
+      console.error("Lỗi khi lấy sản phẩm:", error);
+    } finally {
+      setLoading(false); // Tắt trạng thái tải
+    }
+  };
 
+  // Gọi fetchProducts khi keyword, currentPage, hoặc priceRange thay đổi
+  useEffect(() => {
     fetchProducts();
-  }, [ currentPage]);
+  }, [keyword, currentPage, priceRange]);
 
   const renderPagination = () => {
     const pages = [];
@@ -49,9 +56,7 @@ const Categories = () => {
       pages.push(
         <button
           key={i}
-          className={`pagination-button ${
-            currentPage === i ? "active" : ""
-          }`}
+          className={`pagination-button ${currentPage === i ? "active" : ""}`}
           onClick={() => setCurrentPage(i)}
         >
           {i + 1}
@@ -65,9 +70,10 @@ const Categories = () => {
     <>
       <Header />
       <div className="breadcrumb">
-        <a href="/home">Home</a> / <a href="/store">Store</a> /{" "}
-        <span>Search results for </span>
+        <a href="/home">Home</a> / <a href="/Search">Store</a> /{" "}
+        {keyword && <span>Search results for "{keyword}"</span>}
       </div>
+
       <div className="store-content">
         <aside className="sidebar">
           <h3>Filter by Price</h3>
@@ -114,6 +120,25 @@ const Categories = () => {
               <span>{priceRange[1]} VND</span>
             </div>
           </div>
+          
+          <h3>Categories</h3>
+          <ul>
+            <li>
+              <a href="/Điện thoại">Điện thoại</a>
+            </li>
+            <li>
+              <a href="/Tablet">Tablet</a>
+            </li>
+            <li>
+              <a href="/Đồng Hồ">Đồng Hồ</a>
+            </li>
+            <li>
+              <a href="/Âm Thanh">Âm Thanh</a>
+            </li>
+            <li>
+              <a href="/SmartHome">SmartHome</a>
+            </li>
+          </ul>
         </aside>
         <main className="product-list">
           {loading ? (
@@ -121,39 +146,30 @@ const Categories = () => {
           ) : noResults ? (
             <p>Không có sản phẩm nào khớp với tìm kiếm của bạn.</p>
           ) : (
-            products
-              .filter(
-                (product) =>
-                  product.minPrice <= priceRange[1] &&
-                  product.maxPrice >= priceRange[0]
-              )
-              .map((product) => (
-                <div
-                  key={product.id}
-                  className="product-card"
-                  onClick={() => navigate(`/Details/${product.id}`)}
-                >
-                  <img
-                    src={product.image || "https://via.placeholder.com/150"}
-                    alt={product.name}
-                    className="product-image"
-                  />
-                  <h3>{product.name}</h3>
-                  <p>{product.brand}</p>
-                  <p>
-                    {product.minPrice} - {product.maxPrice} VND
-                  </p>
-                </div>
-              ))
+            products.map((product) => (
+              <div
+                key={product.id}
+                className="product-card"
+                onClick={() => navigate(`/Details/${product.id}`)}
+              >
+                <img
+                  src={product.image || "https://via.placeholder.com/150"}
+                  alt={product.name}
+                  className="product-image"
+                />
+                <h3>{product.name}</h3>
+                <p>{product.brand}</p>
+                <p>
+                  {product.minPrice} - {product.maxPrice} VND
+                </p>
+              </div>
+            ))
           )}
         </main>
       </div>
       <div className="pagination">{renderPagination()}</div>
-      <footer className="footer">
-        <p>&copy; 2024 Brandstore</p>
-      </footer>
     </>
   );
 };
 
-export default Categories;
+export default StorePage;

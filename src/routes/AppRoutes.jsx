@@ -16,6 +16,9 @@ import Checkout from "../components/customer/Checkout"
 import PaymentQR from "../components/customer/PaymentQR"
 import Search from "../components/customer/Search"
 import Categories from "../components/customer/Categories"
+import Profile from "../components/customer/Profile"
+import ChangePassword from "../components/customer/ChangePassword"
+import Test from "../components/customer/test"
 const AppRoutes = () => {
   return (
     <Router>
@@ -35,6 +38,9 @@ const AppRoutes = () => {
         <Route path="/PaymentQR" element={<PaymentQR />} />
         <Route path="/Search" element={<Search />} />
         <Route path="/Categories" element={<Categories />} />
+        <Route path="/Profile" element={<Profile />} />
+        <Route path="/ChangePassword" element={<ChangePassword />} />
+        <Route path="/Test" element={<Test />} />
         <Route
           path="/Accounts"
           element={

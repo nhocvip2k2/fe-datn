@@ -120,8 +120,8 @@ const DetailsPage = () => {
         {/* Product Image */}
         <div className="image-container">
           <img
-            src={product.image || "https://via.placeholder.com/120"}
-            alt={product.name || "Product Image"}
+            src={product.image || "https://via.placeholder.com/150"}
+            alt={product.name}
             className="product-image"
           />
         </div>
