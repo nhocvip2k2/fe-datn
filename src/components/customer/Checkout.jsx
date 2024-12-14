@@ -1,74 +1,157 @@
 import React, { useEffect, useState } from "react";
-import "../../checkout.css"; // Import CSS
+import "../../checkout.css";
 import Header from "../header/HeaderUser";
 import { useNavigate } from "react-router-dom";
-
+import { getToken } from "../../services/Cookies";
 const CheckoutPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
-  const [paymentMethod, setPaymentMethod] = useState("creditCard");
-  const [cartItems, setCartItems] = useState([]);
+  const [province, setProvince] = useState("");
+  const [district, setDistrict] = useState("");
+  const [ward, setWard] = useState("");
+  const [specificAddress, setSpecificAddress] = useState("");
 
-  // Lấy dữ liệu giỏ hàng từ localStorage khi component được load
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState("creditCard");
+
+  const navigate = useNavigate();
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
   }, []);
 
-  const navigate = useNavigate(); // Khởi tạo hàm điều hướng
-
-  // Hàm fetch gợi ý địa chỉ từ API
-  const fetchSuggestions = async (input) => {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-        input
-      )}&format=json&addressdetails=1&countrycodes=VN`
-    );
-    const data = await response.json();
-    setSuggestions(
-      data.map((item) => ({
-        display_name: item.display_name,
-        lat: item.lat,
-        lon: item.lon,
-      }))
-    );
-  };
-
-  // Sử dụng useEffect để tự động fetch gợi ý mỗi 5 giây nếu địa chỉ có trên 2 ký tự
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (address.length > 2) {
-        fetchSuggestions(address);
-      } else {
-        setSuggestions([]);
+    const fetchProvinces = async () => {
+      try {
+        const response = await fetch("https://provinces.open-api.vn/api/p/");
+        const data = await response.json();
+        setProvinces(data);
+      } catch (error) {
+        console.error("Lỗi khi lấy danh sách tỉnh:", error);
       }
-    }, 1000);
+    };
+    fetchProvinces();
+  }, []);
 
-    return () => clearInterval(interval); // Dọn dẹp interval khi component bị unmount
-  }, [address]);
-
-  // Xử lý gợi ý địa chỉ
-  const handleAddressInput = (e) => {
-    setAddress(e.target.value);
+  const fetchDistricts = async (provinceCode) => {
+    try {
+      const response = await fetch(
+        `https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`
+      );
+      const data = await response.json();
+      setDistricts(data.districts || []);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách huyện:", error);
+    }
   };
 
-  // Chọn một gợi ý
-  const handleSelectSuggestion = (suggestion) => {
-    setAddress(suggestion.display_name);
-    setSuggestions([]); // Ẩn gợi ý sau khi chọn
+  const fetchWards = async (districtCode) => {
+    try {
+      const response = await fetch(
+        `https://provinces.open-api.vn/api/d/${districtCode}?depth=2`
+      );
+      const data = await response.json();
+      setWards(data.wards || []);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách xã:", error);
+    }
   };
 
-  const handleCheckout = (e) => {
-    e.preventDefault();
-    navigate("/PaymentQR"); // Dẫn đến trang thanh toán
+  const handleProvinceChange = (e) => {
+    const selectedProvinceCode = e.target.value;
+    setProvince(selectedProvinceCode);
+    setDistrict("");
+    setWard("");
+    setDistricts([]);
+    setWards([]);
+    if (selectedProvinceCode) {
+      fetchDistricts(selectedProvinceCode);
+    }
   };
 
-  const getTotalPrice = () => {
+  const handleDistrictChange = (e) => {
+    const selectedDistrictCode = e.target.value;
+    setDistrict(selectedDistrictCode);
+    setWard("");
+    setWards([]);
+    if (selectedDistrictCode) {
+      fetchWards(selectedDistrictCode);
+    }
+  };
+
+  const handleWardChange = (e) => {
+    setWard(e.target.value);
+  };
+ const getTotalPrice = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
+  const handleCheckout = async (e) => {
+    e.preventDefault();
+  
+    // Tìm tên từ danh sách tỉnh, quận, xã/phường
+    const selectedProvinceName = provinces.find((p) => p.code.toString() === province)?.name || "";
+    const selectedDistrictName = districts.find((d) => d.code.toString() === district)?.name || "";
+    const selectedWardName = wards.find((w) => w.code.toString() === ward)?.name || "";
+  
+    // Địa chỉ đầy đủ
+    const fullAddress = `${specificAddress}, ${selectedWardName}, ${selectedDistrictName}, ${selectedProvinceName}`;
+  
+    // Chuẩn bị dữ liệu để gửi
+    const requestData = {
+      productItems: cartItems.map((item) => ({
+        productDetailId: item.id, 
+        quantity: item.quantity,
+        rentalDay: 0, // Giá trị mặc định hoặc lấy từ input
+        note: "",
+      })),
+      currentAddress: fullAddress,
+      currentPhone: phone,
+      payment: paymentMethod, // Phương thức thanh toán
+      shipment: "Khởi tạo thành công", // Thay bằng giá trị phù hợp
+    };
+  
+    console.log("Dữ liệu gửi:", requestData);
+  
+    // Gửi request đến API
+    try {
+      const response = await fetch("https://backend-h1zl.onrender.com/api/customer/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`, // Hàm getToken lấy token từ localStorage hoặc nơi lưu trữ khác
+        },
+        body: JSON.stringify(requestData),
+      });
+  
+      if (!response.ok) {
+        const errorResponse = await response.json();
+      console.error("Lỗi từ server:", errorResponse);
+      throw new Error(`Lỗi: ${response.statusText}`);
+    }
+
+    const result = await response.json();
+
+    // Lấy mã đơn hàng từ phản hồi
+    const orderId = result[0].order?.id; // Tùy thuộc vào cấu trúc API
+    if (orderId) {
+      console.log("Mã đơn hàng:", orderId);
+
+
+      // Chuyển hướng kèm theo mã đơn hàng
+      navigate(`/PaymentQR?orderId=${orderId}&amount=${getTotalPrice()}`);
+    } else {
+      console.warn("Không lấy được mã đơn hàng từ phản hồi.");
+    }
+    } catch (error) {
+      console.error("Lỗi khi gửi request:", error);
+      alert("Đã xảy ra lỗi khi đặt hàng. Vui lòng thử lại!");
+    }
+  };
+  
 
   return (
     <>
@@ -77,63 +160,76 @@ const CheckoutPage = () => {
         <h2>Thanh toán</h2>
         <form onSubmit={handleCheckout} className="checkout-form">
           <div className="checkout-row">
-            {/* Thông tin khách hàng */}
             <div className="checkout-column customer-info">
-              <div className="section">
-                <h3>Thông tin khách hàng</h3>
-                <div className="input-group">
-                  <label>Họ và tên:</label>
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    placeholder="Nhập họ và tên"
-                  />
-                </div>
-                <div className="input-group">
-                  <label>Email:</label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    placeholder="Nhập email"
-                  />
-                </div>
-                <div className="input-group">
-                  <label>Số điện thoại:</label>
-                  <input
-                    type="text"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                    placeholder="Nhập số điện thoại"
-                  />
-                </div>
-                <div className="input-group">
-                  <label>Địa chỉ giao hàng:</label>
-                  <input
-                    type="text"
-                    value={address}
-                    onChange={handleAddressInput}
-                    required
-                    placeholder="Nhập địa chỉ giao hàng"
-                  />
-                  {/* Gợi ý địa chỉ */}
-                  {suggestions.length > 0 && (
-                    <ul className="suggestions-list">
-                      {suggestions.map((suggestion, index) => (
-                        <li
-                          key={index}
-                          onClick={() => handleSelectSuggestion(suggestion)}
-                        >
-                          {suggestion.display_name}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+              <h3>Thông tin khách hàng</h3>
+              <div className="input-group">
+                <label>Họ và tên:</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label>Email:</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label>Số điện thoại:</label>
+                <input
+                  type="text"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label>Tỉnh/Thành phố:</label>
+                <select value={province} onChange={handleProvinceChange} required>
+                  <option value="">Chọn tỉnh/thành phố</option>
+                  {provinces.map((p) => (
+                    <option key={p.code} value={p.code}>
+                      {p.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="input-group">
+                <label>Quận/Huyện:</label>
+                <select value={district} onChange={handleDistrictChange} required>
+                  <option value="">Chọn quận/huyện</option>
+                  {districts.map((d) => (
+                    <option key={d.code} value={d.code}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="input-group">
+                <label>Xã/Phường:</label>
+                <select value={ward} onChange={handleWardChange} required>
+                  <option value="">Chọn xã/phường</option>
+                  {wards.map((w) => (
+                    <option key={w.code} value={w.code}>
+                      {w.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="input-group">
+                <label>Địa chỉ cụ thể:</label>
+                <input
+                  type="text"
+                  value={specificAddress}
+                  onChange={(e) => setSpecificAddress(e.target.value)}
+                  required
+                />
               </div>
             </div>
 

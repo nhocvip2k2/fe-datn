@@ -5,6 +5,7 @@ import Dashboard from "../components/admin/Dashboard"
 import Register from "../components/Register"
 import Client from "../components/Client"
 import Role from "../components/admin/Role"
+import AdminChat from "../components/admin/AdminChat"
 import Products from "../components/admin/Products"
 import RequireAuth from "../services/RequireAuth";
 import  ErrorMessage from "../components/ErrorMessage"
@@ -19,6 +20,7 @@ import Categories from "../components/customer/Categories"
 import Profile from "../components/customer/Profile"
 import ChangePassword from "../components/customer/ChangePassword"
 import Test from "../components/customer/test"
+import Chat from "../components/customer/Chat"
 const AppRoutes = () => {
   return (
     <Router>
@@ -41,6 +43,8 @@ const AppRoutes = () => {
         <Route path="/Profile" element={<Profile />} />
         <Route path="/ChangePassword" element={<ChangePassword />} />
         <Route path="/Test" element={<Test />} />
+        <Route path="/Chat" element={<Chat />} />
+        <Route path="/AdminChat" element={<AdminChat />} />
         <Route
           path="/Accounts"
           element={
