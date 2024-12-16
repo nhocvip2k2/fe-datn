@@ -1,63 +1,83 @@
-.autocomplete-container {
-    max-width: 500px;
-    margin: 2rem auto;
-    padding: 1.5rem;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  h2 {
-    margin-bottom: 1rem;
-    color: #333;
-  }
-  
-  .autocomplete-input {
-    width: 100%;
-    padding: 0.75rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .autocomplete-input:focus {
-    border-color: #4caf50;
-    outline: none;
-    box-shadow: 0 0 4px rgba(76, 175, 80, 0.5);
-  }
-  
-  .suggestions-list {
-    list-style: none;
-    padding: 0;
-    margin: 0.5rem 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #fff;
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  
-  .suggestion-item {
-    padding: 0.75rem;
-    cursor: pointer;
-  }
-  
-  .suggestion-item:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .address-details {
-    margin-top: 1.5rem;
-    text-align: left;
-    background-color: #e6f7e6;
-    padding: 1rem;
-    border: 1px solid #c3e6cb;
-    border-radius: 4px;
-    color: #155724;
-  }
-  
-  .address-details p {
-    margin: 0.5rem 0;
-  }
-  
+/* CSS cho component Chat */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.chat-header {
+  background-color: #f5f5f5;
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 400px; /* Đặt chiều cao cố định */
+}
+
+.messages {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto; /* Thanh cuộn dọc */
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Khoảng cách giữa các tin nhắn */
+}
+
+.message {
+  max-width: 70%;
+  padding: 10px;
+  border-radius: 12px;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+.message.sent {
+  align-self: flex-end;
+  background-color: #59fc56;
+}
+
+.message.received {
+  align-self: flex-start;
+  background-color: #f1f0f0;
+}
+
+.send-message {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.send-message input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.send-message button {
+  margin-left: 10px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.send-message button:hover {
+  background-color: #0056b3;
+}

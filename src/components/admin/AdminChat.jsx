@@ -1,14 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { getToken } from "../../services/Cookies";
-import "../../chat.css"; // Import CSS
 
-const Chat = () => {
-  const [messages, setMessages] = useState([]); // Mảng chứa tất cả tin nhắn
-  const [newMessage, setNewMessage] = useState(""); // Tin nhắn mới nhập
-  const customerId = 2; // ID khách hàng (giả lập)
+const AdminChat = () => {
+  const [messages, setMessages] = useState([]); // Mảng chứa tin nhắn
+  const [newMessage, setNewMessage] = useState(""); // Tin nhắn mới
+  const token = getToken();
+  const decodedToken = JSON.parse(atob(token.split(".")[1]));
+  const customerId = 2; // Lấy ID khách hàng từ token
+  const messagesEndRef = useRef(null); // Tham chiếu đến vị trí cuối tin nhắn
   const conversationId=1;
+  // Hàm tự động cuộn đến tin nhắn mới nhất
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   // Kết nối WebSocket
   useEffect(() => {
@@ -16,31 +24,21 @@ const Chat = () => {
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-      // Lắng nghe tin nhắn từ customer đến admin
       stompClient.subscribe(`/send/admin`, (message) => {
         const msgContent = JSON.parse(message.body);
-        // Cập nhật tin nhắn khi admin gửi tin nhắn mới
-        setMessages((prev) => sortMessages([...prev, msgContent]));
-      });
-
-      // Lắng nghe thông báo mới từ admin
-      stompClient.subscribe(`/notify/newOrderPaid`, (message) => {
-        const msgContent = JSON.parse(message.body);
-        // Cập nhật tin nhắn khi admin gửi tin nhắn mới
         setMessages((prev) => sortMessages([...prev, msgContent]));
       });
     });
 
-    return () => stompClient.disconnect(); // Ngắt kết nối WebSocket khi component bị hủy
+    return () => stompClient.disconnect();
   }, [customerId]);
 
   // Lấy tin nhắn từ API khi load trang
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const token = getToken();
         const response = await fetch(
-          `https://backend-h1zl.onrender.com/api/admin/chat/${conversationId}`,
+          `https://backend-h1zl.onrender.com/api/admin/chat/${conversationId}?page=0&size=20`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -51,19 +49,23 @@ const Chat = () => {
         const data = await response.json();
         const allMessages = data.content.map((msg) => ({
           ...msg,
-          createdAt: new Date(msg.createdAt), // Đảm bảo rằng createdAt là kiểu Date
+          createdAt: new Date(msg.createdAt),
         }));
 
-        setMessages(sortMessages(allMessages)); // Sắp xếp tin nhắn
+        setMessages(sortMessages(allMessages));
       } catch (error) {
         console.error("Lỗi khi lấy tin nhắn:", error);
       }
     };
 
     fetchMessages();
-  }, []);
+  }, [token]);
 
-  // Hàm sắp xếp tin nhắn theo createdAt (xen kẽ giữa khách hàng và admin)
+  // Cuộn xuống cuối cùng mỗi khi tin nhắn thay đổi
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   const sortMessages = (msgs) => {
     return msgs.sort((a, b) => a.createdAt - b.createdAt);
   };
@@ -73,29 +75,23 @@ const Chat = () => {
     if (!newMessage.trim()) return;
 
     try {
-      const token = getToken();
       const response = await fetch(
-        `https://backend-h1zl.onrender.com/api/admin/chat/?customerId=${customerId}`, // Đổi API đúng cho admin
+        `https://backend-h1zl.onrender.com/api/admin/chat/?customerId=${customerId}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ content: newMessage, senderRole: "admin" }), // Gửi tin nhắn với senderRole là admin
+          body: JSON.stringify({ content: newMessage, senderRole: "admin" }),
         }
       );
 
       if (!response.ok) throw new Error("Failed to send message");
 
       const data = await response.json();
-      // Sau khi gửi thành công, cập nhật lại tin nhắn
-      setMessages((prev) => {
-        const updatedMessages = [...prev, data]; // Thêm tin nhắn mới vào danh sách
-        return sortMessages(updatedMessages); // Sắp xếp lại theo thời gian
-      });
-
-      setNewMessage(""); // Reset ô input sau khi gửi
+      setMessages((prev) => sortMessages([...prev, data]));
+      setNewMessage("");
     } catch (error) {
       console.error("Lỗi khi gửi tin nhắn:", error);
     }
@@ -103,14 +99,16 @@ const Chat = () => {
 
   return (
     <div className="chat-container">
-      <h2>Chat với customer</h2>
+      <h2>Chat</h2>
       <div className="chat-box">
         <div className="messages">
           {messages.length > 0 ? (
             messages.map((msg, index) => (
               <div
                 key={index}
-                className={`message ${msg.senderRole === "customer" ? "customer" : "admin"}`}
+                className={`message ${
+                  msg.senderRole === "admin" ? "sent" : "received"
+                }`}
               >
                 <p>{msg.content}</p>
               </div>
@@ -118,8 +116,9 @@ const Chat = () => {
           ) : (
             <p>Không có tin nhắn nào.</p>
           )}
+          {/* Thẻ tham chiếu đến vị trí cuối */}
+          <div ref={messagesEndRef} />
         </div>
-
         <div className="send-message">
           <input
             type="text"
@@ -134,4 +133,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default AdminChat;
