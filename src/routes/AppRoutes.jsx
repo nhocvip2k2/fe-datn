@@ -20,7 +20,6 @@ import Categories from "../components/customer/Categories"
 import Profile from "../components/customer/Profile"
 import ChangePassword from "../components/customer/ChangePassword"
 import Test from "../components/customer/test"
-import Chat from "../components/customer/Chat"
 const AppRoutes = () => {
   return (
     <Router>
@@ -43,7 +42,6 @@ const AppRoutes = () => {
         <Route path="/Profile" element={<Profile />} />
         <Route path="/ChangePassword" element={<ChangePassword />} />
         <Route path="/Test" element={<Test />} />
-        <Route path="/Chat" element={<Chat />} />
         <Route path="/AdminChat" element={<AdminChat />} />
         <Route
           path="/Accounts"

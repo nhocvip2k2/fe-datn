@@ -61,7 +61,7 @@ const Header = () => {
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-      stompClient.subscribe(`/send/customer/${customerId}`, (message) => {
+      stompClient.subscribe(`/admin/send/customer/${customerId}`, (message) => {
         const data = JSON.parse(message.body);
         if (data) {
           setUnreadCount((prevCount) => prevCount + 1); // Tăng số lượng tin nhắn chưa đọc

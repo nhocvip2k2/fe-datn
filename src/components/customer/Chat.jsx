@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { getToken } from "../../services/Cookies";
+//import "../../test.css"
 const Chat = () => {
   const [messages, setMessages] = useState([]); // Mảng chứa tin nhắn
   const [newMessage, setNewMessage] = useState(""); // Tin nhắn mới
@@ -23,7 +24,7 @@ const Chat = () => {
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-      stompClient.subscribe(`/send/customer/${customerId}`, (message) => {
+      stompClient.subscribe(`/admin/send/customer/${customerId}`, (message) => {
         const msgContent = JSON.parse(message.body);
         setMessages((prev) => sortMessages([...prev, msgContent]));
       });

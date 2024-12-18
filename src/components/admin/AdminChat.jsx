@@ -2,12 +2,11 @@ import React, { useEffect, useState, useRef } from "react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { getToken } from "../../services/Cookies";
-
+import "../../adminchat.css"
 const AdminChat = () => {
   const [messages, setMessages] = useState([]); // Mảng chứa tin nhắn
   const [newMessage, setNewMessage] = useState(""); // Tin nhắn mới
   const token = getToken();
-  const decodedToken = JSON.parse(atob(token.split(".")[1]));
   const customerId = 2; // Lấy ID khách hàng từ token
   const messagesEndRef = useRef(null); // Tham chiếu đến vị trí cuối tin nhắn
   const conversationId=1;
@@ -24,7 +23,7 @@ const AdminChat = () => {
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-      stompClient.subscribe(`/send/admin`, (message) => {
+      stompClient.subscribe(`/customer/send/admin`, (message) => {
         const msgContent = JSON.parse(message.body);
         setMessages((prev) => sortMessages([...prev, msgContent]));
       });
@@ -98,15 +97,15 @@ const AdminChat = () => {
   };
 
   return (
-    <div className="chat-container">
+    <div className="admin-chat-container">
       <h2>Chat</h2>
-      <div className="chat-box">
-        <div className="messages">
+      <div className="admin-chat--box">
+        <div className="admin-messages">
           {messages.length > 0 ? (
             messages.map((msg, index) => (
               <div
                 key={index}
-                className={`message ${
+                className={`admin-message ${
                   msg.senderRole === "admin" ? "sent" : "received"
                 }`}
               >
@@ -119,7 +118,7 @@ const AdminChat = () => {
           {/* Thẻ tham chiếu đến vị trí cuối */}
           <div ref={messagesEndRef} />
         </div>
-        <div className="send-message">
+        <div className="admin-send-message">
           <input
             type="text"
             value={newMessage}

@@ -1,0 +1,95 @@
+/* CSS cho component Chat */
+.admin-chat-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+  
+  .admin-chat-header {
+    background-color: #f5f5f5;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .admin-chat-box {
+    display: flex;
+    flex-direction: column;
+    height: 400px; /* Đặt chiều cao cố định */
+  }
+  
+  .admin-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto; /* Thanh cuộn dọc */
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Khoảng cách giữa các tin nhắn */
+  }
+  .admin-messages::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .admin-messages::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
+  }
+  
+  .admin-messages::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+  }
+  .admin-message {
+    max-width: 70%;
+    padding: 10px;
+    border-radius: 12px;
+    word-wrap: break-word;
+    font-size: 14px;
+  }
+  
+  .admin-message.sent {
+    align-self: flex-end;
+    background-color: #59fc56;
+  }
+  
+  .admin-message.received {
+    align-self: flex-start;
+    background-color: #f1f0f0;
+  }
+  
+  .admin-send-message {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background-color: #fff;
+  }
+  
+  .send-message input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .admin-send-message button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .admin-send-message button:hover {
+    background-color: #0056b3;
+  }
+  
