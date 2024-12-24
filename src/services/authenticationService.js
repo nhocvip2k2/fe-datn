@@ -2,5 +2,6 @@ import { removeToken } from "./Cookies";
 
 export const logOut = () => {
   removeToken();
-  localStorage.removeItem("cart"); // Xóa dữ liệu giỏ hàng
+  localStorage.clear(); // Xóa toàn bộ dữ liệu trong localStorage
+
 };

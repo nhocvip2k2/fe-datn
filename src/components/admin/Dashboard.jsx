@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Grid, Paper, Typography, Card, CardContent } from "@mui/material";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -6,6 +6,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import Header from "../header/Header";
 import Sidebar from "../menu/Sidebar";
+import {getToken} from "../../services/Cookies";
 import "../../index.css";
 
 // Data mẫu cho biểu đồ
@@ -31,8 +32,37 @@ const pieChartData = [
 ];
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-
+const token=getToken();
 const Dashboard = () => {
+  const [data, setData] = useState({ users: 0, orders: 0, revenue: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://backend-h1zl.onrender.com/api/admin/stat/overall",
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        ); // API duy nhất
+        const result = await response.json();
+
+        // Cập nhật dữ liệu
+        setData(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Hoàn thành việc tải dữ liệu
+      }
+    };
+
+    fetchData();
+  }, []); // Chỉ gọi API một lần khi component render
+
   return (
     <Box>
       <Header />
@@ -60,7 +90,7 @@ const Dashboard = () => {
                     <PeopleIcon /> Users
                   </Typography>
                   <Typography variant="h6" color="text.secondary">
-                    9999
+                    {data.totalUsers}
                   </Typography>
                 </CardContent>
               </Card>
@@ -72,7 +102,7 @@ const Dashboard = () => {
                     <ShoppingCartIcon /> Orders
                   </Typography>
                   <Typography variant="h6" color="text.secondary">
-                    1,780
+                  {data.totalOrders}
                   </Typography>
                 </CardContent>
               </Card>
@@ -84,7 +114,7 @@ const Dashboard = () => {
                     <AttachMoneyIcon /> Revenue
                   </Typography>
                   <Typography variant="h6" color="text.secondary">
-                    $24,000
+                  {data.totalOrders}
                   </Typography>
                 </CardContent>
               </Card>

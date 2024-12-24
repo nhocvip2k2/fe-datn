@@ -9,26 +9,26 @@ const Sidebar = () => {
   return (
     <Box sx={{ width: 250, bgcolor: "#f4f4f4", height: "100vh", paddingTop: 5 }}>
       <List>
-        <ListItem button component={Link} to="/Dashboard"> {/* Thêm component Link */}
+        <ListItem button component={Link} to="/admin/Dashboard"> {/* Thêm component Link */}
           <DashboardIcon />
           <ListItemText primary="Dashboard" />
         </ListItem>
         <Divider />
-        <ListItem button component={Link} to="/Accounts"> {/* Thêm component Link */}
+        <ListItem button component={Link} to="/admin/Accounts"> {/* Thêm component Link */}
           <PeopleIcon />
           <ListItemText primary="Accounts" />
         </ListItem>
-        <ListItem button component={Link} to="/Products"> {/* Thêm component Link */}
+        <ListItem button component={Link} to="/admin/Products"> {/* Thêm component Link */}
           <ShoppingCartIcon />
           <ListItemText primary="Products" />
         </ListItem>
 
-        <ListItem button component={Link} to="/Role"> {/* Thêm component Link */}
+        <ListItem button component={Link} to="/admin/Role"> {/* Thêm component Link */}
           <PeopleIcon />
           <ListItemText primary="roles" />
         </ListItem>
 
-        <ListItem button component={Link} to="/Accounts"> {/* Thêm component Link */}
+        <ListItem button component={Link} to="/admin/Accounts"> {/* Thêm component Link */}
           <PeopleIcon />
           <ListItemText primary="Accounts" />
         </ListItem>

@@ -85,7 +85,7 @@ const DetailsPage = () => {
       cart.push({
         id: product.id,
         name: product.name,
-        image: product.image,
+        image: product.category.image.url,
         type: selectedType,
         color: selectedColor,
         price: productPrice,
@@ -120,7 +120,8 @@ const DetailsPage = () => {
         {/* Product Image */}
         <div className="image-container">
           <img
-            src={product.image || "https://via.placeholder.com/150"}
+            // src={product.category.image.url}
+            src='https://res.cloudinary.com/dmkyau47b/image/upload/e_sharpen/v1734756456/1.jpg'
             alt={product.name}
             className="product-image"
           />

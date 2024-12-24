@@ -77,9 +77,9 @@ const Home = () => {
               onClick={() => navigate(`/Details/${product.id}`)} // Chuyển hướng đến chi tiết sản phẩm 
             >
               <img
-                src={product.image || "https://via.placeholder.com/150"} // Hiển thị ảnh từ API 
+                src={product.category.image.url } // Hiển thị ảnh từ API 
                 alt={product.name}
-                className="product-image"
+                className="product-image-home"
               />
               <h3>{product.name}</h3>
               <p>{product.brand}</p>

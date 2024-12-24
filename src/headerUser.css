@@ -87,6 +87,17 @@ a {
 .chat-icon:hover {
   color: #007bff;
 }
+.order-icon {
+  position: relative;
+  margin-right: 20px;
+  cursor: pointer;
+  font-size: 20px;
+  transition: color 0.3s;
+}
+
+.order-icon:hover {
+  color: #007bff;
+}
 
 .chat-count {
   position: absolute;
@@ -119,7 +130,7 @@ a {
 }
 
 .cart-icon:hover {
-  color: #007bff; /* Màu xanh khi hover */
+  color: #007bff;
 }
 
 /* Chat container */
@@ -145,7 +156,6 @@ a {
 
 /* Header của chat */
 .chat-header {
-  margin-top: -400px;
   background-color: #007bff;
   color: white;
   padding: 10px;
@@ -274,7 +284,7 @@ a {
 .chat-box {
   display: flex;
   flex-direction: column;
-  height: 400px; /* Đặt chiều cao cố định */
+  height: 800px; /* Đặt chiều cao cố định */
 }
 
 .messages {

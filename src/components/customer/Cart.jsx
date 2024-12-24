@@ -59,7 +59,7 @@ const Cart = () => {
                                 {cartItems.map((item, index) => (
                                     <tr key={index}>
                                         <td className="product-info">
-                                            <img src={item.image} alt={item.name} className="product-image" />
+                                            <img src={item.image} alt={item.name} className="product-image-cart" />
                                             <span>{item.name}</span>
                                         </td>
                                         <td>${item.price.toFixed(2)}</td>

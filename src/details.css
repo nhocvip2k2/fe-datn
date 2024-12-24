@@ -20,12 +20,24 @@
   
   .image-container {
     flex: 1;
+    display: flex;
+    justify-content: center; /* Canh giữa theo chiều ngang */
+    align-items: center; /* Canh giữa theo chiều dọc */
+    overflow: hidden; /* Ẩn các phần vượt ra ngoài container */
+    position: relative;
   }
   
   .product-image {
     width: 100%;
-    border-radius: 10px;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  image-rendering: crisp-edges; /* Tăng độ nét cho ảnh */
+    
+    transform: scale(5.0); /* Phóng to ảnh thêm một chút */
   }
+  
+  
   
   .info-container {
     flex: 1;

@@ -20,16 +20,14 @@ import Categories from "../components/customer/Categories"
 import Profile from "../components/customer/Profile"
 import ChangePassword from "../components/customer/ChangePassword"
 import Test from "../components/customer/test"
+import Order from "../components/customer/Order"
+import OrderAdmin from "../components/admin/OrderAdmin"
 const AppRoutes = () => {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/Dashboard" element={<Dashboard />} />
-        <Route path="/Role" element={<Role />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/client" element={<Client />} />
-        <Route path="/Products" element={<Products />} />
         <Route path="/product/details/:id" element={< ProductDetails />} />
         <Route path="/ErrorMessage" element={<ErrorMessage />} />
         <Route path="/Home" element={<Home />} />
@@ -42,9 +40,9 @@ const AppRoutes = () => {
         <Route path="/Profile" element={<Profile />} />
         <Route path="/ChangePassword" element={<ChangePassword />} />
         <Route path="/Test" element={<Test />} />
-        <Route path="/AdminChat" element={<AdminChat />} />
+        <Route path="/Order" element={<Order />} />
         <Route
-          path="/Accounts"
+          path="/admin/Accounts"
           element={
             <RequireAuth requiredRole="admin">
               <Accounts />
@@ -52,7 +50,39 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/Dashboard"
+          path="/admin/Products"
+          element={
+            <RequireAuth requiredRole="admin">
+              <Products />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/role"
+          element={
+            <RequireAuth requiredRole="admin">
+              <Role />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/order"
+          element={
+            <RequireAuth requiredRole="admin">
+              <OrderAdmin />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/adminchat"
+          element={
+            <RequireAuth requiredRole="admin">
+              <AdminChat />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/Dashboard"
           element={
             <RequireAuth requiredRole="admin">
               <Dashboard />
@@ -60,6 +90,7 @@ const AppRoutes = () => {
           }
         />
       </Routes>
+      
     </Router>
   );
 };

@@ -28,7 +28,7 @@ export default function Login() {
     if (accessToken) {
       const decodedToken = JSON.parse(atob(accessToken.split(".")[1])); // Giải mã payload
       if (decodedToken.roles === "admin") {
-        navigate("/Dashboard");
+        navigate("/admin/Dashboard");
       } else {
         navigate("/home");
       }
@@ -61,7 +61,7 @@ export default function Login() {
         const decodedToken = JSON.parse(atob(data.token.split(".")[1]));
         console.log("Payload:", decodedToken); 
         if (decodedToken.roles === "admin") {
-          navigate("/Dashboard");
+          navigate("/admin/Dashboard");
         } else {
           navigate("/home");
         }

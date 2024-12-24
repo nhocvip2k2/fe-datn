@@ -149,13 +149,12 @@ const StorePage = () => {
             products.map((product) => (
               <div
                 key={product.id}
-                className="product-card"
+                className="product-item"
                 onClick={() => navigate(`/Details/${product.id}`)}
               >
                 <img
-                  src={product.image || "https://via.placeholder.com/150"}
+                  src={product.category.image.url}
                   alt={product.name}
-                  className="product-image"
                 />
                 <h3>{product.name}</h3>
                 <p>{product.brand}</p>

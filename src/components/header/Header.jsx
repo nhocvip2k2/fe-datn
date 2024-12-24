@@ -1,132 +1,121 @@
-import * as React from "react";
-import { styled, alpha } from "@mui/material/styles";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
-import { getToken } from "../../services/Cookies";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import * as jwt_decode from "jwt-decode"; // Thư viện để giải mã JWT
+import React, { useState, useEffect } from "react";
+import "../../headerUser.css";
+import CartSidebar from "../customer/CartSideBar";
 import { logOut } from "../../services/authenticationService";
+import SockJS from "sockjs-client";
+import { Stomp } from "@stomp/stompjs";
+import Chat from "../customer/Chat";
 
-export default function Header() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [username, setUsername] = React.useState("");
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [keyword, setKeyword] = useState(""); // Từ khóa tìm kiếm
+  const [unreadCount, setUnreadCount] = useState(0); // Số lượng tin nhắn chưa đọc
+  const [isChatOpen, setIsChatOpen] = useState(false); // Trạng thái pop-up chat
 
-  React.useEffect(() => {
-    // Lấy token từ localStorage (hoặc sessionStorage)
-    const accessToken = getToken();
+  const customerId = 2; // Thay đổi theo ID khách hàng thực tế
 
-    if (accessToken) {
-      try {
-        // Giải mã token để lấy username
-        const decodedToken = JSON.parse(atob(accessToken.split(".")[1]));
-        setUsername(decodedToken.name); // Giả sử username được lưu trong token
-      } catch (error) {
-        console.error("Token không hợp lệ:", error);
-      }
-    }
-  }, []);
-
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleCart = () => setIsCartOpen(!isCartOpen);
+  const toggleOrder = () => {
+    window.location.href = "/admin/order";
   };
-
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
-  const handleLogout = (event) => {
-    handleMenuClose();
+  const handleLogout = () => {
     logOut();
     window.location.href = "/login";
   };
 
-  const menuId = "primary-search-account-menu";
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleLogout}>Log Out</MenuItem>
-    </Menu>
-  );
 
-  const mobileMenuId = "primary-search-account-menu-mobile";
-  const renderMobileMenu = (
-    <Menu>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
+  const handleSearch = () => {
+    if (keyword.trim()) {
+      window.location.href = `/search?keyword=${encodeURIComponent(keyword)}`;
+    }
+  };
+
+  const handleChatClick = () => {
+    window.location.href = "/admin/adminchat";
+    setUnreadCount(0); // Reset số lượng tin nhắn chưa đọc sau khi mở chat
+  };
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+      setCartCount(totalCount);
+    };
+
+    document.addEventListener("cartUpdated", updateCartCount);
+    updateCartCount();
+    return () => document.removeEventListener("cartUpdated", updateCartCount);
+  }, []);
+
+  // Kết nối WebSocket để lắng nghe tin nhắn mới
+  useEffect(() => {
+    const socket = new SockJS("https://backend-h1zl.onrender.com/ws");
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, () => {
+      stompClient.subscribe(`/customer/send/admin`, (message) => {
+        const data = JSON.parse(message.body);
+        if (data) {
+          setUnreadCount((prevCount) => prevCount + 1); // Tăng số lượng tin nhắn chưa đọc
+        }
+      });
+    });
+
+    return () => {
+      stompClient.disconnect();
+    };
+  }, []);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-          >
-            PTIT STORE
-          </IconButton>
+    <>
+      <header className="header">
+        <div className="logo">
+          <a href="/admin/dashboard">PTIT STORE</a>
+        </div>
+        <div className="header-center">
+          {/* Ô tìm kiếm */}
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Tìm kiếm sản phẩm..."
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          />
+          <button className="search-btn" onClick={handleSearch}>
+            <i className="fas fa-search"></i>
+          </button>
+        </div>
+        <div className="header-right">
+          {/* Biểu tượng chat */}
+          <div className="chat-icon" onClick={handleChatClick}>
+            <i className="fas fa-comments"></i>
+            {unreadCount > 0 && (
+              <span className="chat-count">{unreadCount}</span>
+            )}
+          </div>
+          {/* Biểu tượng đơn hàng */}
+          <div className="order-icon" onClick={toggleOrder}>
+            <i className="fas fa-file-alt"></i> {/* Biểu tượng đơn hàng */}
+          </div>
 
-          <Box sx={{ flexGrow: 1 }} />
+          {/* Biểu tượng người dùng */}
+          <div className="user-icon" onClick={toggleMenu}>
+            <i className="fas fa-user-circle"></i>
+            {isMenuOpen && (
+              <div className="dropdown-menu">
+                <button onClick={handleLogout}>Logout</button>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
 
-          {/* Hiển thị Hello, username */}
-          <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
-            <p style={{ marginRight: 10 }}>Hello, {username}</p>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
-    </Box>
+    </>
   );
-}
+};
+
+export default Header;

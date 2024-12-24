@@ -180,7 +180,7 @@ body {
 .product-card:hover {
   transform: translateY(-10px);
 }
-.product-image {
+.product-image-home {
   width: 100%;
   height: auto;
   border-radius: 4px;

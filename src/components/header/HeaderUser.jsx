@@ -18,7 +18,9 @@ const Header = () => {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleCart = () => setIsCartOpen(!isCartOpen);
-
+  const toggleOrder = () => {
+    window.location.href = "/order";
+  };
   const handleLogout = () => {
     logOut();
     window.location.href = "/login";
@@ -101,6 +103,10 @@ const Header = () => {
             {unreadCount > 0 && (
               <span className="chat-count">{unreadCount}</span>
             )}
+          </div>
+          {/* Biểu tượng đơn hàng */}
+          <div className="order-icon" onClick={toggleOrder}>
+            <i className="fas fa-file-alt"></i> {/* Biểu tượng đơn hàng */}
           </div>
 
           {/* Biểu tượng giỏ hàng */}

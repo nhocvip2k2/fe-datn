@@ -100,7 +100,7 @@ const Chat = () => {
   return (
     <div className="chat-container">
       <div className="chat-header">
-        <h2>Chat 1</h2>
+        <h2>Admin</h2>
       </div>
       <div className="chat-box">
         <div className="messages">

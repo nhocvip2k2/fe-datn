@@ -1,0 +1,82 @@
+.orders-container {
+    margin-top: 60px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  h2 {
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  /* Bảng */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  th, td {
+    border: 1px solid #eaeaea;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  /* Link màu xanh */
+  .td a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Căn chỉnh cột khách hàng */
+  td div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  /* Địa chỉ và icon */
+  td {
+    vertical-align: middle;
+  }
+  
+  td:nth-child(3) {
+    color: #333;
+    font-size: 13px;
+  }
+  
+  /* Status màu vàng */
+  td span.status {
+    color: #f4b400; 
+    font-weight: bold;
+  }
+  
+  /* Cổng thanh toán */
+  td:nth-child(6) {
+    color: #333;
+  }
+  
+  /* Hover khi di chuột vào dòng */
+  tr:hover {
+    background-color: #f1f1f1;
+    transition: 0.3s ease;
+  }
+  
