@@ -148,16 +148,16 @@ const StorePage = () => {
           ) : (
             products.map((product) => (
               <div
-                key={product.id}
+                key={product.product.id}
                 className="product-item"
                 onClick={() => navigate(`/Details/${product.id}`)}
               >
                 <img
-                  src={product.category.image.url}
-                  alt={product.name}
+                  src={product.product.thumbnail.url}
+                  alt={product.product.name}
                 />
-                <h3>{product.name}</h3>
-                <p>{product.brand}</p>
+                <h3>{product.product.name}</h3>
+                <p>{product.product.brand}</p>
                 <p>
                   {product.minPrice} - {product.maxPrice} VND
                 </p>

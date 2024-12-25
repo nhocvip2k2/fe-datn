@@ -72,17 +72,17 @@ const Home = () => {
         ) : (
           products.map((product) => (
             <div
-              key={product.id}
+              key={product.product.id}
               className="product-card"
-              onClick={() => navigate(`/Details/${product.id}`)} // Chuyển hướng đến chi tiết sản phẩm 
+              onClick={() => navigate(`/Details/${product.product.id}`)} // Chuyển hướng đến chi tiết sản phẩm 
             >
               <img
-                src={product.category.image.url } // Hiển thị ảnh từ API 
-                alt={product.name}
+                src={product.product.thumbnail.url } // Hiển thị ảnh từ API 
+                alt={product.product.name}
                 className="product-image-home"
               />
-              <h3>{product.name}</h3>
-              <p>{product.brand}</p>
+              <h3>{product.product.name}</h3>
+              <p>{product.product.brand}</p>
               <p>${product.minPrice} - ${product.maxPrice}</p> {/* Format giá */}
             </div>
           ))

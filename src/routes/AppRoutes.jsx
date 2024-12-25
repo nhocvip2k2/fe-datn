@@ -22,6 +22,7 @@ import ChangePassword from "../components/customer/ChangePassword"
 import Test from "../components/customer/test"
 import Order from "../components/customer/Order"
 import OrderAdmin from "../components/admin/OrderAdmin"
+import AddProducts from "../components/admin/AddProducts"
 const AppRoutes = () => {
   return (
     <Router>
@@ -41,6 +42,7 @@ const AppRoutes = () => {
         <Route path="/ChangePassword" element={<ChangePassword />} />
         <Route path="/Test" element={<Test />} />
         <Route path="/Order" element={<Order />} />
+        <Route path="/AddProducts" element={<AddProducts/>} />
         <Route
           path="/admin/Accounts"
           element={

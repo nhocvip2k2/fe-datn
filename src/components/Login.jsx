@@ -36,7 +36,6 @@ export default function Login() {
   }, [navigate]);
 
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -127,14 +126,6 @@ export default function Login() {
                 margin="normal"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-              />
-              <TextField
-                label="Email"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
                 label="Password"
