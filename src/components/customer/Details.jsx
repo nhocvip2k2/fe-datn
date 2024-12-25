@@ -9,6 +9,7 @@ const DetailsPage = () => {
   const [productDetails, setProductDetails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1); // Mặc định số lượng là 1
 
   const [selectedType, setSelectedType] = useState(null); // Loại sản phẩm được chọn
   const [selectedColor, setSelectedColor] = useState(null); // Màu được chọn
@@ -30,7 +31,7 @@ const DetailsPage = () => {
           }
         );
         const data = await response.json();
-        setProduct(data.productDTO);
+        setProduct(data.product);
         setProductDetails(data.productDetails);
         setLoading(false);
       } catch (error) {
@@ -67,10 +68,13 @@ const DetailsPage = () => {
     }
 
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
+    // Lấy giá sản phẩm từ productDetails
+    const selectedProductDetailId = productDetails.find(
+      (detail) => detail.type === selectedType && detail.color === selectedColor
+    )?.id;
     const existingItemIndex = cart.findIndex(
       (item) =>
-        item.id === product.id &&
+        item.id === selectedProductDetailId &&
         item.type === selectedType &&
         item.color === selectedColor
     );
@@ -83,13 +87,13 @@ const DetailsPage = () => {
       cart[existingItemIndex].quantity += 1;
     } else {
       cart.push({
-        id: product.id,
+        id: selectedProductDetailId,
         name: product.name,
-        image: product.category.image.url,
+        image: product.thumbnail.url,
         type: selectedType,
         color: selectedColor,
         price: productPrice,
-        quantity: 1,
+        quantity: quantity,
       });
     }
 
@@ -111,7 +115,7 @@ const DetailsPage = () => {
       <Header />
       {/* Breadcrumb */}
       <div className="breadcrumb">
-        <a href="/home">Home</a> / <a href="/home">{product.brand}</a> /{" "}
+        <a href="/home">Home</a> / <a href="/home">{product.category.name}</a> /{" "}
         <span>{product.name}</span>
       </div>
 
@@ -121,7 +125,7 @@ const DetailsPage = () => {
         <div className="image-container">
           <img
             // src={product.category.image.url}
-            src='https://res.cloudinary.com/dmkyau47b/image/upload/e_sharpen/v1734756456/1.jpg'
+            src={product.thumbnail.url}
             alt={product.name}
             className="product-image"
           />
@@ -172,6 +176,16 @@ const DetailsPage = () => {
               ))}
             </div>
           )}
+           {/* Thêm số lượng */}
+  <div className="quantity-container">
+    <label>Số lượng:</label>
+    <input
+      type="number"
+      value={quantity}
+      min="1"
+      onChange={(e) => setQuantity(Math.max(1, e.target.value))}
+    />
+  </div>
 
           <button className="button" onClick={handleAddToCart}>
             Thêm vào giỏ hàng

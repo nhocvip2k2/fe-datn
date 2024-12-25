@@ -23,6 +23,7 @@ export default function Register() {
     setSnackBarOpen(false);
   };
 
+  // Kiểm tra token để điều hướng nếu đã đăng nhập
   useEffect(() => {
     const accessToken = Cookies.get("accessToken");
     if (accessToken) {
@@ -30,22 +31,27 @@ export default function Register() {
     }
   }, [navigate]);
 
+  // State
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // Ô xác nhận mật khẩu
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [snackBarMessage, setSnackBarMessage] = useState("");
+  const [snackBarSeverity, setSnackBarSeverity] = useState("error"); // error hoặc success
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    // Kiểm tra mật khẩu khớp
     if (password !== confirmPassword) {
       setSnackBarMessage("Mật khẩu không trùng khớp. Vui lòng kiểm tra lại.");
+      setSnackBarSeverity("error");
       setSnackBarOpen(true);
       return;
     }
 
+    // Gửi yêu cầu đăng ký
     fetch("https://datn.up.railway.app/api/home/register", {
       method: "POST",
       headers: {
@@ -55,21 +61,41 @@ export default function Register() {
         name: username,
         email: email,
         password: password,
+        role: "customer",
       }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Response body:", data);
-        navigate("/login");
+      .then(async (response) => {
+        const data = await response.json();
+        if (response.ok) {
+          // Thành công
+          setSnackBarMessage("Đăng ký thành công. Về đăng nhập");
+          setSnackBarSeverity("success");
+          setSnackBarOpen(true);
+
+          // Chờ 3 giây rồi điều hướng
+          setTimeout(() => {
+            navigate("/login");
+          }, 3000);
+        } else {
+          // Thất bại (API trả về lỗi)
+          const errorMessage = data.message || "Đăng ký thất bại. Vui lòng thử lại.";
+          setSnackBarMessage(errorMessage);
+          setSnackBarSeverity("error");
+          setSnackBarOpen(true);
+        }
       })
-      .catch((error) => {
-        setSnackBarMessage("Đăng ký thất bại. Vui lòng thử lại.");
+      .catch((err) => {
+        // Lỗi mạng hoặc lỗi không mong muốn
+        console.error("Network error:", err);
+        setSnackBarMessage("Đã xảy ra lỗi mạng. Vui lòng thử lại.");
+        setSnackBarSeverity("error");
         setSnackBarOpen(true);
       });
   };
 
   return (
     <>
+      {/* Snackbar thông báo */}
       <Snackbar
         open={snackBarOpen}
         onClose={handleCloseSnackBar}
@@ -78,13 +104,15 @@ export default function Register() {
       >
         <Alert
           onClose={handleCloseSnackBar}
-          severity="error"
+          severity={snackBarSeverity} // Dựa trên trạng thái
           variant="filled"
           sx={{ width: "100%" }}
         >
           {snackBarMessage}
         </Alert>
       </Snackbar>
+
+      {/* Form đăng ký */}
       <Box
         display="flex"
         flexDirection="column"
