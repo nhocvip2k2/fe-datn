@@ -150,7 +150,7 @@ const StorePage = () => {
               <div
                 key={product.product.id}
                 className="product-item"
-                onClick={() => navigate(`/Details/${product.id}`)}
+                onClick={() => navigate(`/Details/${product.product.id}`)}
               >
                 <img
                   src={product.product.thumbnail.url}

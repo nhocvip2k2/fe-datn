@@ -1,152 +1,154 @@
-import React, { useState } from "react";
-import { TextField, Button, Typography, Box, CircularProgress } from "@mui/material";
-import "../../AddProducts.css";
+import React, { useState } from 'react';
+import '../../AddProducts.css';
 import { getToken } from "../../services/Cookies";
-
-const AddProduct = () => {
-  const [formData, setFormData] = useState({
-    brand: "",
-    description: "",
-    name: "",
-    categoryId: "",
-    file: null,
+const ProductForm = () => {
+  const [productData, setProductData] = useState({
+    name: '',
+    description: '',
+    basePrice: '',
+    barcode: '',
+    quantity: '',
+    category: '',
+    tags: [],
+    images: [],
   });
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const handleChange = (e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setProductData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleFileChange = (e) => {
-    setFormData((prevData) => ({ ...prevData, file: e.target.files[0] }));
+  const handleTagChange = (tag) => {
+    setProductData((prevData) => ({
+      ...prevData,
+      tags: prevData.tags.includes(tag)
+        ? prevData.tags.filter((t) => t !== tag)
+        : [...prevData.tags, tag],
+    }));
+  };
+
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
+    setProductData((prevData) => ({
+      ...prevData,
+      images: [...prevData.images, ...files],
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setMessage("");
-
-    const form = new FormData();
-    form.append("brand", formData.brand);
-    form.append("description", formData.description);
-    form.append("name", formData.name);
-    form.append("categoryId", formData.categoryId);
-    if (formData.file) {
-      form.append("file", formData.file);
-    }
-
     try {
-      const response = await fetch("https://datn.up.railway.app/api/admin/products", {
-        method: "POST",
+      const response = await fetch('https://datn.up.railway.app/api/admin/products', {
+        method: 'POST',
         headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-        body: form,
+                  Authorization: `Bearer ${getToken()}`,
+                },
+        body: JSON.stringify(productData),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to add product");
+      if (response.ok) {
+        alert('Product added successfully!');
+      } else {
+        alert('Failed to add product.');
       }
-
-      const data = await response.json();
-      setMessage("Product added successfully!");
-      setFormData({ brand: "", description: "", name: "", categoryId: "", file: null });
     } catch (error) {
-      setMessage(`Error: ${error.message}`);
-    } finally {
-      setIsSubmitting(false);
+      console.error('Error:', error);
+      alert('An error occurred.');
     }
   };
 
   return (
-    <Box
-      sx={{
-        maxWidth: 600,
-        mx: "auto",
-        mt: 5,
-        p: 3,
-        boxShadow: 3,
-        borderRadius: 2,
-        backgroundColor: "#fff",
-      }}
-    >
-      <Typography variant="h5" textAlign="center" gutterBottom>
-        Add New Product
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Brand"
-          name="brand"
-          fullWidth
-          margin="normal"
-          value={formData.brand}
-          onChange={handleChange}
-          required
-        />
-        <TextField
-          label="Description"
-          name="description"
-          fullWidth
-          margin="normal"
-          multiline
-          rows={4}
-          value={formData.description}
-          onChange={handleChange}
-          required
-        />
-        <TextField
-          label="Product Name"
+    <form className="product-form" onSubmit={handleSubmit}>
+      <div className="form-section">
+        <h3>General Information</h3>
+        <input
+          type="text"
           name="name"
-          fullWidth
-          margin="normal"
-          value={formData.name}
-          onChange={handleChange}
+          placeholder="Product Name"
+          value={productData.name}
+          onChange={handleInputChange}
         />
-        <TextField
-          label="Category ID"
-          name="categoryId"
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={productData.description}
+          onChange={handleInputChange}
+        ></textarea>
+      </div>
+
+      <div className="form-section">
+        <h3>Pricing</h3>
+        <input
           type="number"
-          fullWidth
-          margin="normal"
-          value={formData.categoryId}
-          onChange={handleChange}
+          name="basePrice"
+          placeholder="Base Price"
+          value={productData.basePrice}
+          onChange={handleInputChange}
         />
-        <Button
-          variant="outlined"
-          component="label"
-          fullWidth
-          sx={{ marginTop: 2 }}
-        >
-          Upload File
-          <input type="file" hidden onChange={handleFileChange} />
-        </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 3 }}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? <CircularProgress size={24} color="inherit" /> : "Add Product"}
-        </Button>
-      </form>
-      {message && (
-        <Typography
-          variant="body1"
-          textAlign="center"
-          color={message.includes("successfully") ? "green" : "red"}
-          sx={{ marginTop: 2 }}
-        >
-          {message}
-        </Typography>
-      )}
-    </Box>
+       
+      </div>
+
+      <div className="form-section">
+        <h3>Inventory</h3>
+        <input
+          type="text"
+          name="barcode"
+          placeholder="Barcode"
+          value={productData.barcode}
+          onChange={handleInputChange}
+        />
+        <input
+          type="number"
+          name="quantity"
+          placeholder="Quantity"
+          value={productData.quantity}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div className="form-section">
+        <h3>Category</h3>
+        <input
+          type="text"
+          name="category"
+          placeholder="Product Category"
+          value={productData.category}
+          onChange={handleInputChange}
+        />
+        <div className="tags">
+          {['Clothing', 'Toys', 'Internet Of Things', 'Books & Stationaries', 'Art Supplies'].map((tag) => (
+            <label key={tag}>
+              <input
+                type="checkbox"
+                checked={productData.tags.includes(tag)}
+                onChange={() => handleTagChange(tag)}
+              />
+              {tag}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="form-section">
+        <h3>Product Media</h3>
+        <input type="file" multiple onChange={handleImageUpload} />
+        <div className="image-preview">
+          {productData.images.map((image, index) => (
+            <img
+              key={index}
+              src={URL.createObjectURL(image)}
+              alt={`Preview ${index + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
   );
 };
 
-export default AddProduct;
+export default ProductForm;
