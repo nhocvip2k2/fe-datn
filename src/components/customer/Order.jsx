@@ -69,7 +69,7 @@ const Orders = () => {
             <th>Cổng thanh toán</th>
             <th>Trạng thái</th>
             <th>Thanh toán</th>
-            <th>Khởi tạo</th>
+            <th>Ngày Đặt Hàng</th>
             <th>Cập nhật</th>
           </tr>
         </thead>

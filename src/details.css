@@ -22,7 +22,7 @@
     flex: 1;
     display: flex;
     justify-content: center; /* Canh giữa theo chiều ngang */
-    margin-top: -190px;
+    margin-top: -120px;
     overflow: hidden; /* Ẩn các phần vượt ra ngoài container */
     position: relative;
   }
@@ -32,7 +32,7 @@
   height: 100%;
   object-fit: cover;
   image-rendering: crisp-edges; /* Tăng độ nét cho ảnh */
-  transform: scale(0.5); /* Phóng to ảnh thêm một chút */
+  transform: scale(0.7); /* Phóng to ảnh thêm một chút */
   border-radius: 30px;
   border: 1px solid #1c1b1b;
   }
@@ -102,15 +102,43 @@
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+.action-container {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Khoảng cách giữa ô số lượng và nút */
+  margin-top: 20px; /* Khoảng cách với các phần phía trên */
+}
+
 .quantity-container {
-  margin: 10px 0;
+  display: flex;
+  align-items: center;
+}
+
+.quantity-container label {
+  margin-right: 10px; /* Khoảng cách giữa label và input */
 }
 
 .quantity-container input {
   width: 60px;
   padding: 5px;
-  margin-left: 10px;
   font-size: 16px;
+  text-align: center; /* Canh giữa nội dung trong ô nhập */
+}
+
+.button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: -3px;
+}
+
+.button:hover {
+  background-color: #0056b3;
 }
 
 /* Hover state */
@@ -147,4 +175,20 @@
     font-size: 0.9em;
   }
 }
+.price-text{
+  color: rgb(12, 11, 11);
+  font-size: 22px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+.color-buttons{
+  margin-bottom: 20px;
+}
+.divider {
+  margin-top: 20px; /* Khoảng cách trên */
+  margin-bottom: 20px; /* Khoảng cách dưới */
+  height: 1px; /* Độ dày của dòng kẻ */
+  background-color: #908c8c; /* Màu của dòng kẻ */
+}
+
 

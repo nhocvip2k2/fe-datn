@@ -73,7 +73,7 @@ const PaymentQR = () => {
           <h4>Cách 1: Mở app ngân hàng và quét mã QR</h4>
           <img src={paymentUrl} alt="QR Code Thanh Toán" />
           <p className="sepay-logo">SePay</p>
-          <p>Trạng thái: {paymentSuccess ? "Thanh toán thành công. chuyển về trang chủ" : "Chờ thanh toán..."} <span className="loading-spinner"></span></p>
+          <p>Trạng thái: {paymentSuccess ? "Thanh toán thành công. Về trang chủ" : "Chờ thanh toán..."} <span className="loading-spinner"></span></p>
         </div>
 
         <div className="method method-bank">

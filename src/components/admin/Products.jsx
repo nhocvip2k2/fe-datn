@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import { getToken } from "../../services/Cookies";
 import Header from "../header/Header";
 import Sidebar from "../menu/Sidebar";
@@ -13,10 +13,10 @@ import {
   TableCell,
   Box,
   TextField,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import VisibilityIcon from "@mui/icons-material/Visibility"; // Icon cho Xem
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -35,7 +35,7 @@ const TableComponent = () => {
       const url = search
         ? `https://datn.up.railway.app/api/admin/products/${search}`
         : "https://datn.up.railway.app/api/admin/products";
-      
+
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -44,13 +44,13 @@ const TableComponent = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const result = await response.json();
       setData(result.content);
     } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
+      console.error("There was a problem with the fetch operation:", error);
     }
   };
 
@@ -64,22 +64,21 @@ const TableComponent = () => {
   };
 
   const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       fetchData(searchTerm);
     }
   };
 
-  // Các hàm điều hướng đến các trang khác nhau
   const handleViewClick = (id) => {
-    navigate(`/product/details/${id}`); // Đường dẫn cho Xem chi tiết
+    navigate(`/product/details/${id}`);
   };
 
   const handleEditClick = (id) => {
-    navigate(`/edit-product/${id}`); // Đường dẫn cho Sửa
+    navigate(`/edit-product/${id}`);
   };
 
   const handleDeleteClick = (id) => {
-    navigate(`/delete-product/${id}`); // Đường dẫn cho Xóa
+    navigate(`/delete-product/${id}`);
   };
 
   return (
@@ -89,11 +88,11 @@ const TableComponent = () => {
         <Box
           sx={{
             position: "sticky",
-            top: 0, // Vị trí dính bắt đầu (tính từ đỉnh)
-            height: "100vh", // Chiều cao toàn màn hình
-            overflowY: "auto", // Cho phép cuộn nội dung Sidebar nếu cần
+            top: 0,
+            height: "100vh",
+            overflowY: "auto",
           }}
-       >
+        >
           <Sidebar />
         </Box>
         <Box flex={1} p={2}>
@@ -111,19 +110,26 @@ const TableComponent = () => {
               <TableHead>
                 <TableRow>
                   <TableCell>STT</TableCell>
+                  <TableCell>Image</TableCell> {/* Thêm cột hình ảnh */}
                   <TableCell>Name</TableCell>
                   <TableCell>Brand</TableCell>
-                  <TableCell>Actions</TableCell> {/* Thêm cột Actions */}
+                  <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {data.map((item, index) => (
                   <TableRow key={item.id} hover style={{ cursor: "pointer" }}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.brand || 'N/A'}</TableCell>
                     <TableCell>
-                      {/* Các icon Xem, Sửa, Xóa */}
+                      <img
+                        src={item.thumbnail.url} // URL hình ảnh, fallback nếu không có
+                        alt={item.name}
+                        style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
+                      />
+                    </TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.brand || "N/A"}</TableCell>
+                    <TableCell>
                       <IconButton onClick={() => handleViewClick(item.id)} color="primary">
                         <VisibilityIcon />
                       </IconButton>

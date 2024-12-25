@@ -23,6 +23,8 @@ import Test from "../components/customer/test"
 import Order from "../components/customer/Order"
 import OrderAdmin from "../components/admin/OrderAdmin"
 import AddProducts from "../components/admin/AddProducts"
+import Return  from "../components/customer/Return"
+import OrderDetails  from "../components/customer/OrderDetails"
 const AppRoutes = () => {
   return (
     <Router>
@@ -43,6 +45,8 @@ const AppRoutes = () => {
         <Route path="/Test" element={<Test />} />
         <Route path="/Order" element={<Order />} />
         <Route path="/AddProducts" element={<AddProducts/>} />
+        <Route path="/Return" element={<Return/>} />
+        <Route path="/OrderDetails" element={<OrderDetails/>} />
         <Route
           path="/admin/Accounts"
           element={

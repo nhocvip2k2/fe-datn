@@ -14,6 +14,7 @@ const DetailsPage = () => {
   const [selectedType, setSelectedType] = useState(null); // Loại sản phẩm được chọn
   const [selectedColor, setSelectedColor] = useState(null); // Màu được chọn
   const [selectedCondition, setSelectedCondition] = useState(null); // Condition được chọn
+  const [selectedPrice, setSelectedPrice] = useState(null); // Price được chọn
   const [availableColors, setAvailableColors] = useState([]); // Danh sách màu khả dụng
 
   const { id } = useParams();
@@ -59,6 +60,10 @@ const DetailsPage = () => {
     const condition = productDetails.find(
       (detail) => detail.type === selectedType && detail.color === color
     )?.condition;
+    const price = productDetails.find(
+      (detail) => detail.type === selectedType && detail.color === color
+    )?.price;
+    setSelectedPrice(price || "Không xác định");
     setSelectedCondition(condition || "Không xác định");
   };
   const handleAddToCart = () => {
@@ -141,13 +146,8 @@ const DetailsPage = () => {
           <div className="type-buttons">
             <p>
               Chọn loại:
-              {selectedColor && (
-                <span className="condition-text">
-                  {" "}
-                  {selectedCondition || "Chưa chọn"}
-                </span>
-              )}
             </p>
+
             {Array.from(new Set(productDetails.map((detail) => detail.type))).map(
               (type) => (
                 <button
@@ -176,21 +176,29 @@ const DetailsPage = () => {
               ))}
             </div>
           )}
-           {/* Thêm số lượng */}
-  <div className="quantity-container">
-    <label>Số lượng:</label>
-    <input
-      type="number"
-      value={quantity}
-      min="1"
-      onChange={(e) => setQuantity(Math.max(1, e.target.value))}
-    />
-  </div>
+           <hr className="divider" /> {/* Thêm dòng kẻ ngang */}
+          {selectedColor && (
+            <>
+              <span className="price-text">
+              $ {selectedPrice || "Chưa chọn"}
+              </span>
+            </>
+          )}
+          <div className="action-container">
+          <div className="quantity-container">
+            <label>Số lượng:</label>
+            <input
+              type="number"
+              value={quantity}
+              min="1"
+              onChange={(e) => setQuantity(Math.max(1, e.target.value))}
+            />
+          </div>
 
           <button className="button" onClick={handleAddToCart}>
             Thêm vào giỏ hàng
           </button>
-
+            </div>
         </div>
       </div>
     </div>
