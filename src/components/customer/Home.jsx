@@ -1,39 +1,49 @@
 import React, { useState, useEffect } from "react";
-import "../../home.css"; // Import file CSS 
+import "../../home.css"; // Import file CSS
 import { getToken } from "../../services/Cookies";
 import Header from "../header/HeaderUser";
-import { useNavigate } from "react-router-dom"; // Hook để chuyển hướng 
+import { useNavigate } from "react-router-dom"; // Hook để chuyển hướng
 
 const Home = () => {
-  const [products, setProducts] = useState([]); // State để lưu trữ sản phẩm 
-  const [loading, setLoading] = useState(true); // State để theo dõi trạng thái tải dữ liệu 
-  const [isScrolled, setIsScrolled] = useState(false); // State để kiểm tra trạng thái cuộn 
-  const navigate = useNavigate(); // Hook để chuyển hướng đến trang chi tiết 
+  const [products, setProducts] = useState([]); // State để lưu trữ sản phẩm
+  const [loading, setLoading] = useState(true); // State để theo dõi trạng thái tải dữ liệu
+  const [isScrolled, setIsScrolled] = useState(false); // State để kiểm tra trạng thái cuộn
+  const navigate = useNavigate(); // Hook để chuyển hướng đến trang chi tiết
 
-  // Fetch dữ liệu từ API 
+  // Kiểm tra nếu không có token, chuyển hướng về trang chủ
+  useEffect(() => {
+    const token = getToken();
+    if (!token) {
+      navigate("/home"); // Chuyển hướng về trang chủ nếu không có token
+    }
+  }, [navigate]);
+
+  // Fetch dữ liệu từ API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch("https://datn.up.railway.app/api/customer/products", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${getToken()}`, // Gửi token qua header 
+            Authorization: `Bearer ${getToken()}`, // Gửi token qua header
           },
         });
         const data = await response.json();
-        setProducts(data.content); // Lưu dữ liệu vào state 
-        setLoading(false); // Đánh dấu đã tải xong 
+        setProducts(data.content); // Lưu dữ liệu vào state
+        setLoading(false); // Đánh dấu đã tải xong
       } catch (error) {
         console.error("Error fetching products:", error);
-        setLoading(false); // Nếu lỗi, cũng đánh dấu tải xong 
+        setLoading(false); // Nếu lỗi, cũng đánh dấu tải xong
       }
     };
 
-    fetchProducts(); // Gọi hàm fetch khi component render 
-  }, []); // Chạy 1 lần khi component mount 
+    fetchProducts(); // Gọi hàm fetch khi component render
+  }, []); // Chạy 1 lần khi component mount
+
   const handleButtonClick = () => {
     navigate("/search"); // Chuyển hướng đến đường dẫn
   };
+
   // Lắng nghe sự kiện cuộn để thay đổi trạng thái header
   useEffect(() => {
     const handleScroll = () => {
@@ -46,7 +56,6 @@ const Home = () => {
     };
   }, []);
 
-  
   return (
     <div className={`container hero-header ${isScrolled ? "scrolled" : ""}`}>
       <Header />
@@ -56,7 +65,9 @@ const Home = () => {
         <div className="hero-content">
           <h1>Welcome to PtitStore</h1>
           <p>Ưu Đãi đến 50%</p>
-          <button className="button" onClick={handleButtonClick}>Thuê ngay</button>
+          <button className="button" onClick={handleButtonClick}>
+            Thuê ngay
+          </button>
         </div>
       </section>
 
@@ -74,10 +85,10 @@ const Home = () => {
             <div
               key={product.product.id}
               className="product-card"
-              onClick={() => navigate(`/Details/${product.product.id}`)} // Chuyển hướng đến chi tiết sản phẩm 
+              onClick={() => navigate(`/Details/${product.product.id}`)} // Chuyển hướng đến chi tiết sản phẩm
             >
               <img
-                src={product.product.thumbnail.url } // Hiển thị ảnh từ API 
+                src={product.product.thumbnail.url} // Hiển thị ảnh từ API
                 alt={product.product.name}
                 className="product-image-home"
               />

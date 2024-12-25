@@ -7,48 +7,78 @@ import { Range } from "react-range";
 
 const StorePage = () => {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]); // State để lưu danh mục sản phẩm
   const [loading, setLoading] = useState(true);
   const [noResults, setNoResults] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState(null); // Lưu danh mục đã chọn
 
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const keyword = searchParams.get("keyword") || "";
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true); // Hiển thị trạng thái tải
-      const response = await fetch(
-        `https://datn.up.railway.app/api/customer/products/search?keyword=${keyword}&page=${currentPage}&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`,
-        {
+  // Fetch danh mục sản phẩm từ API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("https://datn.up.railway.app/api/customer/categories", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
-        }
-      );
-      const data = await response.json();
-      if (data.content.length === 0) {
-        setNoResults(true);
-      } else {
-        setProducts(data.content);
-        setTotalPages(data.totalPages);
-        setNoResults(false);
+        });
+        const data = await response.json();
+        setCategories(data.content); // Lưu danh mục vào state
+      } catch (error) {
+        console.error("Lỗi khi lấy danh mục:", error);
       }
-    } catch (error) {
-      console.error("Lỗi khi lấy sản phẩm:", error);
-    } finally {
-      setLoading(false); // Tắt trạng thái tải
-    }
-  };
+    };
 
-  // Gọi fetchProducts khi keyword, currentPage, hoặc priceRange thay đổi
+    fetchCategories(); // Gọi hàm fetch khi component render
+  }, []);
+
+  // Fetch sản phẩm từ API khi thay đổi keyword, currentPage, priceRange hoặc selectedCategory
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true); // Hiển thị trạng thái tải
+        let url = `https://datn.up.railway.app/api/customer/products/search?keyword=${keyword}&page=${currentPage}&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`;
+        
+        if (selectedCategory) {
+          url = `https://datn.up.railway.app/api/customer/categories/${selectedCategory}/products?page=${currentPage}&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`;
+        }
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        });
+        const data = await response.json();
+        if (data.content.length === 0) {
+          setNoResults(true);
+        } else {
+          setProducts(data.content);
+          setTotalPages(data.totalPages);
+          setNoResults(false);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy sản phẩm:", error);
+      } finally {
+        setLoading(false); // Tắt trạng thái tải
+      }
+    };
+
     fetchProducts();
-  }, [keyword, currentPage, priceRange]);
+  }, [keyword, currentPage, priceRange, selectedCategory]); // Gọi khi keyword, currentPage, priceRange hoặc selectedCategory thay đổi
+
+  const handleCategorySelect = (categoryId) => {
+    setSelectedCategory(categoryId); // Cập nhật danh mục đã chọn
+    setCurrentPage(0); // Đặt lại trang về đầu tiên khi thay đổi danh mục
+  };
 
   const renderPagination = () => {
     const pages = [];
@@ -71,7 +101,7 @@ const StorePage = () => {
       <Header />
       <div className="breadcrumb">
         <a href="/home">Home</a> / <a href="/Search">Store</a> /{" "}
-        {keyword && <span>Search results for "{keyword}"</span>}
+        {!selectedCategory&&keyword && <span>Search results for "{keyword}"</span>}
       </div>
 
       <div className="store-content">
@@ -120,24 +150,23 @@ const StorePage = () => {
               <span>{priceRange[1]} VND</span>
             </div>
           </div>
-          
+
           <h3>Danh mục sản phẩm</h3>
           <ul>
-            <li>
-              <a href="/Điện thoại">Điện thoại</a>
-            </li>
-            <li>
-              <a href="/Tablet">Tablet</a>
-            </li>
-            <li>
-              <a href="/Đồng Hồ">Đồng Hồ</a>
-            </li>
-            <li>
-              <a href="/Âm Thanh">Âm Thanh</a>
-            </li>
-            <li>
-              <a href="/SmartHome">SmartHome</a>
-            </li>
+            {categories.length > 0 ? (
+              categories.map((category) => (
+                <li key={category.id}>
+                  <button
+                    onClick={() => handleCategorySelect(category.id)}
+                    className={selectedCategory === category.id ? "active" : ""}
+                  >
+                    {category.name}
+                  </button>
+                </li>
+              ))
+            ) : (
+              <p>Đang tải danh mục...</p>
+            )}
           </ul>
         </aside>
         <main className="product-list">
