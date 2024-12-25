@@ -31,6 +31,7 @@ export default function Register() {
   }, [navigate]);
 
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState(""); // Ô xác nhận mật khẩu
   const [snackBarOpen, setSnackBarOpen] = useState(false);
@@ -45,13 +46,14 @@ export default function Register() {
       return;
     }
 
-    fetch("https://backend-h1zl.onrender.com/api/home/register", {
+    fetch("https://datn.up.railway.app/api/home/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: username,
+        name: username,
+        email: email,
         password: password,
       }),
     })
@@ -120,6 +122,14 @@ export default function Register() {
                 margin="normal"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+              />
+              <TextField
+                label="Email"
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
                 label="Password"

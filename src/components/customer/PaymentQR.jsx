@@ -15,7 +15,7 @@ const PaymentQR = () => {
 
   // Loại bỏ dấu phẩy trong giá trị amount (nếu có) và sử dụng giá trị này cho amount
   const [amount, setAmount] = useState(amount1);
-  const [des, setDes] = useState(`SEVQR_01_${userId}_${orderId}`); // Giá trị mô tả mặc định
+  const [des, setDes] = useState(`SEVQR_01-${userId}_${orderId}`); // Giá trị mô tả mặc định
 
   const baseUrl = "https://qr.sepay.vn/img";
   const account = "240120029999";

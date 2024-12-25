@@ -20,7 +20,7 @@ const Chat = () => {
 
   // Kết nối WebSocket
   useEffect(() => {
-    const socket = new SockJS("https://backend-h1zl.onrender.com/ws");
+    const socket = new SockJS("https://datn.up.railway.app/ws");
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
@@ -38,7 +38,7 @@ const Chat = () => {
     const fetchMessages = async () => {
       try {
         const response = await fetch(
-          `https://backend-h1zl.onrender.com/api/customer/chat?page=0&size=20`,
+          `https://datn.up.railway.app/api/customer/chat?page=0&size=20`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -76,7 +76,7 @@ const Chat = () => {
 
     try {
       const response = await fetch(
-        `https://backend-h1zl.onrender.com/api/customer/chat`,
+        `https://datn.up.railway.app/api/customer/chat`,
         {
           method: "POST",
           headers: {

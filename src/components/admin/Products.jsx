@@ -33,8 +33,8 @@ const TableComponent = () => {
   const fetchData = async (search = "") => {
     try {
       const url = search
-        ? `https://backend-h1zl.onrender.com/api/admin/products/${search}`
-        : "https://backend-h1zl.onrender.com/api/admin/products";
+        ? `https://datn.up.railway.app/api/admin/products/${search}`
+        : "https://datn.up.railway.app/api/admin/products";
       
       const response = await fetch(url, {
         method: "GET",

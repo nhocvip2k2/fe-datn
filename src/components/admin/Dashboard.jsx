@@ -40,7 +40,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://backend-h1zl.onrender.com/api/admin/stat/overall",
+        const response = await fetch("https://datn.up.railway.app/api/admin/stat/overall",
           {
             method: 'GET',
             headers: {

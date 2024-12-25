@@ -27,7 +27,7 @@ function ChatAdmin() {
   
     // Kết nối WebSocket
     useEffect(() => {
-      const socket = new SockJS("https://backend-h1zl.onrender.com/ws");
+      const socket = new SockJS("https://datn.up.railway.app/ws");
       const stompClient = Stomp.over(socket);
   
       stompClient.connect({}, () => {
@@ -45,7 +45,7 @@ function ChatAdmin() {
       const fetchMessages = async () => {
         try {
           const response = await fetch(
-            `https://backend-h1zl.onrender.com/api/admin/chat/${conversationId}?page=0&size=20`,
+            `https://datn.up.railway.app/api/admin/chat/${conversationId}?page=0&size=20`,
             {
               headers: { Authorization: `Bearer ${token}` },
             }

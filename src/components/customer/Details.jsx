@@ -21,7 +21,7 @@ const DetailsPage = () => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          `https://backend-h1zl.onrender.com/api/customer/products/${id}`,
+          `https://datn.up.railway.app/api/customer/products/${id}`,
           {
             method: "GET",
             headers: {

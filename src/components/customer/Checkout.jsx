@@ -118,7 +118,7 @@ const CheckoutPage = () => {
   
     // Gửi request đến API
     try {
-      const response = await fetch("https://backend-h1zl.onrender.com/api/customer/orders", {
+      const response = await fetch("https://datn.up.railway.app/api/customer/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -5,7 +5,7 @@ import { logOut } from "../../services/authenticationService";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import Chat from "../customer/Chat";
-
+import { getToken } from "../../services/Cookies";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
@@ -59,7 +59,7 @@ const Header = () => {
 
   // Kết nối WebSocket để lắng nghe tin nhắn mới
   useEffect(() => {
-    const socket = new SockJS("https://backend-h1zl.onrender.com/ws");
+    const socket = new SockJS("https://datn.up.railway.app/ws");
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
@@ -81,6 +81,15 @@ const Header = () => {
       <header className="header">
         <div className="logo">
           <a href="/home">PTIT STORE</a>
+        </div>
+        <div className="dm">
+          <a href="/search">Giới thiệu</a>
+        </div>
+        <div className="dm">
+          <a href="/search">Sản phẩm</a>
+        </div>
+        <div className="dm">
+          <a href="/search">Tin tức</a>
         </div>
         <div className="header-center">
           {/* Ô tìm kiếm */}

@@ -62,7 +62,7 @@ export default function ListUsers() {
 
   const getUsers = async () => {
     try {
-      const response = await fetch("https://backend-h1zl.onrender.com/api/admin/users", {
+      const response = await fetch("https://datn.up.railway.app/api/admin/users", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -104,7 +104,7 @@ export default function ListUsers() {
 
   const handleDeleteUser = async () => {
     try {
-      const response = await fetch(`https://backend-h1zl.onrender.com/api/home/user_id=${selectedUserId}`, {
+      const response = await fetch(`https://datn.up.railway.app/api/home/user_id=${selectedUserId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -139,7 +139,7 @@ export default function ListUsers() {
 
   const handleSaveUser = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/users/${editUser.id}`, {
+      const response = await fetch(`https://datn.up.railway.app/users/${editUser.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -185,7 +185,7 @@ export default function ListUsers() {
 
   const handleSearchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:8080/users/searchusers", {
+      const response = await fetch("https://datn.up.railway.app/users/searchusers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

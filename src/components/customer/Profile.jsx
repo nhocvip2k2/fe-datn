@@ -22,7 +22,7 @@ const Profile = () => {
       }
 
       try {
-        const response = await fetch("https://backend-h1zl.onrender.com/api/customer/profile", {
+        const response = await fetch("https://datn.up.railway.app/api/customer/profile", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -56,7 +56,7 @@ const Profile = () => {
     const token = getToken();
 
     try {
-      const response = await fetch("https://backend-h1zl.onrender.com/api/customer/profile", {
+      const response = await fetch("https://datn.up.railway.app/api/customer/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

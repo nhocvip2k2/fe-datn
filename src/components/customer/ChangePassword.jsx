@@ -19,7 +19,7 @@ const ChangePassword = () => {
 
     try {
       const token = getToken();
-      const response = await fetch("https://backend-h1zl.onrender.com/api/customer/profile/password", {
+      const response = await fetch("https://datn.up.railway.app/api/customer/profile/password", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

@@ -27,7 +27,7 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          'https://backend-h1zl.onrender.com/api/customer/orders',
+          'https://datn.up.railway.app/api/customer/orders',
           {
             method: 'GET',
             headers: {

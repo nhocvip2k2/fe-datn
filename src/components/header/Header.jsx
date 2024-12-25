@@ -52,7 +52,7 @@ const Header = () => {
 
   // Kết nối WebSocket để lắng nghe tin nhắn mới
   useEffect(() => {
-    const socket = new SockJS("https://backend-h1zl.onrender.com/ws");
+    const socket = new SockJS("https://datn.up.railway.app/ws");
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {

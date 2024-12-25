@@ -24,7 +24,7 @@ const AdminChat = () => {
 
   // Kết nối WebSocket
   const connectWebSocket = () => {
-    const socket = new SockJS("https://backend-h1zl.onrender.com/ws");
+    const socket = new SockJS("https://datn.up.railway.app/ws");
     stompClient.current = Stomp.over(socket);
 
     stompClient.current.connect({}, () => {
@@ -59,7 +59,7 @@ const AdminChat = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("https://backend-h1zl.onrender.com/api/admin/chat/", {
+        const response = await fetch("https://datn.up.railway.app/api/admin/chat/", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -81,7 +81,7 @@ const AdminChat = () => {
 
     try {
       const response = await fetch(
-        `https://backend-h1zl.onrender.com/api/admin/chat/${conversationId}?page=0&size=20`,
+        `https://datn.up.railway.app/api/admin/chat/${conversationId}?page=0&size=20`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -117,7 +117,7 @@ const AdminChat = () => {
 
     try {
       const response = await fetch(
-        `https://backend-h1zl.onrender.com/api/admin/chat/?customerId=${selectedUser.customerId}`,
+        `https://datn.up.railway.app/api/admin/chat/?customerId=${selectedUser.customerId}`,
         {
           method: "POST",
           headers: {

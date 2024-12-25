@@ -14,7 +14,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("https://backend-h1zl.onrender.com/api/customer/products", {
+        const response = await fetch("https://datn.up.railway.app/api/customer/products", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${getToken()}`, // Gửi token qua header 

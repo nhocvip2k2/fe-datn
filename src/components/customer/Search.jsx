@@ -22,7 +22,7 @@ const StorePage = () => {
     try {
       setLoading(true); // Hiển thị trạng thái tải
       const response = await fetch(
-        `https://backend-h1zl.onrender.com/api/customer/products/search?keyword=${keyword}&page=${currentPage}&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`,
+        `https://datn.up.railway.app/api/customer/products/search?keyword=${keyword}&page=${currentPage}&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`,
         {
           method: "GET",
           headers: {
@@ -76,7 +76,7 @@ const StorePage = () => {
 
       <div className="store-content">
         <aside className="sidebar">
-          <h3>Filter by Price</h3>
+          <h3>Lọc Giá</h3>
           <div className="price-range-container">
             <Range
               step={50}
@@ -121,7 +121,7 @@ const StorePage = () => {
             </div>
           </div>
           
-          <h3>Categories</h3>
+          <h3>Danh mục sản phẩm</h3>
           <ul>
             <li>
               <a href="/Điện thoại">Điện thoại</a>

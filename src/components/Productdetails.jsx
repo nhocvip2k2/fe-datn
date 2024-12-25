@@ -11,7 +11,7 @@ const ProductDetails = () => {
   // Hàm lấy dữ liệu sản phẩm từ API
   const fetchProductDetails = async () => {
     try {
-        const response = await fetch(`https://backend-h1zl.onrender.com/api/admin/product_details/${id}`, {
+        const response = await fetch(`https://datn.up.railway.app/api/admin/product_details/${id}`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${getToken()}`,

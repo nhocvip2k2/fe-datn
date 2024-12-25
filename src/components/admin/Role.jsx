@@ -28,8 +28,8 @@ const TableComponent = () => {
   const fetchData = async (search = "") => {
     try {
       const url = search
-        ? `http://localhost:8080/roles/${search}`
-        : "http://localhost:8080/roles";
+        ? `https://datn.up.railway.app/roles/${search}`
+        : "https://datn.up.railway.app/roles";
       
       const response = await fetch(url, {
         method: "GET",
