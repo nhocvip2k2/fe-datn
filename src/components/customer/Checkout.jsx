@@ -138,7 +138,7 @@ const CheckoutPage = () => {
     // Lấy mã đơn hàng từ phản hồi
     const orderId = result[0].order?.id; // Tùy thuộc vào cấu trúc API
     if (orderId) {
-      console.log("Mã đơn hàng:", orderId);
+      localStorage.clear();
 
 
       // Chuyển hướng kèm theo mã đơn hàng

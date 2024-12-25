@@ -1,101 +1,83 @@
-/* Cấu trúc chung cho container */
 .payment-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    position: relative;
-    margin-top: 20px;
-    font-family: 'Arial', sans-serif;
+    max-width: 800px;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+    margin-top: 80px;
   }
   
-  /* Tiêu đề */
-  h2 {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
+  .payment-success-header {
+    text-align: center;
     margin-bottom: 20px;
   }
   
-  /* Container chứa QR code */
-  .qr-container {
-    position: relative;
-    display: inline-block;
-    transition: opacity 0.5s ease;
+  .success-icon {
+    font-size: 40px;
+    color: green;
   }
   
-  /* Khi thanh toán thành công, hiển thị thông báo */
-  .payment-success {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background-color: #f1f8e9;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    transition: opacity 0.5s ease;
-  }
-  
-  .success-message {
-    text-align: center;
-    font-size: 20px;
+  h1 {
+    font-size: 24px;
     color: #333;
-    margin-top: 10px;
   }
   
-  .checkmark {
-    font-size: 80px;
-    font-weight: bold;
-    color: green; /* Màu xanh lá cây cho chữ "V" */
-    margin-bottom: 10px;
-    animation: popIn 1s ease;
-  }
-  
-  @keyframes popIn {
-    0% {
-      transform: scale(0);
-      opacity: 0;
-    }
-    60% {
-      transform: scale(1.1);
-      opacity: 1;
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-  
-  /* Phần chữ thông báo về chuyển hướng */
-  .success-message p {
-    font-size: 18px;
+  h3 {
+    margin: 20px 0;
     color: #555;
-    margin: 5px 0;
   }
   
-  /* Hiển thị QR code ban đầu */
-  .qr-container img {
-    transition: opacity 0.5s ease-in-out;
+  .payment-instructions {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
   
-  /* Hiệu ứng mượt mà cho các phần tử */
-  .payment-container {
-    opacity: 1;
-    transition: opacity 1s ease-in-out;
+  .method {
+    flex: 1;
+    min-width: 300px;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
   }
   
-  .payment-success {
-    opacity: 1;
-    transition: opacity 1s ease-in-out;
+  .method-qr img {
+    width: 200px;
+    margin: 10px 0;
   }
   
-  /* Đếm ngược */
-  .success-message span {
-    font-size: 50px;
+  .sepay-logo {
+    font-size: 18px;
     font-weight: bold;
-    color: #ff9800; /* Màu cam cho đếm ngược */
-    margin-top: 20px;
+    color: #0056b3;
+  }
+  
+  .method-bank {
+    text-align: left;
+  }
+  
+  .note {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #888;
+  }
+  
+  .loading-spinner {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border: 2px solid #ddd;
+    border-top: 2px solid #0056b3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   

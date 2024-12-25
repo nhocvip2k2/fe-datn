@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../../order.css'; // File CSS đã chỉnh màu sắc
 import Header from '../header/HeaderUser';
-import {getToken} from "../../services/Cookies";
+import { getToken } from "../../services/Cookies";
 import dayjs from 'dayjs';
 const Orders = () => {
   const [orders, setOrders] = useState([]); // State lưu đơn hàng
@@ -10,7 +10,7 @@ const Orders = () => {
 
   const token = getToken(); // Thay token API thực tế vào đây
   const formatDate = (isoDate) => dayjs(isoDate).format('DD/MM/YYYY HH:mm');
-  
+
   const calculateTotalPrice = (orderId) => {
     // Lọc các sản phẩm có cùng order.id
     const orderItems = orders.filter(item => item.order.id === orderId);
@@ -22,7 +22,7 @@ const Orders = () => {
 
     return totalPrice;
   };
-  
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -53,7 +53,7 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
-  
+
 
   return (
     <div className="orders-container">
@@ -91,7 +91,27 @@ const Orders = () => {
               <td>{calculateTotalPrice(order.order.id)}</td>
               <td>{order.order.payment}</td>
               <td>{order.order.shipment}</td>
-              <td>{order.status}</td>
+              <td>
+                {(() => {
+                  const statusMapping = {
+                    1: (
+                      <a
+                        href={`/PaymentQR?orderId=${order.order.id}&amount=${calculateTotalPrice(order.order.id)}`}
+                        className="highlight-link"
+                      >
+                        Trạng thái 1 - Chưa thanh toán
+                      </a>
+                    ),
+                    2: <span className="status-text">Trạng thái 2 - Đã thanh toán </span>,
+                    3: <span className="status-text">Trạng thái 3 - Đang trả hàng</span>,
+                    4: <span className="status-text">Trạng thái 4 - Trả hàng thành công </span>,
+                  };
+
+                  // Hiển thị trạng thái nếu có trong mapping, nếu không thì hiển thị giá trị mặc định
+                  return statusMapping[order.status] || <span className="status-text">Trạng thái khác</span>;
+                })()}
+              </td>
+
               <td>{formatDate(order.createdAt)}</td>
               <td>{formatDate(order.updatedAt)}</td>
             </tr>

@@ -79,4 +79,13 @@
     background-color: #f1f1f1;
     transition: 0.3s ease;
   }
+  .highlight-link {
+    color: #fd0c0c; 
+    font-weight: bold; /* In đậm */
+    cursor: pointer; /* Hiển thị con trỏ chỉ tay */
+  }
+  .highlight-link:hover {
+    color: #0056b3; /* Màu đậm hơn khi hover */
+  }
+  
   

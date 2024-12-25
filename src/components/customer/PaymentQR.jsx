@@ -1,100 +1,97 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getToken } from "../../services/Cookies";
+import Header from '../header/HeaderUser';
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
-import "../../PaymentQR.css"; // Đảm bảo có file CSS để thêm kiểu
-
+import "../../PaymentQR.css"; 
 const PaymentQR = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Lấy orderId và amount từ URL
   const queryParams = new URLSearchParams(location.search);
   const orderId = queryParams.get("orderId");
-  const amount1 = queryParams.get("amount"); // Lấy giá trị amount từ URL
+  const amount1 = queryParams.get("amount"); // Giá trị mặc định nếu không có `amount`
   const token = getToken();
   const decodedToken = JSON.parse(atob(token.split(".")[1]));
   const userId = decodedToken.userId;
 
-  // Trạng thái loading và kết quả thanh toán
-  const [loading, setLoading] = useState(true);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const [countdown, setCountdown] = useState(10); // Đếm ngược từ 10 giây
 
-  const countdownRef = useRef(countdown); // Sử dụng ref để lưu giá trị countdown
+  const countdownRef = useRef(10);
+  const [countdown, setCountdown] = useState(countdownRef.current);
 
   const baseUrl = "https://qr.sepay.vn/img";
   const account = "240120029999";
   const bank = "Techcombank";
 
-  // Tạo URL thanh toán với các tham số động
-  const paymentUrl = `${baseUrl}?acc=${account}&bank=${bank}&amount=${amount1}&des=${encodeURIComponent(`SEVQR1KH${userId}DH${orderId}`)}`;
+  const paymentUrl = `${baseUrl}?acc=${account}&bank=${bank}&amount=${amount1}&des=${encodeURIComponent(
+    `SEVQR1KH${userId}DH${orderId}`
+  )}`;
 
   useEffect(() => {
-    // Kết nối WebSocket qua SockJS và STOMP
     const socket = new SockJS("https://datn.up.railway.app/ws");
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-      console.log("WebSocket connected");
-
       stompClient.subscribe(`/customer/${userId}/order/paySuccess`, (message) => {
-        // Nhận thông báo thanh toán thành công
         setPaymentSuccess(true);
-        setLoading(false); // Dừng loading khi nhận được thông báo
-        countdownRef.current = 10; // Đặt lại thời gian đếm ngược
-        setCountdown(countdownRef.current); // Cập nhật lại giá trị đếm ngược ban đầu
 
-        // Đếm ngược từ 10 giây
         const timer = setInterval(() => {
           countdownRef.current -= 1;
-          setCountdown(countdownRef.current); // Cập nhật lại giá trị countdown mỗi giây
+          setCountdown(countdownRef.current);
 
           if (countdownRef.current === 0) {
             clearInterval(timer);
-            navigate("/home"); // Điều hướng về trang chủ sau khi đếm ngược hoàn tất
+            navigate("/home");
           }
-        }, 1000);
+        }, 2000);
 
-        // Cleanup khi component unmount hoặc khi chuyển hướng
         return () => clearInterval(timer);
       });
     });
 
-    // Cleanup khi component unmount
     return () => {
-      if (stompClient.connected) {
-        stompClient.disconnect(() => {
-          console.log("WebSocket disconnected");
-        });
-      }
+      if (stompClient.connected) stompClient.disconnect();
     };
   }, [userId, navigate]);
 
   return (
+    <>
+    <Header/>
     <div className="payment-container">
-      <h2>Thanh Toán QR Code</h2>
+      <div className="payment-success-header">
+        <div className="success-icon">✓</div>
+        <h1>Đặt hàng thành công</h1>
+        <p>Mã đơn hàng: <strong>#{orderId}</strong></p>
+      </div>
 
-      {/* Hiển thị QR Code ban đầu */}
-      {!paymentSuccess && (
-        <div className="qr-container">
-          <img src={paymentUrl} alt="QR Code Thanh Toán" width={256} />
-        </div>
-      )}
+      <h3>Hướng dẫn thanh toán qua chuyển khoản ngân hàng</h3>
 
-      {/* Khi thanh toán thành công, hiển thị chữ đếm ngược */}
-      {paymentSuccess && (
-        <div className="payment-success">
-          <div className="success-message">
-            <span className="checkmark">V</span>
-            <p>Thanh toán thành công!</p>
-            <p>Chuyển hướng sau {countdown} giây...</p>
-          </div>
+      <div className="payment-instructions">
+        <div className="method method-qr">
+          <h4>Cách 1: Mở app ngân hàng và quét mã QR</h4>
+          <img src={paymentUrl} alt="QR Code Thanh Toán" />
+          <p className="sepay-logo">SePay</p>
+          <p>Trạng thái: {paymentSuccess ? "Thanh toán thành công. chuyển về trang chủ" : "Chờ thanh toán..."} <span className="loading-spinner"></span></p>
         </div>
-      )}
+
+        <div className="method method-bank">
+          <h4>Cách 2: Chuyển khoản thủ công theo thông tin</h4>
+          <p><strong>Ngân hàng:</strong> {bank}</p>
+          <p><strong>Chủ tài khoản:</strong> Trần Đăng Thành</p>
+          <p><strong>Số TK:</strong> {account}</p>
+          <p><strong>Số tiền:</strong> {amount1}đ</p>
+          <p><strong>Nội dung CK:</strong> {`SEVQR1KH${userId}DH${orderId}`}</p>
+          <p className="note">
+            Lưu ý: Vui lòng giữ nguyên nội dung chuyển khoản để hệ thống tự động xác nhận thanh toán.
+          </p>
+        </div>
+      </div>
     </div>
+    </>
   );
+ 
 };
 
 export default PaymentQR;

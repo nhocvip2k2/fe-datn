@@ -25,7 +25,7 @@ const Sidebar = () => {
 
         <ListItem button component={Link} to="/admin/Role"> {/* Thêm component Link */}
           <PeopleIcon />
-          <ListItemText primary="roles" />
+          <ListItemText primary="Roles" />
         </ListItem>
 
         <ListItem button component={Link} to="/admin/Accounts"> {/* Thêm component Link */}
