@@ -94,7 +94,36 @@ const Orders = () => {
               <td>{calculateTotalPrice(order.order.id)}</td>
               <td>{order.order.payment}</td>
               <td>{order.order.shipment}</td>
-              <td>{order.status}</td>
+              <td>
+                {(() => {
+                  const statusMapping = {
+                    1: (
+                      <a
+                        href={`/PaymentQR?orderId=${order.order.id}&amount=${calculateTotalPrice(order.order.id)}`}
+                        className="highlight-link"
+                      >
+                        Trạng thái 1 - Chưa thanh toán
+                      </a>
+                    ),
+                    2: <span className="status-text">Trạng thái 2 - Đã thanh toán </span>,
+                    3: <span className="status-text">Trạng thái 3 - Đang giao</span>,
+                    4: <span className="status-text">Trạng thái 4 - Đã giao đến nơi </span>,
+                    5: (
+                      <a
+                        href={`/PaymentQR?orderId=${order.order.id}&amount=${calculateTotalPrice(order.order.id)}`}
+                        className="highlight-link"
+                      >
+                        Trạng thái 5 - Trả hàng, chờ hoàn cọc 
+                      </a>),
+                    6: <span className="status-text">Trạng thái 6 - Đã hoàn cọc  </span>,
+                    7: <span className="status-text">Trạng thái 7 - Đã giao đến nơi </span>,
+                    8: <span className="status-text">Trạng thái 8 - Hoàn tất </span>,
+                  };
+
+                  // Hiển thị trạng thái nếu có trong mapping, nếu không thì hiển thị giá trị mặc định
+                  return statusMapping[order.status] || <span className="status-text">Trạng thái khác</span>;
+                })()}
+              </td>
               <td>{formatDate(order.createdAt)}</td>
               <td>{formatDate(order.updatedAt)}</td>
             </tr>
