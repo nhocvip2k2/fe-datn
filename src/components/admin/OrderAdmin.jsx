@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import '../../order.css'; // File CSS đã chỉnh màu sắc
+import '../../OrderAdmin.css'; // File CSS đã chỉnh màu sắc
 import Header from '../header/Header';
 import {getToken} from "../../services/Cookies";
 import dayjs from 'dayjs';
+import MenuBar from "../menu/MenuBar";
 const Orders = () => {
   const [orders, setOrders] = useState([]); // State lưu đơn hàng
   const [loading, setLoading] = useState(true); // State loading
@@ -56,9 +57,11 @@ const Orders = () => {
   
 
   return (
-    <div className="orders-container">
-      <Header />
-      <h2>Đơn Hàng</h2>
+    <>
+    <Header />
+    <div className="orders-container-admin">
+    <MenuBar/>
+    <div className="layout-content">
       <table>
         <thead>
           <tr>
@@ -98,7 +101,9 @@ const Orders = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </div>
+    </>
   );
 };
 

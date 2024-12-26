@@ -110,14 +110,15 @@ body {
 }
 
 
-.button {
+.button-home {
   padding: 0.5rem 1rem;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(8, 214, 246, 0.7);
   /* Nền nút trong suốt */
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 /* Title for Product Grid */

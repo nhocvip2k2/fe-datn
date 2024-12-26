@@ -12,54 +12,6 @@
   font-family: 'Roboto', sans-serif;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 250px; /* Sidebar đầy đủ */
-  background-color: #f4f4f4;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding-top: 50px;
-  transition: width 0.3s ease;
-}
-
-.sidebar.collapsed {
-  width: 60px; /* Sidebar thu nhỏ chỉ hiện icon */
-}
-
-.sidebar .MuiListItem-root {
-  padding: 20px;
-  font-size: 16px;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-}
-
-.sidebar .MuiListItem-root:hover {
-  background-color: #1976d2;
-  color: white;
-}
-
-.sidebar .MuiListItemText-root {
-  padding-left: 10px;
-}
-
-.sidebar .MuiListItemText-root, .sidebar .MuiListItemIcon {
-  transition: opacity 0.3s ease;
-}
-
-.sidebar .MuiListItemText-root {
-  opacity: 1;
-}
-
-.sidebar.collapsed .MuiListItemText-root {
-  opacity: 0; /* Ẩn text khi thu nhỏ */
-}
-
-.sidebar .MuiTooltip-tooltip {
-  font-size: 12px;
-}
-
 /* Tooltip Style */
 .MuiTooltip-tooltip {
   background-color: #1976d2;
@@ -172,3 +124,12 @@
   margin-left: 250px; /* Shift content left when sidebar is expanded */
 }
 
+/* Khi item được chọn */
+.active {
+  background-color: #000 !important; /* Màu nền đen khi được chọn */
+  color: white !important; /* Màu chữ trắng khi được chọn */
+}
+
+.active:hover {
+  background-color: #333 !important; /* Màu nền đen khi hover trên item đã chọn */
+}

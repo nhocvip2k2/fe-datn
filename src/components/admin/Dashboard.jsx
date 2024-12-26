@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid, Paper, Typography, Card, CardContent } from "@mui/material";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import PeopleIcon from "@mui/icons-material/People";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import Header from "../header/Header";
-import Sidebar from "../menu/Sidebar";
-import {getToken} from "../../services/Cookies";
-import "../../index.css";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+import "../../DashBoard.css";
+import MenuBar from "../menu/MenuBar"; // Thanh MenuBar có sẵn
+import Header from "../header/Header"; // Header có sẵn
+import { getToken } from "../../services/Cookies";
 
-// Data mẫu cho biểu đồ
 const barChartData = [
   { name: "Jan", users: 4000 },
   { name: "Feb", users: 3000 },
@@ -32,7 +39,8 @@ const pieChartData = [
 ];
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-const token=getToken();
+const token = getToken();
+
 const Dashboard = () => {
   const [data, setData] = useState({ users: 0, orders: 0, revenue: 0 });
   const [loading, setLoading] = useState(true);
@@ -40,140 +48,102 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://datn.up.railway.app/api/admin/stat/overall",
+        const response = await fetch(
+          "https://datn.up.railway.app/api/admin/stat/overall",
           {
-            method: 'GET',
+            method: "GET",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
           }
-        ); // API duy nhất
+        );
         const result = await response.json();
-
-        // Cập nhật dữ liệu
         setData(result);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setLoading(false); // Hoàn thành việc tải dữ liệu
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, []); // Chỉ gọi API một lần khi component render
+  }, []);
 
   return (
-    <Box>
+    <div className="dashboard-container">
+      {/* Header */}
       <Header />
-      <Box display="flex" marginTop={8}>
-        <Box
-          sx={{
-            position: "sticky",
-            top: 0, // Vị trí dính bắt đầu (tính từ đỉnh)
-            height: "100vh", // Chiều cao toàn màn hình
-            overflowY: "auto", // Cho phép cuộn nội dung Sidebar nếu cần
-          }}
-       >
-          <Sidebar />
-        </Box>
-        <Box p={3} flex={1}>
-          <Typography variant="h4" gutterBottom>
-            Dashboard
-          </Typography>
-          {/* Thông tin tóm tắt */}
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5" component="div">
-                    <PeopleIcon /> Users
-                  </Typography>
-                  <Typography variant="h6" color="text.secondary">
-                    {data.totalUsers}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5" component="div">
-                    <ShoppingCartIcon /> Orders
-                  </Typography>
-                  <Typography variant="h6" color="text.secondary">
-                  {data.totalOrders}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h5" component="div">
-                    <AttachMoneyIcon /> Revenue
-                  </Typography>
-                  <Typography variant="h6" color="text.secondary">
-                  {data.totalOrders}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
+
+      <div className="dashboard-main">
+        {/* MenuBar */}
+        <MenuBar />
+
+        {/* Nội dung chính */}
+        <div className="dashboard-content">
+          {/* Cards hiển thị thông tin tổng quan */}
+          <div className="card">
+            <h3>Users</h3>
+            <p>{data.totalUsers || 0}</p>
+          </div>
+          <div className="card">
+            <h3>Orders</h3>
+            <p>{data.totalOrders || 0}</p>
+          </div>
+          <div className="card">
+            <h3>Revenue</h3>
+            <p>${data.revenue || 0}</p>
+          </div>
+
           {/* Biểu đồ */}
-          <Grid container spacing={3} mt={3}>
-            <Grid item xs={12} md={6}>
-              <Paper className="chart-container">
-                <Typography variant="h6">Monthly Active Users</Typography>
-                <ResponsiveContainer width="100%" height={200}>
-                  <BarChart data={barChartData}>
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="users" fill="#1976d2" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Paper className="chart-container">
-                <Typography variant="h6">Monthly Revenue</Typography>
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={lineChartData}>
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="revenue" stroke="#8884d8" />
-                  </LineChart>
-                </ResponsiveContainer>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Paper className="chart-container">
-                <Typography variant="h6">Sales by Category</Typography>
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie
-                      data={pieChartData}
-                      cx="50%"
-                      cy="50%"
-                      label={({ name, value }) => `${name}: ${value}`}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {pieChartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
-    </Box>
+          <div className="chart-container">
+            <div className="chart-title">Monthly Active Users</div>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={barChartData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="users" fill="#1976d2" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="chart-container">
+            <div className="chart-title">Monthly Revenue</div>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={lineChartData}>
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="revenue" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="chart-container">
+            <div className="chart-title">Sales by Category</div>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={pieChartData}
+                  cx="50%"
+                  cy="50%"
+                  label={({ name, value }) => `${name}: ${value}`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {pieChartData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

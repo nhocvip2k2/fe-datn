@@ -65,7 +65,7 @@ const Home = () => {
         <div className="hero-content">
           <h1>Welcome to PtitStore</h1>
           <p>Ưu Đãi đến 50%</p>
-          <button className="button" onClick={handleButtonClick}>
+          <button className="button-home" onClick={handleButtonClick}>
             Thuê ngay
           </button>
         </div>

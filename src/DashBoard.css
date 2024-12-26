@@ -1,0 +1,44 @@
+.dashboard-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .dashboard-main {
+    display: flex;
+    height: calc(100vh - 64px); /* Trừ đi chiều cao của Header */
+    margin-top: 50px;
+  }
+  
+  .dashboard-content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    background-color: #f4f4f4;
+  }
+  
+  .card {
+    background-color: white;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .card h3 {
+    margin: 0;
+  }
+  
+  .chart-container {
+    background-color: white;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .chart-title {
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  

@@ -105,7 +105,7 @@ const CheckoutPage = () => {
       productItems: cartItems.map((item) => ({
         productDetailId: item.id, 
         quantity: item.quantity,
-        rentalDay: 0, // Giá trị mặc định hoặc lấy từ input
+        rentalDay: 1, // Giá trị mặc định hoặc lấy từ input
         note: "",
       })),
       currentAddress: fullAddress,

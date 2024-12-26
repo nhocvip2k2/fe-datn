@@ -1,108 +1,75 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Box, Typography, Button, List, ListItem } from "@mui/material";
+import { FaHome, FaBox, FaUsers, FaCogs } from "react-icons/fa";
+import "../../MenuBar.css";
 
 const MenuBar = () => {
-  const location = useLocation();
-  const [showFunctions, setShowFunctions] = useState(true);
-  const [showTimesheet, setShowTimesheet] = useState(true);
+  const location = useLocation(); // Để lấy URL hiện tại
+  const [selected, setSelected] = useState(location.pathname);
 
-  const handleToggleFunctions = () => {
-    setShowFunctions(!showFunctions);
-  };
-
-  const handleToggleTimesheet = () => {
-    setShowTimesheet(!showTimesheet);
-  };
-
-  const adminItems = [
-    { to: "/Dashboard", text: "Dashboard" },
-    { to: "/Accounts", text: "Accounts" },
-    { to: "/role", text: "Role" },
-    { to: "/Products", text: "Products" },
-    { to: "/client", text: "Client" },
-    
+  const menuItems = [
+    { id: "home", label: "Trang chủ", icon: <FaHome />, link: "/admin/dashboard" },
+    {
+      id: "products",
+      label: "Sản phẩm",
+      icon: <FaBox />,
+      children: [
+        { id: "product-category", label: "Danh mục sản phẩm", link: "/product-category" },
+        { id: "product-list", label: "Sản phẩm", link: "/admin/products" },
+      ],
+    },
+    {
+      id: "users",
+      label: "Người dùng",
+      icon: <FaUsers />,
+      children: [
+        { id: "staff", label: "Nhân viên", link: "/staff" },
+        { id: "customers", label: "Khách hàng", link: "/customers" },
+        { id: "orders", label: "Đơn hàng", link: "/admin/order" },
+      ],
+    },
+    {
+      id: "system",
+      label: "Hệ thống",
+      icon: <FaCogs />,
+      children: [{ id: "permissions", label: "Phân quyền hệ thống", link: "/permissions" }],
+    },
   ];
 
-  const timesheetItems = [
-    { to: "/mytimesheet", text: "a" },
-    { to: "/myoff", text: "b" },
-  ];
+  const handleSelect = (link) => {
+    setSelected(link);
+  };
 
   return (
-    <Box
-      bgcolor="#3f51b5"
-      color="white"
-      width={200}
-      p={3}
-      display="flex"
-      flexDirection="column"
-      transition="margin-left 10s ease"
-    >
-      <Typography variant="h6" gutterBottom>
-        Menu
-      </Typography>
-
-      <Button onClick={handleToggleFunctions} style={{ color: "white" }}>
-        ADMIN
-      </Button>
-      {showFunctions && (
-        <List>  
-          {adminItems.map((item) => (
-            <ListItem key={item.to}>
-              <Link
-                to={item.to}
-                style={{
-                  textDecoration: "none",
-                  color: "white",
-                  fontWeight:
-                    location.pathname === item.to ? "bold" : "normal",
-                  backgroundColor:
-                    location.pathname === item.to ? "#7986cb" : "transparent",
-                  padding: "6px",
-                  borderRadius: "3px",
-                  display: "block",
-                }}
-              >
-                <Typography variant="body1" gutterBottom>
-                  {item.text}
-                </Typography>
-              </Link>
-            </ListItem>
-          ))}
-        </List>
-      )}
-
-      <Button onClick={handleToggleTimesheet} style={{ color: "white" }}>
-        User
-      </Button>
-      {showTimesheet && (
-        <List>
-          {timesheetItems.map((item) => (
-            <ListItem key={item.to}>
-              <Link
-                to={item.to}
-                style={{
-                  textDecoration: "none",
-                  color: "white",
-                  fontWeight:
-                    location.pathname === item.to ? "bold" : "normal",
-                  backgroundColor:
-                    location.pathname === item.to ? "#7986cb" : "transparent",
-                  padding: "6px",
-                  borderRadius: "3px",
-                  display: "block",
-                }}
-              >
-                <Typography variant="body1" gutterBottom>
-                  {item.text}
-                </Typography>
-              </Link>
-            </ListItem>
-          ))}
-        </List>
-      )}
-    </Box>
+    <div className="menu-bar">
+      <div className="menu-logo">MENU</div>
+      <ul className="menu-list">
+        {menuItems.map((item) => (
+          <li key={item.id} className={selected === item.link ? "selected" : ""}>
+            <Link to={item.link || "#"} onClick={() => handleSelect(item.link)}>
+              <div className="menu-item">
+                {item.icon}
+                <span>{item.label}</span>
+              </div>
+            </Link>
+            {item.children && (
+              <ul className="submenu">
+                {item.children.map((subItem) => (
+                  <li
+                    key={subItem.id}
+                    className={selected === subItem.link ? "selected" : ""}
+                  >
+                    <Link to={subItem.link} onClick={() => handleSelect(subItem.link)}>
+                      {subItem.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

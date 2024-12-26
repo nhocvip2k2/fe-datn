@@ -22,8 +22,8 @@ const TableComponent = () => {
   const fetchData = async (search = "") => {
     try {
       const url = search
-        ? `http://localhost:8080/client/${search}`
-        : "http://localhost:8080/client";
+        ? `https://datn.up.railway.app/client/${search}`
+        : "https://datn.up.railway.app/client";
       
       const response = await fetch(url, {
         method: "GET",

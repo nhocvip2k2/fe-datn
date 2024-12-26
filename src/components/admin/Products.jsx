@@ -1,154 +1,143 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import '../../Products.css'; // File CSS đã chỉnh màu sắc
+import Header from '../header/Header';
 import { getToken } from "../../services/Cookies";
-import Header from "../header/Header";
-import Sidebar from "../menu/Sidebar";
-import {
-  Table,
-  Paper,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Box,
-  TextField,
-  IconButton,
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import dayjs from 'dayjs';
+import MenuBar from "../menu/MenuBar";
+import { useNavigate } from 'react-router-dom'; // Thêm useNavigate để chuyển hướng
 
-const TableComponent = () => {
-  const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
-  const navigate = useNavigate();
+const Products = () => {
+  const [data, setData] = useState([]); // State lưu sản phẩm
+  const [loading, setLoading] = useState(true); // State loading
+  const [error, setError] = useState(null); // State lỗi
 
-  const toggleMenu = () => {
-    setIsMenuOpen((prev) => !prev);
-  };
+  const token = getToken(); // Lấy token từ cookie
+  const navigate = useNavigate(); // Hook điều hướng
 
-  const fetchData = async (search = "") => {
-    try {
-      const url = search
-        ? `https://datn.up.railway.app/api/admin/products/${search}`
-        : "https://datn.up.railway.app/api/admin/products";
+  const formatDate = (isoDate) => dayjs(isoDate).format('DD/MM/YYYY HH:mm'); // Định dạng ngày
 
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const result = await response.json();
-      setData(result.content);
-    } catch (error) {
-      console.error("There was a problem with the fetch operation:", error);
-    }
-  };
-
+  // Hàm lấy dữ liệu sản phẩm
   useEffect(() => {
-    fetchData();
-  }, []);
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch(
+          'https://datn.up.railway.app/api/admin/products',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-  const handleSearchChange = (event) => {
-    const search = event.target.value;
-    setSearchTerm(search);
-  };
+        if (!response.ok) {
+          throw new Error(`Lỗi: ${response.status}`);
+        }
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      fetchData(searchTerm);
-    }
-  };
+        const data = await response.json();
+        setData(data.content); // Lưu dữ liệu sản phẩm
+      } catch (err) {
+        setError(err.message); // Lưu lỗi vào state
+      } finally {
+        setLoading(false); // Tắt loading
+      }
+    };
 
+    fetchOrders();
+  }, [token]); // Sử dụng token trong mảng dependency
+
+  // Các hàm điều hướng
   const handleViewClick = (id) => {
-    navigate(`/product/details/${id}`);
+    navigate(`/product/details/${id}`); // Điều hướng đến trang chi tiết sản phẩm
   };
 
   const handleEditClick = (id) => {
-    navigate(`/edit-product/${id}`);
+    navigate(`/edit-product/${id}`); // Điều hướng đến trang chỉnh sửa sản phẩm
   };
 
   const handleDeleteClick = (id) => {
-    navigate(`/delete-product/${id}`);
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      // Gọi API xóa sản phẩm (Cần phải có API xóa)
+      fetch(`https://datn.up.railway.app/api/admin/products/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Error deleting the product");
+          }
+          // Cập nhật lại danh sách sau khi xóa
+          setData(data.filter((item) => item.id !== id));
+        })
+        .catch((error) => {
+          alert("Error deleting the product: " + error.message);
+        });
+    }
   };
 
   return (
     <>
       <Header />
-      <Box display="flex" marginTop={8}>
-        <Box
-          sx={{
-            position: "sticky",
-            top: 0,
-            height: "100vh",
-            overflowY: "auto",
-          }}
-        >
-          <Sidebar />
-        </Box>
-        <Box flex={1} p={2}>
-          <TextField
-            label="Search by name, brand..."
-            variant="outlined"
-            fullWidth
-            value={searchTerm}
-            onChange={handleSearchChange}
-            onKeyDown={handleKeyDown}
-            margin="normal"
-          />
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>STT</TableCell>
-                  <TableCell>Image</TableCell> {/* Thêm cột hình ảnh */}
-                  <TableCell>Name</TableCell>
-                  <TableCell>Brand</TableCell>
-                  <TableCell>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
+      <div className="orders-container-admin">
+        <MenuBar />
+        <div className="layout-content">
+          {error && <p>Error: {error}</p>}
+          { !error && (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Image</th>
+                  <th>Name</th>
+                  <th>Brand</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
                 {data.map((item, index) => (
-                  <TableRow key={item.id} hover style={{ cursor: "pointer" }}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>
+                  <tr key={item.id}>
+                    <td>{index + 1}</td>
+                    <td>
                       <img
-                        src={item.thumbnail.url} // URL hình ảnh, fallback nếu không có
+                        src={item.thumbnail.url}
                         alt={item.name}
-                        style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
+                        className="product-image"
                       />
-                    </TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.brand || "N/A"}</TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleViewClick(item.id)} color="primary">
-                        <VisibilityIcon />
-                      </IconButton>
-                      <IconButton onClick={() => handleEditClick(item.id)} color="secondary">
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => handleDeleteClick(item.id)} color="error">
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
+                    </td>
+                    <td>{item.name}</td>
+                    <td>{item.brand || "N/A"}</td>
+                    <td>
+                      <button
+                        className="action-btn view-btn"
+                        onClick={() => handleViewClick(item.id)}
+                      >
+                        View
+                      </button>
+                      <button
+                        className="action-btn edit-btn"
+                        onClick={() => handleEditClick(item.id)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="action-btn delete-btn"
+                        onClick={() => handleDeleteClick(item.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </Box>
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
     </>
   );
 };
 
-export default TableComponent;
+export default Products;

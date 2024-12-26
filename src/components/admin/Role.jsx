@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getToken } from "../../services/Cookies";
 import Header from "../header/Header";
 import Sidebar from "../menu/Sidebar";
+import MenuBar from "../menu/MenuBar";
 import {
   Table,
   Paper,
@@ -69,7 +70,7 @@ const TableComponent = () => {
       <Header />
       <Box display="flex" marginTop={8}>
         {/* Sidebar */}
-        <Sidebar />
+        <MenuBar />
 
         {/* Nội dung chính */}
         <Box flex={1} p={2}>

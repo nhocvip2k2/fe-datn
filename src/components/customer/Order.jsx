@@ -58,11 +58,11 @@ const Orders = () => {
   return (
     <div className="orders-container">
       <Header />
-      <h2>Đơn Hàng</h2>
+      <h2>Sản Phẩm Đã Thuê</h2>
       <table>
         <thead>
           <tr>
-            <th>Mã đơn</th>
+            <th>STT</th>
             <th>Khách hàng</th>
             <th>Địa chỉ</th>
             <th>Giá tiền</th>
@@ -77,7 +77,7 @@ const Orders = () => {
           {orders.map((order, index) => (
             <tr key={index}>
               <td>
-                <a href={`#${order.order.id}`} style={{ color: '#007bff' }}>
+                <a href={`#${order.id}`} style={{ color: '#007bff' }}>
                   {order.order.id}
                 </a>
               </td>
@@ -103,8 +103,12 @@ const Orders = () => {
                       </a>
                     ),
                     2: <span className="status-text">Trạng thái 2 - Đã thanh toán </span>,
-                    3: <span className="status-text">Trạng thái 3 - Đang trả hàng</span>,
-                    4: <span className="status-text">Trạng thái 4 - Trả hàng thành công </span>,
+                    3: <span className="status-text">Trạng thái 3 - Đang giao</span>,
+                    4: <span className="status-text">Trạng thái 4 - Đã giao đến nơi </span>,
+                    5: <span className="status-text">Trạng thái 5 - Đang trả hàng </span>,
+                    6: <span className="status-text">Trạng thái 6 - Đang kiểm tra hàng </span>,
+                    7: <span className="status-text">Trạng thái 7 - Đã giao đến nơi </span>,
+                    8: <span className="status-text">Trạng thái 8 - Đã giao đến nơi </span>,
                   };
 
                   // Hiển thị trạng thái nếu có trong mapping, nếu không thì hiển thị giá trị mặc định
