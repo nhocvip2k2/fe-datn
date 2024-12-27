@@ -1,114 +1,57 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import "../../role.css";
+import MenuBar from "../menu/MenuBar"; // Thanh MenuBar có sẵn
+import Header from "../header/Header"; // Header có sẵn
 import { getToken } from "../../services/Cookies";
-import Header from "../header/Header";
-import Sidebar from "../menu/Sidebar";
-import MenuBar from "../menu/MenuBar";
-import {
-  Table,
-  Paper,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Box,
-  TextField,
-  IconButton
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 
-const TableComponent = () => {
-  const [data, setData] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isMenuOpen, setIsMenuOpen] = useState(true); // Thêm state để quản lý trạng thái của MenuBar
+const token = getToken();
 
-  const toggleMenu = () => {
-    setIsMenuOpen((prev) => !prev);
-  };
-
-  const fetchData = async (search = "") => {
-    try {
-      const url = search
-        ? `https://datn.up.railway.app/roles/${search}`
-        : "https://datn.up.railway.app/roles";
-      
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const result = await response.json();
-      setData(result.result);
-    } catch (error) {
-      console.error('There was a problem with the fetch operation:', error);
-    }
-  };
+const AccountsAdmin = () => {
+  const [data, setData] = useState({ users: 0, orders: 0, revenue: 0 });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://datn.up.railway.app/api/admin/accounts",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const result = await response.json();
+        setData(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
   }, []);
 
-  const handleSearchChange = (event) => {
-    const search = event.target.value;
-    setSearchTerm(search);
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      fetchData(searchTerm);
-    }
-  };
-
   return (
-    <>
+    <div className="role-container">
+      {/* Header */}
       <Header />
-      <Box display="flex" marginTop={8}>
-        {/* Sidebar */}
+
+      <div className="role-main">
+        {/* MenuBar */}
         <MenuBar />
 
         {/* Nội dung chính */}
-        <Box flex={1} p={2}>
-          <TextField
-            label="Search"
-            variant="outlined"
-            fullWidth
-            value={searchTerm}
-            onChange={handleSearchChange}
-            onKeyDown={handleKeyDown}
-            margin="normal"
-          />
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>STT</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Description</TableCell>
-                  <TableCell>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.description || 'N/A'}</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </Box>
-    </>
+        <div className="role-content">
+         hihi
+          </div>
+        </div>
+      </div>
+    
   );
 };
 
-export default TableComponent;
+export default AccountsAdmin;

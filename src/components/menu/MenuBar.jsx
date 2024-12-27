@@ -14,7 +14,7 @@ const MenuBar = () => {
       label: "Sản phẩm",
       icon: <FaBox />,
       children: [
-        { id: "product-category", label: "Danh mục sản phẩm", link: "/product-category" },
+        { id: "product-category", label: "Danh mục sản phẩm", link: "/admin/categoryadmin" },
         { id: "product-list", label: "Sản phẩm", link: "/admin/products" },
       ],
     },
@@ -24,7 +24,7 @@ const MenuBar = () => {
       icon: <FaUsers />,
       children: [
         { id: "staff", label: "Nhân viên", link: "/staff" },
-        { id: "customers", label: "Khách hàng", link: "/customers" },
+        { id: "customers", label: "Khách hàng", link: "/admin/accounts" },
         { id: "orders", label: "Đơn hàng", link: "/admin/order" },
       ],
     },
@@ -32,7 +32,7 @@ const MenuBar = () => {
       id: "system",
       label: "Hệ thống",
       icon: <FaCogs />,
-      children: [{ id: "permissions", label: "Phân quyền hệ thống", link: "/permissions" }],
+      children: [{ id: "permissions", label: "Phân quyền hệ thống", link: "/admin/role" }],
     },
   ];
 

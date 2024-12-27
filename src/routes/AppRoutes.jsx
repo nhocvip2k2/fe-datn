@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "../components/Login";
-import Accounts from "../components/admin/Accounts"
+import AccountsAdmin from "../components/admin/AccountsAdmin"
 import Dashboard from "../components/admin/Dashboard"
 import Register from "../components/Register"
 import Client from "../components/Client"
@@ -25,6 +25,7 @@ import OrderAdmin from "../components/admin/OrderAdmin"
 import AddProducts from "../components/admin/AddProducts"
 import Return  from "../components/customer/Return"
 import OrderDetails  from "../components/customer/OrderDetails"
+import CategoryAdmin from "../components/admin/CategoryAdmin"
 const AppRoutes = () => {
   return (
     <Router>
@@ -47,11 +48,12 @@ const AppRoutes = () => {
         <Route path="/AddProducts" element={<AddProducts/>} />
         <Route path="/Return" element={<Return/>} />
         <Route path="/OrderDetails" element={<OrderDetails/>} />
+        <Route path="/admin/CategoryAdmin" element={<CategoryAdmin/>} />
         <Route
           path="/admin/Accounts"
           element={
             <RequireAuth requiredRole="admin">
-              <Accounts />
+              <AccountsAdmin />
             </RequireAuth>
           }
         />

@@ -7,14 +7,14 @@ import { getToken } from "../../services/Cookies";
 const token = getToken();
 
 const AccountsAdmin = () => {
-  const [data, setData] = useState({ users: 0, orders: 0, revenue: 0 });
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://datn.up.railway.app/api/admin/accounts",
+          "https://datn.up.railway.app/api/admin/users",
           {
             method: "GET",
             headers: {
@@ -24,7 +24,7 @@ const AccountsAdmin = () => {
           }
         );
         const result = await response.json();
-        setData(result);
+        setData(result.users || []); // Lấy danh sách người dùng từ API
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -37,20 +37,41 @@ const AccountsAdmin = () => {
 
   return (
     <div className="accounts-container">
-      {/* Header */}
       <Header />
 
       <div className="accounts-main">
-        {/* MenuBar */}
         <MenuBar />
 
-        {/* Nội dung chính */}
         <div className="accounts-content">
-         hihi
-          </div>
+          {loading ? (
+            <p>Đang tải dữ liệu...</p>
+          ) : (
+            <table className="accounts-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Tên người dùng</th>
+                  <th>Email</th>
+                  <th>Vai trò</th>
+                  <th>Ngày tạo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((user, index) => (
+                  <tr key={user.id}>
+                    <td>{index + 1}</td>
+                    <td>{user.name}</td>
+                    <td>{user.email}</td>
+                    <td>{user.role}</td>
+                    <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
-    
+    </div>
   );
 };
 
