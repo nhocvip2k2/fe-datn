@@ -1,137 +1,154 @@
-import React, { useEffect, useState } from 'react';
-import '../../OrderAdmin.css'; // File CSS đã chỉnh màu sắc
-import Header from '../header/Header';
-import {getToken} from "../../services/Cookies";
-import dayjs from 'dayjs';
+import React, { useEffect, useState } from "react";
+import "../../OrderAdmin.css"; // File CSS đã chỉnh màu sắc
+import Header from "../header/Header";
+import { getToken } from "../../services/Cookies";
+import dayjs from "dayjs";
 import MenuBar from "../menu/MenuBar";
+
 const Orders = () => {
   const [orders, setOrders] = useState([]); // State lưu đơn hàng
   const [loading, setLoading] = useState(true); // State loading
   const [error, setError] = useState(null); // State lỗi
+  const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
+  const [totalPages, setTotalPages] = useState(1); // Tổng số trang
 
   const token = getToken(); // Thay token API thực tế vào đây
-  const formatDate = (isoDate) => dayjs(isoDate).format('DD/MM/YYYY HH:mm');
-  
-  const calculateTotalPrice = (orderId) => {
-    // Lọc các sản phẩm có cùng order.id
-    const orderItems = orders.filter(item => item.order.id === orderId);
+  const formatDate = (isoDate) => dayjs(isoDate).format("DD/MM/YYYY HH:mm");
 
-    // Tính tổng số tiền của các sản phẩm có cùng order.id
+  const calculateTotalPrice = (orderId) => {
+    const orderItems = orders.filter((item) => item.order.id === orderId);
     const totalPrice = orderItems.reduce((total, item) => {
       return total + item.currentPrice * item.quantity;
     }, 0);
 
     return totalPrice;
   };
-  
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await fetch(
-          'https://datn.up.railway.app/api/admin/orders',
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
 
-        if (!response.ok) {
-          throw new Error(`Lỗi: ${response.status}`);
+  const fetchOrders = async (page) => {
+    try {
+      const response = await fetch(
+        `https://datn.up.railway.app/api/admin/orders?page=${page}&size=9`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         }
+      );
 
-        const data = await response.json();
-        setOrders(data.content); // Set dữ liệu API
-      } catch (err) {
-        setError(err.message); // Lưu lỗi vào state
-      } finally {
-        setLoading(false); // Tắt trạng thái loading
+      if (!response.ok) {
+        throw new Error(`Lỗi: ${response.status}`);
       }
-    };
 
-    fetchOrders();
-  }, []);
+      const data = await response.json();
+      setOrders(data.content); // Set dữ liệu API
+      setTotalPages(data.totalPages); // Cập nhật tổng số trang
+    } catch (err) {
+      setError(err.message); // Lưu lỗi vào state
+    } finally {
+      setLoading(false); // Tắt trạng thái loading
+    }
+  };
 
-  
+  useEffect(() => {
+    fetchOrders(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   return (
     <>
-    <Header />
-    <div className="orders-container-admin">
-    <MenuBar/>
-    <div className="layout-content">
-      <table>
-        <thead>
-          <tr>
-            <th>Mã đơn</th>
-            <th>Khách hàng</th>
-            <th>Địa chỉ</th>
-            <th>Giá tiền</th>
-            <th>Cổng thanh toán</th>
-            <th>Trạng thái</th>
-            <th>Thanh toán</th>
-            <th>Khởi tạo</th>
-            <th>Cập nhật</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order, index) => (
-            <tr key={index}>
-              <td>
-                <a href={`#${order.order.id}`} style={{ color: '#007bff' }}>
-                  {order.order.id}
-                </a>
-              </td>
-              <td>
-                <div>
-                  <strong>👤 {order.order.id}</strong>
-                </div>
-                <div>📞 {order.order.currentPhone}</div>
-              </td>
-              <td>📍 {order.order.currentAddress}</td>
-              <td>{calculateTotalPrice(order.order.id)}</td>
-              <td>{order.order.payment}</td>
-              <td>{order.order.shipment}</td>
-              <td>
-                {(() => {
-                  const statusMapping = {
-                    1: (
-                      <a
-                        href={`/PaymentQR?orderId=${order.order.id}&amount=${calculateTotalPrice(order.order.id)}`}
-                        className="highlight-link"
-                      >
-                        Trạng thái 1 - Chưa thanh toán
-                      </a>
-                    ),
-                    2: <span className="status-text">Trạng thái 2 - Đã thanh toán </span>,
-                    3: <span className="status-text">Trạng thái 3 - Đang giao</span>,
-                    4: <span className="status-text">Trạng thái 4 - Đã giao đến nơi </span>,
-                    5: (
-                      <a
-                        href={`/PaymentQR?orderId=${order.order.id}&amount=${calculateTotalPrice(order.order.id)}`}
-                        className="highlight-link"
-                      >
-                        Trạng thái 5 - Trả hàng, chờ hoàn cọc 
-                      </a>),
-                    6: <span className="status-text">Trạng thái 6 - Đã hoàn cọc  </span>,
-                    7: <span className="status-text">Trạng thái 7 - Đã giao đến nơi </span>,
-                    8: <span className="status-text">Trạng thái 8 - Hoàn tất </span>,
-                  };
-
-                  // Hiển thị trạng thái nếu có trong mapping, nếu không thì hiển thị giá trị mặc định
-                  return statusMapping[order.status] || <span className="status-text">Trạng thái khác</span>;
-                })()}
-              </td>
-              <td>{formatDate(order.createdAt)}</td>
-              <td>{formatDate(order.updatedAt)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Header />
+      <div className="orders-container-admin">
+        <MenuBar />
+        <div className="layout-content">
+          {loading ? (
+            <p>Đang tải dữ liệu...</p>
+          ) : error ? (
+            <p>{error}</p>
+          ) : (
+            <>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Mã đơn</th>
+                    <th>Khách hàng</th>
+                    <th>Địa chỉ</th>
+                    <th>Giá tiền</th>
+                    <th>Cổng thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th>Thanh toán</th>
+                    <th>Khởi tạo</th>
+                    <th>Cập nhật</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((order, index) => (
+                    <tr key={index}>
+                      <td>
+                        <a href={`#${order.id}`} style={{ color: "#007bff" }}>
+                          {order.id}
+                        </a>
+                      </td>
+                      <td>
+                        <div>
+                          <strong>👤 {order.order.id}</strong>
+                        </div>
+                        <div>📞 {order.order.currentPhone}</div>
+                      </td>
+                      <td>📍 {order.order.currentAddress}</td>
+                      <td>{calculateTotalPrice(order.order.id)}</td>
+                      <td>{order.order.payment}</td>
+                      <td>{order.order.shipment}</td>
+                      <td>
+                        {/* Hiển thị trạng thái */}
+                        {(() => {
+                          const statusMapping = {
+                            1: "Chưa thanh toán",
+                            2: "Đã thanh toán",
+                            3: "Đang giao",
+                            4: "Đã giao đến nơi",
+                            5: "Trả hàng, chờ hoàn cọc",
+                            6: "Đã hoàn cọc",
+                            7: "Đã giao đến nơi",
+                            8: "Hoàn tất",
+                          };
+                          return statusMapping[order.status] || "Trạng thái khác";
+                        })()}
+                      </td>
+                      <td>{formatDate(order.createdAt)}</td>
+                      <td>{formatDate(order.updatedAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* Thanh phân trang */}
+              <div className="pagination">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 0}
+                >
+                  Trang trước
+                </button>
+                <span>
+                  Trang {currentPage + 1} / {totalPages}
+                </span>
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages - 1}
+                >
+                  Trang sau
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
-    </div>
     </>
   );
 };

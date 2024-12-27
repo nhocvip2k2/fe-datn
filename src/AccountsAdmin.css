@@ -34,7 +34,7 @@
   }
   
   .accounts-table th {
-    background-color: #007bff;
+    background-color: #1fad09db;
     color: #fff;
     font-weight: bold;
   }
@@ -45,6 +45,19 @@
   
   .accounts-table tbody tr:last-child td {
     border-bottom: none;
+  }
+  .pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination button:hover:not(:disabled) {
+    background-color: #0056b3;
+  }
+  
+  .pagination span {
+    margin: 0 10px;
+    font-weight: bold;
   }
   
  

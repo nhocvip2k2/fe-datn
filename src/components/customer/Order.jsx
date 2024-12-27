@@ -27,7 +27,7 @@ const Orders = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          'https://datn.up.railway.app/api/customer/orders',
+          'https://datn.up.railway.app/api/customer/orders?size=100',
           {
             method: 'GET',
             headers: {
@@ -77,8 +77,8 @@ const Orders = () => {
           {orders.map((order, index) => (
             <tr key={index}>
               <td>
-                <a href={`#${order.id}`} style={{ color: '#007bff' }}>
-                  {order.order.id}
+                <a href={`#${order.orderDetails.id}`} style={{ color: '#007bff' }}>
+                  {order.orderDetails.id}
                 </a>
               </td>
               <td>
