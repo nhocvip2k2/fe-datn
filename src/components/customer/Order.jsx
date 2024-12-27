@@ -58,7 +58,7 @@ const Orders = () => {
   return (
     <div className="orders-container">
       <Header />
-      <h2>Sản Phẩm Đã Thuê</h2>
+      <h2>Đơn hàng</h2>
       <table>
         <thead>
           <tr>
@@ -77,8 +77,8 @@ const Orders = () => {
           {orders.map((order, index) => (
             <tr key={index}>
               <td>
-                <a href={`#${order.orderDetails.id}`} style={{ color: '#007bff' }}>
-                  {order.orderDetails.id}
+                <a href={`orderdetails/${order.order.id}`} style={{ color: '#007bff' }}>
+                  {order.order.id}
                 </a>
               </td>
               <td>
