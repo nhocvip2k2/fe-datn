@@ -26,6 +26,7 @@ import AddProducts from "../components/admin/AddProducts"
 import Return  from "../components/customer/Return"
 import OrderDetails  from "../components/customer/OrderDetails"
 import CategoryAdmin from "../components/admin/CategoryAdmin"
+import ProductsDetails from "../components/admin/ProductsDetails"
 const AppRoutes = () => {
   return (
     <Router>
@@ -49,6 +50,7 @@ const AppRoutes = () => {
         <Route path="/Return" element={<Return/>} />
         <Route path="/OrderDetails/:orderId" element={<OrderDetails/>} />
         <Route path="/admin/CategoryAdmin" element={<CategoryAdmin/>} />
+        <Route path="/admin/ProductsDetails/:productId/:method" element={<ProductsDetails/>} />
         <Route
           path="/admin/Accounts"
           element={

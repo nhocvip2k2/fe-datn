@@ -49,11 +49,11 @@ const Products = () => {
 
   // Các hàm điều hướng
   const handleViewClick = (id) => {
-    navigate(`/product/details/${id}`); // Điều hướng đến trang chi tiết sản phẩm
+    navigate(`/admin/productsdetails/${id}/view`); // Điều hướng đến trang chi tiết sản phẩm
   };
 
   const handleEditClick = (id) => {
-    navigate(`/edit-product/${id}`); // Điều hướng đến trang chỉnh sửa sản phẩm
+    navigate(`/admin/productsdetails/${id}/edit`); // Điều hướng đến trang chỉnh sửa sản phẩm
   };
 
   const handleDeleteClick = (id) => {
@@ -93,6 +93,7 @@ const Products = () => {
                   <th>Image</th>
                   <th>Name</th>
                   <th>Brand</th>
+                  <th>Category</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -109,6 +110,7 @@ const Products = () => {
                     </td>
                     <td>{item.name}</td>
                     <td>{item.brand || "N/A"}</td>
+                    <td>{item.category.name || "N/A"}</td>
                     <td>
                       <button
                         className="action-btn view-btn"

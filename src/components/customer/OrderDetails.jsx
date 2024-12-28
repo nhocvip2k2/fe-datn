@@ -60,21 +60,14 @@ const OrderDetails = () => {
           <strong>Trạng thái:</strong>{" "}
           <span className="status">{(() => {
                   const statusMapping = {
-                    1: (
-                      <a
-                        href={`/PaymentQR?orderId=${order.order.id}&amount=5`}
-                        className="highlight-link"
-                      >
-                        Trạng thái 1 - Chưa thanh toán
-                      </a>
-                    ),
-                    2: <span className="status-text">Trạng thái 2 - Đã thanh toán </span>,
-                    3: <span className="status-text">Trạng thái 3 - Đang giao</span>,
-                    4: <span className="status-text">Trạng thái 4 - Đã giao đến nơi </span>,
-                    5: <span className="status-text">Trạng thái 5 - Đang trả hàng </span>,
-                    6: <span className="status-text">Trạng thái 6 - Đang kiểm tra hàng </span>,
-                    7: <span className="status-text">Trạng thái 7 - Đã giao đến nơi </span>,
-                    8: <span className="status-text">Trạng thái 8 - Đã giao đến nơi </span>,
+                            1: "Chưa thanh toán",
+                            2: "Đã thanh toán",
+                            3: "Đang giao",
+                            4: "Đã giao đến nơi",
+                            5: "Trả hàng, chờ hoàn cọc",
+                            6: "Đã hoàn cọc",
+                            7: "Đã giao đến nơi",
+                            8: "Hoàn tất",
                   };
 
                   // Hiển thị trạng thái nếu có trong mapping, nếu không thì hiển thị giá trị mặc định
