@@ -21,12 +21,9 @@ const Chat = () => {
         customerId = decodedToken?.userId || null;
       }
     } catch (error) {
-      console.error("Lỗi khi giải mã token:", error.message);
-      setError("Token không hợp lệ");
       Cookies.remove("accessToken");
     }
   } else {
-    setError("Token không tồn tại");
     Cookies.remove("accessToken");
   }
 
