@@ -4,6 +4,7 @@ import MenuBar from "../menu/MenuBar";
 import Header from "../header/Header";
 import { getToken } from "../../services/Cookies";
 import { useParams } from "react-router-dom";
+
 const token = getToken();
 
 const ProductsDetails = () => {
@@ -11,13 +12,12 @@ const ProductsDetails = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
   const [formValues, setFormValues] = useState({
     name: "",
     brand: "",
     description: "",
-    thumbnail: "",
-    category: "",
-    productDetails: [],
+    categoryId: "",
   });
   const [newVariant, setNewVariant] = useState({
     color: "",
@@ -27,7 +27,34 @@ const ProductsDetails = () => {
     inventory: "",
     status: true,
   });
+  const [productDetails, setProductDetails] = useState([]);
+  const [image, setImage] = useState(null);
 
+  // Lấy danh mục
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          "https://datn.up.railway.app/api/admin/categories",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const result = await response.json();
+        setCategories(result.content);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Lấy chi tiết sản phẩm nếu đang ở chế độ xem hoặc sửa
   useEffect(() => {
     if (method === "view" || method === "edit") {
       const fetchData = async () => {
@@ -48,10 +75,10 @@ const ProductsDetails = () => {
             name: result.name,
             brand: result.brand,
             description: result.description,
-            thumbnail: result.thumbnail.url,
-            category: result.category.name,
-            productDetails: result.productDetails,
+            categoryId: result.category.id,
           });
+          setImage(result.file); // Gắn hình ảnh sản phẩm
+          setProductDetails(result.productDetails || []);
         } catch (error) {
           console.error("Error fetching product data:", error);
         } finally {
@@ -74,11 +101,19 @@ const ProductsDetails = () => {
     setNewVariant((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const addVariant = () => {
-    setFormValues((prev) => ({
-      ...prev,
-      productDetails: [...prev.productDetails, newVariant],
-    }));
+    setProductDetails((prev) => [...prev, newVariant]);
     setNewVariant({
       color: "",
       type: "",
@@ -90,18 +125,26 @@ const ProductsDetails = () => {
   };
 
   const deleteVariant = (index) => {
-    const updatedVariants = formValues.productDetails.filter(
-      (_, i) => i !== index
-    );
-    setFormValues((prev) => ({ ...prev, productDetails: updatedVariants }));
+    const updatedVariants = productDetails.filter((_, i) => i !== index);
+    setProductDetails(updatedVariants);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmitProduct = async (e) => {
     e.preventDefault();
+
+    const productData = {
+      name: formValues.name,
+      brand: formValues.brand,
+      description: formValues.description,
+      categoryId: formValues.categoryId,
+      file: image,
+    };
+
     const url =
       method === "add"
         ? "https://datn.up.railway.app/api/admin/products"
         : `https://datn.up.railway.app/api/admin/products/${productId}`;
+
     const fetchMethod = method === "add" ? "POST" : "PUT";
 
     try {
@@ -111,14 +154,52 @@ const ProductsDetails = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formValues),
+        body: JSON.stringify(productData),
       });
 
       if (!response.ok) throw new Error("Failed to save product");
+      const productResponse = await response.json();
       alert(`${method === "add" ? "Thêm" : "Cập nhật"} sản phẩm thành công`);
+
+      if (productResponse.id) {
+        await handleSubmitVariants(productResponse.id);
+      }
     } catch (error) {
       console.error("Error saving product:", error);
       alert("Đã xảy ra lỗi. Vui lòng thử lại.");
+    }
+  };
+
+  const handleSubmitVariants = async (productId) => {
+    if (productDetails.length === 0) return;
+
+    const variantsData = productDetails.map((variant) => ({
+      color: variant.color,
+      type: variant.type,
+      price: variant.price,
+      deposit: variant.deposit,
+      inventory: variant.inventory,
+      status: variant.status,
+    }));
+
+    try {
+      const response = await fetch(
+        `https://datn.up.railway.app/api/admin/products/${productId}/variants`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ variants: variantsData }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to save variants");
+      alert("Biến thể sản phẩm đã được thêm thành công!");
+    } catch (error) {
+      console.error("Error saving variants:", error);
+      alert("Đã xảy ra lỗi khi lưu biến thể. Vui lòng thử lại.");
     }
   };
 
@@ -130,7 +211,7 @@ const ProductsDetails = () => {
       <div className="productsdetails-main">
         <MenuBar />
         <div className="productsdetails-content">
-          <form onSubmit={handleSubmit} className="product-form">
+          <form onSubmit={handleSubmitProduct} className="product-form">
             <h2>
               {method === "view"
                 ? "Thông tin sản phẩm"
@@ -174,58 +255,57 @@ const ProductsDetails = () => {
               />
             </div>
             <div className="form-group">
-  <label htmlFor="thumbnail">Hình ảnh chính:</label>
-  {method === "view" ? (
-    <img
-      src={formValues.thumbnail}
-      alt="Product Thumbnail"
-      className="thumbnail-preview"
-    />
-  ) : (
-    <>
-      {formValues.thumbnail && (
-        <img
-          src={formValues.thumbnail}
-          alt="Product Thumbnail"
-          className="thumbnail-preview"
-        />
-      )}
-      <input
-        type="file"
-        id="thumbnail"
-        name="thumbnail"
-        onChange={(e) => {
-          const file = e.target.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              setFormValues((prev) => ({
-                ...prev,
-                thumbnail: reader.result,
-              }));
-            };
-            reader.readAsDataURL(file);
-          }
-        }}
-        className="form-control"
-      />
-    </>
-  )}
-</div>
+              <label htmlFor="categoryId">Danh mục:</label>
+              {method === "view" ? (
+                <input
+                  type="text"
+                  value={
+                    categories.find((cat) => cat.id === formValues.categoryId)
+                      ?.name || ""
+                  }
+                  readOnly
+                  className="form-control"
+                />
+              ) : (
+                <select
+                  id="categoryId"
+                  name="categoryId"
+                  value={formValues.categoryId}
+                  onChange={handleChange}
+                  className="form-control"
+                >
+                  <option value="">Chọn danh mục</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
             <div className="form-group">
-              <label htmlFor="category">Danh mục:</label>
+              <label>Hình ảnh sản phẩm hiện tại:</label>
+              {image || (product && product.file) ? (
+                <img
+                  src={image || product.thumbnail.url}
+                  alt="Product"
+                  className="product-image-preview"
+                  style={{ maxWidth: "200px", marginBottom: "10px" }}
+                />
+              ) : (
+                <p>Không có hình ảnh nào.</p>
+              )}
+            </div>
+            <div className="form-group">
+              <label htmlFor="file">Chọn hình ảnh:</label>
               <input
-                type="text"
-                id="category"
-                name="category"
-                value={formValues.category}
-                onChange={handleChange}
-                readOnly={method === "view"}
+                type="file"
+                id="file"
+                name="file"
+                onChange={handleImageChange}
                 className="form-control"
               />
             </div>
-
-            {/* Liệt kê biến thể sản phẩm */}
             <div className="form-group">
               <h3>Danh sách Biến thể sản phẩm</h3>
               <table className="table">
@@ -241,7 +321,7 @@ const ProductsDetails = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {formValues.productDetails.map((detail, index) => (
+                  {productDetails.map((detail, index) => (
                     <tr key={index}>
                       <td>{detail.color}</td>
                       <td>{detail.type}</td>
@@ -262,8 +342,6 @@ const ProductsDetails = () => {
                   ))}
                 </tbody>
               </table>
-
-              {/* Input để thêm biến thể */}
               {method !== "view" && (
                 <div className="form-group">
                   <h4>Thêm biến thể sản phẩm</h4>
@@ -326,8 +404,6 @@ const ProductsDetails = () => {
                 </div>
               )}
             </div>
-
-            {/* Nếu không phải là chế độ "view", cho phép thêm hoặc chỉnh sửa */}
             {method !== "view" && (
               <button type="submit" className="btn-submit">
                 {method === "add" ? "Thêm sản phẩm" : "Lưu thay đổi"}

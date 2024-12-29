@@ -2,14 +2,31 @@ import React, { useEffect, useState, useRef } from "react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { getToken } from "../../services/Cookies";
-//import "../../test.css"
+
 const Chat = () => {
   const [messages, setMessages] = useState([]); // Mảng chứa tin nhắn
   const [newMessage, setNewMessage] = useState(""); // Tin nhắn mới
-  const token = getToken();
-  const decodedToken = JSON.parse(atob(token.split(".")[1]));
-  const customerId = decodedToken.userId; // Lấy ID khách hàng từ token
+  const [error, setError] = useState(null); // Trạng thái lỗi
   const messagesEndRef = useRef(null); // Tham chiếu đến vị trí cuối tin nhắn
+
+  // Lấy token
+  const token = getToken();
+  let customerId = null;
+
+  if (token) {
+    try {
+      const parts = token.split(".");
+      if (parts.length === 3) {
+        const decodedToken = JSON.parse(atob(parts[1]));
+        customerId = decodedToken?.userId || null;
+      }
+    } catch (error) {
+      console.error("Lỗi khi giải mã token:", error.message);
+      setError("Token không hợp lệ");
+    }
+  } else {
+    setError("Token không tồn tại");
+  }
 
   // Hàm tự động cuộn đến tin nhắn mới nhất
   const scrollToBottom = () => {
@@ -20,6 +37,8 @@ const Chat = () => {
 
   // Kết nối WebSocket
   useEffect(() => {
+    if (!customerId || error) return;
+
     const socket = new SockJS("https://datn.up.railway.app/ws");
     const stompClient = Stomp.over(socket);
 
@@ -31,10 +50,12 @@ const Chat = () => {
     });
 
     return () => stompClient.disconnect();
-  }, [customerId]);
+  }, [customerId, error]);
 
   // Lấy tin nhắn từ API khi load trang
   useEffect(() => {
+    if (!token || error) return;
+
     const fetchMessages = async () => {
       try {
         const response = await fetch(
@@ -53,13 +74,13 @@ const Chat = () => {
         }));
 
         setMessages(sortMessages(allMessages));
-      } catch (error) {
-        console.error("Lỗi khi lấy tin nhắn:", error);
+      } catch (fetchError) {
+        console.error("Lỗi khi lấy tin nhắn:", fetchError.message);
       }
     };
 
     fetchMessages();
-  }, [token]);
+  }, [token, error]);
 
   // Cuộn xuống cuối cùng mỗi khi tin nhắn thay đổi
   useEffect(() => {
@@ -67,7 +88,7 @@ const Chat = () => {
   }, [messages]);
 
   const sortMessages = (msgs) => {
-    return msgs.sort((a, b) => a.createdAt - b.createdAt);
+    return msgs.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
   };
 
   // Xử lý gửi tin nhắn
@@ -93,9 +114,13 @@ const Chat = () => {
       setMessages((prev) => sortMessages([...prev, data]));
       setNewMessage("");
     } catch (error) {
-      console.error("Lỗi khi gửi tin nhắn:", error);
+      console.error("Lỗi khi gửi tin nhắn:", error.message);
     }
   };
+
+  if (error) {
+    return <div>Lỗi: {error}</div>;
+  }
 
   return (
     <div className="chat-container">
