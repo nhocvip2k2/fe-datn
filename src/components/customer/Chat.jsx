@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { getToken } from "../../services/Cookies";
-
+import Cookies from "js-cookie";
 const Chat = () => {
   const [messages, setMessages] = useState([]); // Mảng chứa tin nhắn
   const [newMessage, setNewMessage] = useState(""); // Tin nhắn mới
@@ -23,9 +23,11 @@ const Chat = () => {
     } catch (error) {
       console.error("Lỗi khi giải mã token:", error.message);
       setError("Token không hợp lệ");
+      Cookies.remove("accessToken");
     }
   } else {
     setError("Token không tồn tại");
+    Cookies.remove("accessToken");
   }
 
   // Hàm tự động cuộn đến tin nhắn mới nhất
