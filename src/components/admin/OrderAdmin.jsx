@@ -15,15 +15,6 @@ const Orders = () => {
   const token = getToken(); // Thay token API thực tế vào đây
   const formatDate = (isoDate) => dayjs(isoDate).format("DD/MM/YYYY HH:mm");
 
-  const calculateTotalPrice = (orderId) => {
-    const orderItems = orders.filter((item) => item.order.id === orderId);
-    const totalPrice = orderItems.reduce((total, item) => {
-      return total + item.currentPrice * item.quantity;
-    }, 0);
-
-    return totalPrice;
-  };
-
   const fetchOrders = async (page) => {
     try {
       const response = await fetch(
@@ -76,13 +67,12 @@ const Orders = () => {
               <table>
                 <thead>
                   <tr>
-                    <th>Mã đơn</th>
+                    <th>Mã thuê</th>
                     <th>Khách hàng</th>
                     <th>Địa chỉ</th>
                     <th>Giá tiền</th>
                     <th>Cổng thanh toán</th>
                     <th>Trạng thái</th>
-                    <th>Thanh toán</th>
                     <th>Khởi tạo</th>
                     <th>Cập nhật</th>
                   </tr>
@@ -91,20 +81,20 @@ const Orders = () => {
                   {orders.map((order, index) => (
                     <tr key={index}>
                       <td>
-                        <a href={`#${order.id}`} style={{ color: "#007bff" }}>
+                        <a href={`/OrderProduct/${order.id}`} style={{ color: "#007bff" }}>
                           {order.id}
                         </a>
                       </td>
                       <td>
                         <div>
-                          <strong>👤 {order.order.id}</strong>
+                          <strong>Đơn {order.order.id}</strong>
                         </div>
                         <div>📞 {order.order.currentPhone}</div>
                       </td>
                       <td>📍 {order.order.currentAddress}</td>
-                      <td>{calculateTotalPrice(order.order.id)}</td>
+                      <td>{order.currentPrice}</td>
                       <td>{order.order.payment}</td>
-                      <td>{order.order.shipment}</td>
+                      
                       <td>
                         {/* Hiển thị trạng thái */}
                         {(() => {
@@ -113,7 +103,7 @@ const Orders = () => {
                             2: "Đã thanh toán",
                             3: "Đang giao",
                             4: "Đã giao đến nơi",
-                            5: "Trả hàng, chờ hoàn cọc",
+                            5: "Yêu cầu trả hàng",
                             6: "Đã hoàn cọc",
                             7: "Đã giao đến nơi",
                             8: "Hoàn tất",

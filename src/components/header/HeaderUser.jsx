@@ -13,8 +13,8 @@ const Header = () => {
   const [keyword, setKeyword] = useState(""); // Từ khóa tìm kiếm
   const [unreadCount, setUnreadCount] = useState(0); // Số lượng tin nhắn chưa đọc
   const [isChatOpen, setIsChatOpen] = useState(false); // Trạng thái pop-up chat
-
-  const customerId = 2; // Thay đổi theo ID khách hàng thực tế
+  const token = getToken();
+  const customerId=2;
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleCart = () => setIsCartOpen(!isCartOpen);

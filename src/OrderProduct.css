@@ -1,0 +1,63 @@
+.orderproduct-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .orderproduct-main {
+    display: flex;
+    height: calc(100vh - 64px); /* Trừ đi chiều cao của Header */
+    margin-top: 50px;
+  }
+  
+  .orderproduct-content {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    background-color: #f4f4f4;
+  }
+
+  
+  .orderproduct-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .orderproduct-table th,
+  .orderproduct-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .orderproduct-table th {
+    background-color: #1fad09db;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  .orderproduct-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .orderproduct-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .pagination button:hover:not(:disabled) {
+    background-color: #0056b3;
+  }
+  
+  .pagination span {
+    margin: 0 10px;
+    font-weight: bold;
+  }
+  
+ 
