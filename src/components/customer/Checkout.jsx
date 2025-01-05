@@ -3,6 +3,7 @@ import "../../checkout.css";
 import Header from "../header/HeaderUser";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../../services/Cookies";
+
 const CheckoutPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ const CheckoutPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("creditCard");
 
   const navigate = useNavigate();
+
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCartItems(storedCart);
@@ -86,112 +88,109 @@ const CheckoutPage = () => {
   const handleWardChange = (e) => {
     setWard(e.target.value);
   };
- const getTotalPrice = () => {
+
+  const getTotalPrice = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
+
   const handleCheckout = async (e) => {
     e.preventDefault();
-  
-    // Tìm tên từ danh sách tỉnh, quận, xã/phường
+
     const selectedProvinceName = provinces.find((p) => p.code.toString() === province)?.name || "";
     const selectedDistrictName = districts.find((d) => d.code.toString() === district)?.name || "";
     const selectedWardName = wards.find((w) => w.code.toString() === ward)?.name || "";
-  
-    // Địa chỉ đầy đủ
+
     const fullAddress = `${specificAddress}, ${selectedWardName}, ${selectedDistrictName}, ${selectedProvinceName}`;
-  
-    // Chuẩn bị dữ liệu để gửi
+
     const requestData = {
       productItems: cartItems.map((item) => ({
-        productDetailId: item.id, 
+        productDetailId: item.id,
         quantity: item.quantity,
-        rentalDay: 1, // Giá trị mặc định hoặc lấy từ input
+        rentalDay: 1,
         note: "",
       })),
       currentAddress: fullAddress,
       currentPhone: phone,
-      payment: paymentMethod, // Phương thức thanh toán
-      shipment: "Khởi tạo thành công", // Thay bằng giá trị phù hợp
+      payment: paymentMethod,
+      shipment: "Khởi tạo thành công",
     };
-  
-    console.log("Dữ liệu gửi:", requestData);
-  
-    // Gửi request đến API
+
     try {
       const response = await fetch("https://datn.up.railway.app/api/customer/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getToken()}`, // Hàm getToken lấy token từ localStorage hoặc nơi lưu trữ khác
+          Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify(requestData),
       });
-  
+
       if (!response.ok) {
-        const errorResponse = await response.json();
-      console.error("Lỗi từ server:", errorResponse);
-      throw new Error(`Lỗi: ${response.statusText}`);
-    }
+        throw new Error(`Lỗi: ${response.statusText}`);
+      }
 
-    const result = await response.json();
+      const result = await response.json();
+      const orderId = result.id;
 
-    // Lấy mã đơn hàng từ phản hồi
-    const orderId = result[0].order?.id; // Tùy thuộc vào cấu trúc API
-    if (orderId) {
-      localStorage.clear();
-
-
-      // Chuyển hướng kèm theo mã đơn hàng
-      navigate(`/PaymentQR?orderId=${orderId}&amount=${getTotalPrice()}`);
-    } else {
-      console.warn("Không lấy được mã đơn hàng từ phản hồi.");
-    }
+      if (orderId) {
+        localStorage.clear();
+        navigate(`/PaymentQR?orderId=${orderId}&amount=${getTotalPrice()}`);
+      } else {
+        console.warn("Không lấy được mã đơn hàng từ phản hồi.");
+      }
     } catch (error) {
       console.error("Lỗi khi gửi request:", error);
       alert("Đã xảy ra lỗi khi đặt hàng. Vui lòng thử lại!");
     }
   };
-  
 
   return (
     <>
       <Header />
-      <div className="checkout-container">
-        <h2>Thanh toán</h2>
-        <form onSubmit={handleCheckout} className="checkout-form">
-          <div className="checkout-row">
-            <div className="checkout-column customer-info">
-              <h3>Thông tin khách hàng</h3>
-              <div className="input-group">
-                <label>Họ và tên:</label>
+      <div className="container mt-5 border p-4">
+        <h2 className="text-center mb-4">Thanh toán</h2>
+        <form onSubmit={handleCheckout}>
+          <div className="row">
+            <div className="col-md-6 border-end">
+              <h4>Thông tin khách hàng</h4>
+              <div className="mb-3">
+                <label className="form-label">Họ và tên</label>
                 <input
                   type="text"
+                  className="form-control"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
                 />
               </div>
-              <div className="input-group">
-                <label>Email:</label>
+              <div className="mb-3">
+                <label className="form-label">Email</label>
                 <input
                   type="email"
+                  className="form-control"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
-              <div className="input-group">
-                <label>Số điện thoại:</label>
+              <div className="mb-3">
+                <label className="form-label">Số điện thoại</label>
                 <input
                   type="text"
+                  className="form-control"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   required
                 />
               </div>
-              <div className="input-group">
-                <label>Tỉnh/Thành phố:</label>
-                <select value={province} onChange={handleProvinceChange} required>
+              <div className="mb-3">
+                <label className="form-label">Tỉnh/Thành phố</label>
+                <select
+                  className="form-select"
+                  value={province}
+                  onChange={handleProvinceChange}
+                  required
+                >
                   <option value="">Chọn tỉnh/thành phố</option>
                   {provinces.map((p) => (
                     <option key={p.code} value={p.code}>
@@ -200,9 +199,14 @@ const CheckoutPage = () => {
                   ))}
                 </select>
               </div>
-              <div className="input-group">
-                <label>Quận/Huyện:</label>
-                <select value={district} onChange={handleDistrictChange} required>
+              <div className="mb-3">
+                <label className="form-label">Quận/Huyện</label>
+                <select
+                  className="form-select"
+                  value={district}
+                  onChange={handleDistrictChange}
+                  required
+                >
                   <option value="">Chọn quận/huyện</option>
                   {districts.map((d) => (
                     <option key={d.code} value={d.code}>
@@ -211,9 +215,14 @@ const CheckoutPage = () => {
                   ))}
                 </select>
               </div>
-              <div className="input-group">
-                <label>Xã/Phường:</label>
-                <select value={ward} onChange={handleWardChange} required>
+              <div className="mb-3">
+                <label className="form-label">Xã/Phường</label>
+                <select
+                  className="form-select"
+                  value={ward}
+                  onChange={handleWardChange}
+                  required
+                >
                   <option value="">Chọn xã/phường</option>
                   {wards.map((w) => (
                     <option key={w.code} value={w.code}>
@@ -222,10 +231,11 @@ const CheckoutPage = () => {
                   ))}
                 </select>
               </div>
-              <div className="input-group">
-                <label>Địa chỉ cụ thể:</label>
+              <div className="mb-3">
+                <label className="form-label">Địa chỉ cụ thể</label>
                 <input
                   type="text"
+                  className="form-control"
                   value={specificAddress}
                   onChange={(e) => setSpecificAddress(e.target.value)}
                   required
@@ -233,62 +243,56 @@ const CheckoutPage = () => {
               </div>
             </div>
 
-            {/* Giỏ hàng */}
-            <div className="checkout-column cart-info">
-              <div className="section">
-                <h3>Giỏ hàng</h3>
-                <ul className="cart-items">
-                  {cartItems.length === 0 ? (
-                    <li>Giỏ hàng của bạn hiện tại đang trống</li>
-                  ) : (
-                    cartItems.map((item) => (
-                      <li key={item.id}>
-                        <span>
-                          {item.name}-{item.type}
-                        </span>
-                        <span>
-                          {item.quantity} x {item.price.toLocaleString()} VND
-                        </span>
-                      </li>
-                    ))
-                  )}
-                </ul>
-                <div className="total-price">
-                  <span>Tổng cộng:</span>
-                  <span>{getTotalPrice().toLocaleString()} VND</span>
-                </div>
+            <div className="col-md-5 ms-3 p-4" style={{background: 'linear-gradient(135deg, #f0f0f0, #ffffff)', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', borderRadius: '10px'}}>
+  <h4>Giỏ hàng</h4>
+  <ul className="list-group mb-4">
+    {cartItems.length === 0 ? (
+      <li className="list-group-item">Giỏ hàng của bạn hiện tại đang trống</li>
+    ) : (
+      cartItems.map((item) => (
+        <li key={item.id} className="list-group-item d-flex justify-content-between">
+          <span>
+            {item.name}-{item.type}
+          </span>
+          <span>
+            {item.quantity} x {item.price.toLocaleString()} VND
+          </span>
+        </li>
+      ))
+    )}
+  </ul>
+  <div className="d-flex justify-content-between mb-4">
+    <span>Tổng cộng:</span>
+    <span>{getTotalPrice().toLocaleString()} VND</span>
+  </div>
 
-                {/* Phương thức thanh toán */}
-                <div className="section payment-method">
-                  <h3>Phương thức thanh toán</h3>
-                  <div className="payment-options">
-                    <label>
-                      <input
-                        type="radio"
-                        value="creditCard"
-                        checked={paymentMethod === "creditCard"}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                      />
-                      Thẻ tín dụng (QR code)
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        value="cashOnDelivery"
-                        checked={paymentMethod === "cashOnDelivery"}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                      />
-                      Thanh toán khi nhận hàng
-                    </label>
-                  </div>
-                </div>
+  <h5>Phương thức thanh toán</h5>
+  <div className="form-check">
+    <input
+      type="radio"
+      className="form-check-input"
+      value="creditCard"
+      checked={paymentMethod === "creditCard"}
+      onChange={(e) => setPaymentMethod(e.target.value)}
+    />
+    <label className="form-check-label">Thẻ tín dụng (QR code)</label>
+  </div>
+  <div className="form-check">
+    <input
+      type="radio"
+      className="form-check-input"
+      value="cashOnDelivery"
+      checked={paymentMethod === "cashOnDelivery"}
+      onChange={(e) => setPaymentMethod(e.target.value)}
+    />
+    <label className="form-check-label">Thanh toán khi nhận hàng</label>
+  </div>
 
-                {/* Nút đặt hàng */}
-                <div>
-                  <button type="submit">Đặt hàng</button>
-                </div>
-              </div>
-            </div>
+  <button type="submit" className="btn btn-primary w-100 mt-4">
+    Đặt hàng
+  </button>
+</div>
+
           </div>
         </form>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../../TraCoc.css'; // Đường dẫn CSS tùy chỉnh
 import MenuBar from "../menu/MenuBar";
 import Header from "../header/Header";
@@ -11,7 +11,8 @@ const TraCoc = () => {
   const [daysLate, setDaysLate] = useState('');
   const [penaltyAmount, setPenaltyAmount] = useState('');
   const [refundAmount, setRefundAmount] = useState(depositAmount);
-
+  const { orderDetailId } = useParams(); // Extract orderDetailId from URL
+ 
   const handlePenaltyChange = (value) => {
     const penalty = parseInt(value, 10) || 0;
     setPenaltyAmount(penalty);
@@ -19,25 +20,25 @@ const TraCoc = () => {
   };
 
   const handleRefund = () => {
-    if (!status || daysLate === '' || penaltyAmount === '') {
-      alert('Vui lòng nhập đầy đủ và chính xác thông tin!');
+    if (!status || daysLate === "" || penaltyAmount === "") {
+      alert("Vui lòng nhập đầy đủ và chính xác thông tin!");
       return;
     }
 
     if (refundAmount < 0) {
-      alert('Số tiền cần đền bù không thể lớn hơn số tiền cọc!');
+      alert("Số tiền cần đền bù không thể lớn hơn số tiền đã thanh toán!");
       return;
     }
 
-    // Thêm logic xử lý hoàn tiền ở đây (gửi API nếu cần)
-    alert(`Hoàn tiền thành công!\nTrạng thái: ${status}\nSố ngày trả muộn: ${daysLate}\nSố tiền đền bù: ${penaltyAmount}\nSố tiền hoàn lại: ${refundAmount}`);
-    navigate('/admin/orders'); // Điều hướng về danh sách đơn hàng sau khi hoàn tiền
+    // Điều hướng đến trang thanh toán QR với `orderId` và `refundAmount`
+    navigate(`/RefundPaymentQR?orderId=${orderDetailId}&amount=${refundAmount}`);
   };
+  
 
   return (
     <div className="tracoc-container">
       <Header />
-      <div className="tracoc-main">
+      <div className="tracoc-main mt-5">
         <MenuBar />
         <div className="tracoc-content">
           <h2>Hoàn tiền đặt cọc</h2>

@@ -1,6 +1,30 @@
 .dm{
   margin-left: 20px;
 }
+
+a.nav-link {
+  text-decoration: none;
+}
+a.navbar-brand.fw-bold.fs-3 {
+  text-decoration: none;
+}
+.header .dm a {
+  color: #333; /* Dark color for the links */
+  text-decoration: none; /* Remove the underline */
+}
+.c-dropdown {
+ 
+  left: -131px;
+  top: 45px;
+}
+.icon-container i {
+  color: black;
+}
+.header .dm a:hover {
+  color: #007bff; /* Optional: Change color when hovered */
+  text-decoration: none; /* Ensure no underline on hover */
+}
+
 /* Header styles */
 .header {
   position: fixed;
@@ -16,6 +40,133 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between; /* Ensures the elements are spaced evenly */
+  align-items: center; /* Vertically aligns the items in the center */
+  padding: 10px 20px;
+  background-color: #fff; /* Set your preferred background color */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for visual effect */
+}
+
+.header .logo a {
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333; /* Adjust color as needed */
+}
+
+.header .dm {
+  margin: 0 10px;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  margin: 0 20px; /* Space around the search input */
+}
+
+.header-center .search-input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 250px; /* Adjust width as needed */
+}
+
+.header-center .search-btn {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 8px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-right .chat-icon i,
+.header-right .order-icon i,
+.header-right .cart-icon i,
+.header-right .user-icon i {
+  color: #333; /* Dark color for icons */
+}
+
+.header-right .chat-icon:hover i,
+.header-right .order-icon:hover i,
+.header-right .cart-icon:hover i,
+.header-right .user-icon:hover i {
+  color: #007bff; /* Change color when hovered (optional) */
+}
+
+.header-right .chat-count,
+.header-right .cart-count {
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+.header-right .dropdown-menu {
+  background-color: #333; /* Dark background for the dropdown menu */
+ 
+}
+
+.header-right .chat-count,
+.header-right .cart-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+
+
+/* Dropdown menu styling */
+.custom-dropdown {
+  animation: fadeIn 0.3s ease-out;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #f8f9fa;
+}
+
+/* Remove hover effect for the dropdown item */
+.custom-dropdown .dropdown-item {
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: none; /* Disable transition on hover */
+  color: #000; /* Default text color */
+}
+
+/* Remove background color change on hover */
+.custom-dropdown .dropdown-item:hover {
+  background-color: transparent; /* No background change */
+  color: #000; /* Keep the text color unchanged */
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.custom-btn {
+  padding: 0.25rem 0.5rem;  /* Smaller padding */
+  font-size: 0.875rem;       /* Smaller font size */
 }
 
 /* Header trong suốt trên Hero Section */

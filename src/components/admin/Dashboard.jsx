@@ -13,30 +13,9 @@ import {
   Cell,
 } from "recharts";
 import "../../DashBoard.css";
-import MenuBar from "../menu/MenuBar"; // Thanh MenuBar có sẵn
-import Header from "../header/Header"; // Header có sẵn
+import MenuBar from "../menu/MenuBar";
+import Header from "../header/Header";
 import { getToken } from "../../services/Cookies";
-
-const barChartData = [
-  { name: "Jan", users: 4000 },
-  { name: "Feb", users: 3000 },
-  { name: "Mar", users: 2000 },
-  { name: "Apr", users: 2780 },
-];
-
-const lineChartData = [
-  { name: "Jan", revenue: 2400 },
-  { name: "Feb", revenue: 1398 },
-  { name: "Mar", revenue: 9800 },
-  { name: "Apr", revenue: 3908 },
-];
-
-const pieChartData = [
-  { name: "Iphone", value: 400 },
-  { name: "Samsung", value: 300 },
-  { name: "Xiaomi", value: 300 },
-  { name: "Others", value: 200 },
-];
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 const token = getToken();
@@ -44,6 +23,10 @@ const token = getToken();
 const Dashboard = () => {
   const [data, setData] = useState({ users: 0, orders: 0, revenue: 0 });
   const [loading, setLoading] = useState(true);
+  const [orders, setOrders] = useState([]);
+  const [statusChartData, setStatusChartData] = useState([]);
+  const [revenueChartData, setRevenueChartData] = useState([]);
+  const [productPieData, setProductPieData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,7 +44,7 @@ const Dashboard = () => {
         const result = await response.json();
         setData(result);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching overall stats:", error);
       } finally {
         setLoading(false);
       }
@@ -70,76 +53,213 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `https://datn.up.railway.app/api/admin/orders?page=0&size=100`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const result = await response.json();
+      setOrders(result.content || []);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchProductData = async () => {
+    try {
+      const productCounts = {};
+      console.log("Starting fetchProductData...");
+      console.log("Orders to process:", orders);
+  
+      for (const order of orders) {
+        const productId = order.productDetail.id;
+        console.log(`Processing product ID: ${productId}`);
+  
+        if (!productCounts[productId]) {
+          console.log(`Fetching data for product ID: ${productId}`);
+          const response = await fetch(
+            `https://datn.up.railway.app/api/admin/products/${productId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+  
+          if (!response.ok) {
+            console.error(`Failed to fetch product data for ID: ${productId}`);
+            continue;
+          }
+  
+          const productData = await response.json();
+          console.log(`Fetched product data for ID ${productId}:`, productData);
+  
+          productCounts[productId] = {
+            name: productData.name, // Use productData.name instead of productData.type
+            value: 0,
+          };
+        }
+  
+        productCounts[productId].value += order.quantity;
+        console.log(
+          `Updated count for product ID ${productId}:`,
+          productCounts[productId]
+        );
+      }
+  
+      const productPieData = Object.values(productCounts);
+      console.log("Final product pie chart data:", productPieData);
+  
+      setProductPieData(productPieData);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    }
+  };
+  
+
+  const processStatusChartData = () => {
+    const filteredOrders = orders.filter((order) => order.status === 6);
+    const monthlyCounts = {};
+
+    filteredOrders.forEach((order) => {
+      const month = new Date(order.createdAt).toLocaleString("en-US", {
+        month: "short",
+      });
+      if (!monthlyCounts[month]) {
+        monthlyCounts[month] = 0;
+      }
+      monthlyCounts[month] += 1;
+    });
+
+    const formattedData = Object.entries(monthlyCounts).map(([month, count]) => ({
+      name: month,
+      orders: count,
+    }));
+
+    setStatusChartData(formattedData);
+  };
+
+  const processRevenueChartData = () => {
+    const monthlyRevenue = {};
+
+    orders.forEach((order) => {
+      const month = new Date(order.createdAt).toLocaleString("en-US", {
+        month: "short",
+      });
+      if (!monthlyRevenue[month]) {
+        monthlyRevenue[month] = 0;
+      }
+      monthlyRevenue[month] += order.currentPrice;
+    });
+
+    const formattedData = Object.entries(monthlyRevenue).map(
+      ([month, revenue]) => ({
+        name: month,
+        revenue,
+      })
+    );
+
+    setRevenueChartData(formattedData);
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    if (orders.length > 0) {
+      processStatusChartData();
+      processRevenueChartData();
+      fetchProductData();
+    }
+  }, [orders]);
+
   return (
     <div className="dashboard-container">
-      {/* Header */}
       <Header />
-
-      <div className="dashboard-main">
-        {/* MenuBar */}
+      <div className="dashboard-main mt-5">
         <MenuBar />
+        <div className="dashboard-content mt-6">
+          {/* Cards */}
+          <div className="row mb-4">
+            <div className="col-12 col-md-4">
+              <div className="card">
+                <h3>Users</h3>
+                <p>{data.totalUsers || 0}</p>
+              </div>
+            </div>
+            <div className="col-12 col-md-4">
+              <div className="card">
+                <h3>Orders</h3>
+                <p>{data.totalOrders || 0}</p>
+              </div>
+            </div>
+            <div className="col-12 col-md-4">
+              <div className="card">
+                <h3>Revenue</h3>
+                <p>${data.revenue || 0}</p>
+              </div>
+            </div>
+          </div>
 
-        {/* Nội dung chính */}
-        <div className="dashboard-content">
-          {/* Cards hiển thị thông tin tổng quan */}
-          <div className="card">
-            <h3>Users</h3>
-            <p>{data.totalUsers || 0}</p>
-          </div>
-          <div className="card">
-            <h3>Orders</h3>
-            <p>{data.totalOrders || 0}</p>
-          </div>
-          <div className="card">
-            <h3>Revenue</h3>
-            <p>${data.revenue || 0}</p>
-          </div>
+          {/* Charts */}
+          <div className="row">
+            {/* Orders with Status 6 */}
+           
 
-          {/* Biểu đồ */}
-          <div className="chart-container">
-            <div className="chart-title">Monthly Active Users</div>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={barChartData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="users" fill="#1976d2" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="chart-container">
-            <div className="chart-title">Monthly Revenue</div>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={lineChartData}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="revenue" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="chart-container">
-            <div className="chart-title">Sales by Category</div>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  data={pieChartData}
-                  cx="50%"
-                  cy="50%"
-                  label={({ name, value }) => `${name}: ${value}`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {pieChartData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
+            {/* Monthly Revenue */}
+            <div className="col-12 col-md-6 mb-4">
+              <div className="chart-container">
+                <div className="chart-title">Monthly Revenue</div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={revenueChartData}>
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="revenue" stroke="#8884d8" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Sales by Category */}
+            <div className="col-12 col-md-6 mb-4">
+              <div className="chart-container">
+                <div className="chart-title">Sales by Category</div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={productPieData}
+                      cx="50%"
+                      cy="50%"
+                      label={({ name, value }) => `${name}: ${value}`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {productPieData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -147,4 +267,5 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default  Dashboard;
+ 

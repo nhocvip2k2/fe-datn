@@ -1,5 +1,5 @@
 .orders-container-admin {
-    margin-top: 50px;
+  
     font-family: Arial, sans-serif;
     display: flex;
   }
@@ -8,7 +8,9 @@
     color: #333;
     margin-bottom: 10px;
   }
-  
+  .mt-6 {
+    margin-top: 5rem !important;
+}
   /* Bảng */
   .table-container {
     overflow-x: auto;
@@ -82,7 +84,7 @@
   }
   
   .layout-content {
-    width: 80%;
+    width: 100%;
     padding: 20px;
     box-sizing: border-box;
   }

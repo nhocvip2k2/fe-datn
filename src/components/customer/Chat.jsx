@@ -3,6 +3,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { getToken } from "../../services/Cookies";
 import Cookies from "js-cookie";
+import "../../Chat.css";
 const Chat = () => {
   const [messages, setMessages] = useState([]); // Mảng chứa tin nhắn
   const [newMessage, setNewMessage] = useState(""); // Tin nhắn mới
@@ -127,7 +128,7 @@ const Chat = () => {
         <h2>Admin</h2>
       </div>
       <div className="chat-box">
-        <div className="messages">
+        <div className="messages" style={{ height: "400px", overflowY: "auto" }}>
           {messages.length > 0 ? (
             messages.map((msg, index) => (
               <div
@@ -144,14 +145,17 @@ const Chat = () => {
           )}
           <div ref={messagesEndRef} />
         </div>
-        <div className="send-message">
+        <div className="send-message input-group">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Nhập tin nhắn..."
+            className="form-control"
           />
-          <button onClick={handleSendMessage}>Gửi</button>
+          <button onClick={handleSendMessage} className="btn btn-primary">
+            Gửi
+          </button>
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import Dashboard from "../components/admin/Dashboard"
 import Register from "../components/Register"
 import Client from "../components/Client"
 import Role from "../components/admin/Role"
+import RefundPaymentQR from "../components/admin/RefundPaymentQR"
 import AdminChat from "../components/admin/AdminChat"
 import Products from "../components/admin/Products"
 import RequireAuth from "../services/RequireAuth";
@@ -29,6 +30,8 @@ import CategoryAdmin from "../components/admin/CategoryAdmin"
 import ProductsDetails from "../components/admin/ProductsDetails"
 import OrderProduct from "../components/admin/OrderProduct"
 import TraCoc from "../components/admin/TraCoc"
+import Bill from "../components/admin/Bill";
+
 const AppRoutes = () => {
   return (
     <Router>
@@ -41,6 +44,7 @@ const AppRoutes = () => {
         <Route path="/Details/:id" element={<Details />} />
         <Route path="/Cart" element={<Cart />} />
         <Route path="/Checkout" element={<Checkout />} />
+        <Route path="/RefundPaymentQR" element={<RefundPaymentQR/>} />
         <Route path="/PaymentQR" element={<PaymentQR />} />
         <Route path="/Search" element={<Search />} />
         <Route path="/Categories" element={<Categories />} />
@@ -55,6 +59,7 @@ const AppRoutes = () => {
         <Route path="/admin/CategoryAdmin" element={<CategoryAdmin/>} />
         <Route path="/admin/ProductsDetails/:productId/:method" element={<ProductsDetails/>} />
         <Route path="/admin/TraCoc/:orderDetailId" element={<TraCoc/>} />
+        <Route path="/admin/bill" element={<Bill/>} />
         <Route
           path="/admin/Accounts"
           element={

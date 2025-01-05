@@ -7,6 +7,7 @@ import Header from "../header/Header";
 import dayjs from "dayjs";
 
 const OrderProduct = () => {
+
   const { orderDetailId } = useParams();
   const navigate = useNavigate(); // Hook điều hướng
   const [orderDetail, setOrderDetail] = useState(null);
@@ -19,11 +20,11 @@ const OrderProduct = () => {
     1: "Chưa thanh toán",
     2: "Đã thanh toán",
     3: "Đang giao",
-    4: "Đã giao đến nơi",
-    5: "Yêu cầu trả hàng",
-    6: "Đã hoàn cọc",
-    7: "Đã giao đến nơi",
-    8: "Hoàn tất",
+    4: "Đã giao thành công",
+    5: "Đang trả hàng",
+    6: "Nhận hàng thành công",
+    7: "Tạo hóa đơn trả",
+    8: "Hoàn tiền thành công",
   };
 
   const formatDate = (isoDate) => dayjs(isoDate).format("DD/MM/YYYY HH:mm");
@@ -94,8 +95,15 @@ const OrderProduct = () => {
   };
 
   if (loading) {
-    return <div className="loading">Đang tải dữ liệu...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Đang tải dữ liệu...</span>
+        </div>
+      </div>
+    );
   }
+  
 
   if (error) {
     return <div className="error">Lỗi: {error}</div>;
@@ -106,68 +114,96 @@ const OrderProduct = () => {
   }
 
   return (
-    <div className="orderproduct-container">
+    <div className="container-fluid">
       <Header />
-      <div className="orderproduct-main">
-        <MenuBar />
-        <div className="orderproduct-content">
-          <h2>Chi tiết đơn hàng</h2>
-          <table className="orderproduct-table">
-            <thead>
-              <tr>
-                <th>Mã sản phẩm thuê</th>
-                <th>Tên sản phẩm</th>
-                <th>Ngày thuê</th>
-                <th>Giá</th>
-                <th>Đơn Hàng</th>
-                <th>Trạng Thái</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{orderDetail.id}</td>
-                <td>{orderDetail.productDetail.type}</td>
-                <td>{formatDate(orderDetail.createdAt)}</td>
-                <td>{orderDetail.currentPrice}</td>
-                <td>{orderDetail.order.id}</td>
-                <td>
-                  {isEditing ? (
-                    <select
-                      value={newStatus}
-                      onChange={(e) => setNewStatus(Number(e.target.value))}
-                    >
-                      {Object.entries(statusMapping).map(([key, value]) => (
-                        <option key={key} value={key}>
-                          {value}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    statusMapping[orderDetail.status]
-                  )}
-                </td>
-                <td>
-                  {isEditing ? (
-                    <button onClick={handleSaveClick}>Lưu</button>
-                  ) : (
-                    <>
-                      <button onClick={handleEditClick}>Sửa</button>
-                      {orderDetail.status === 4 && (
-                        <button onClick={() => navigate(`/admin/TraCoc/${orderDetail.id}`)}>
-                          Trả Cọc
+      <div className="row">
+        {/* MenuBar */}
+        <div className="col-lg-2 col-md-3 col-4 p-0 bg-light border-end mt-5">
+          <MenuBar />
+        </div>
+  
+        {/* Nội dung chính */}
+        <div className="col-lg-10 col-md-9 col-8 p-4 mt-6">
+          <h2 className="text-primary mb-4">Chi tiết đơn hàng</h2>
+  
+          {/* Bảng chi tiết đơn hàng */}
+          <div className="table-responsive">
+            <table className="table table-hover table-bordered">
+              <thead className="table-primary">
+                <tr>
+                  <th>Mã sản phẩm thuê</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Ngày thuê</th>
+                  <th>Giá</th>
+                  <th>Đơn Hàng</th>
+                  <th>Trạng Thái</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{orderDetail.id}</td>
+                  <td>{orderDetail.productDetail.type}</td>
+                  <td>{formatDate(orderDetail.createdAt)}</td>
+                  <td>{orderDetail.currentPrice.toLocaleString()}₫</td>
+                  <td>{orderDetail.order.id}</td>
+                  <td>
+                    {isEditing ? (
+                      <select
+                        value={newStatus}
+                        onChange={(e) => setNewStatus(Number(e.target.value))}
+                        className="form-select"
+                      >
+                        {Object.entries(statusMapping).map(([key, value]) => (
+                          <option key={key} value={key}>
+                            {value}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <span
+                        className={`badge ${
+                          orderDetail.status === 1
+                            ? "bg-warning"
+                            : orderDetail.status === 2
+                            ? "bg-success"
+                            : "bg-info"
+                        }`}
+                      >
+                        {statusMapping[orderDetail.status]}
+                      </span>
+                    )}
+                  </td>
+                  <td>
+                    {isEditing ? (
+                      <button className="btn btn-success btn-sm me-2" onClick={handleSaveClick}>
+                        Lưu
+                      </button>
+                    ) : (
+                      <>
+                        <button className="btn btn-warning btn-sm me-2" onClick={handleEditClick}>
+                          Sửa
                         </button>
-                      )}
-                    </>
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                        {orderDetail.status === 7 && (
+                          <button
+                            className="btn btn-primary btn-sm"
+                            onClick={() => navigate(`/admin/TraCoc/${orderDetail.id}`)}
+                          >
+                            Trả Cọc
+                          </button>
+                        )}
+                      </>
+                    )}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default OrderProduct;

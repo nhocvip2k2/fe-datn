@@ -142,58 +142,68 @@ const AdminChat = () => {
   const handleUserSelect = (user) => {
     setSelectedUser(user);
     setConversationId(user.id); // Cập nhật conversationId dựa trên user
-    console.log(conversationId)
     setMessages([]); // Làm sạch tin nhắn trước khi tải lại
   };
 
   return (
     <>
-    <Header/>
-    <div className="admin">
-      <div className="user-list-container">
-        <h2 className="user-list-header">Danh sách người dùng</h2>
-        <ul className="user-list">
-          {users.map((user, index) => (
-            <li
-              key={index}
-              className={`user-list-item ${selectedUser?.customerId === user.customerId ? "active" : ""}`}
-              onClick={() => handleUserSelect(user)}
-            >
-              {user.email}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="admin-chat-container">
-      <h2>{selectedUser ? `Chat với ${selectedUser.name || `User ${selectedUser.customerId}`}` : "Chat"}</h2>
-        <div className="admin-chat--box">
-          <div className="admin-messages">
-            {messages.length > 0 ? (
-              messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`admin-message ${msg.senderRole === "admin" ? "sent" : "received"}`}
+      <Header />
+      <div className="container-fluid d-flex flex-column flex-md-row mt-6">
+        <div className="col-12 col-md-3 p-3 mb-3 mb-md-0">
+          <div className="card shadow-lg border-light rounded">
+            <h2 className="card-header bg-primary text-white">Danh sách người dùng</h2>
+            <ul className="list-group list-group-flush">
+              {users.map((user) => (
+                <li
+                  key={user.customerId}
+                  className={`list-group-item d-flex justify-content-between align-items-center ${selectedUser?.customerId === user.customerId ? "active" : ""}`}
+                  onClick={() => handleUserSelect(user)}
                 >
-                  <p>{msg.content}</p>
-                </div>
-              ))
-            ) : (
-              <p>Không có tin nhắn nào.</p>
-            )}
-            <div ref={messagesEndRef} />
+                  {user.email}
+                  <span className="badge bg-secondary">{user.customerId}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-          <div className="admin-send-message">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Nhập tin nhắn..."
-            />
-            <button onClick={handleSendMessage}>Gửi</button>
+        </div>
+        <div className="col-12 col-md-9 p-3">
+          <div className="card shadow-lg border-light rounded">
+            <h2 className="card-header bg-success text-white">
+              {selectedUser ? `Chat với ${selectedUser.name || `User ${selectedUser.customerId}`}` : "Chọn người dùng để trò chuyện"}
+            </h2>
+            <div className="card-body">
+              <div className="messages" style={{ maxHeight: "400px", overflowY: "scroll" }}>
+                {messages.length > 0 ? (
+                  messages.map((msg, index) => (
+                    <div
+                      key={index}
+                      className={`message p-2 mb-2 rounded-3 ${msg.senderRole === "admin" ? "bg-info text-white" : "bg-light text-dark"}`}
+                    >
+                      <p>{msg.content}</p>
+                      <small className="text-muted">{new Date(msg.createdAt).toLocaleTimeString()}</small>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-muted">Không có tin nhắn nào.</p>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+              <div className="input-group mt-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  placeholder="Nhập tin nhắn..."
+                />
+                <button className="btn btn-primary" onClick={handleSendMessage}>
+                  Gửi
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </>
   );
 };

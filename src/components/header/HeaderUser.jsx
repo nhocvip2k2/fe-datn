@@ -6,43 +6,34 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import Chat from "../customer/Chat";
 import { getToken } from "../../services/Cookies";
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [keyword, setKeyword] = useState(""); // Từ khóa tìm kiếm
-  const [unreadCount, setUnreadCount] = useState(0); // Số lượng tin nhắn chưa đọc
-  const [isChatOpen, setIsChatOpen] = useState(false); // Trạng thái pop-up chat
+  const [keyword, setKeyword] = useState("");
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const token = getToken();
-  const customerId=2;
+  const customerId = 2;
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleCart = () => setIsCartOpen(!isCartOpen);
-  const toggleOrder = () => {
-    window.location.href = "/order";
-  };
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+  const toggleCart = () => setIsCartOpen((prev) => !prev);
+  const toggleOrder = () => (window.location.href = "/order");
   const handleLogout = () => {
     logOut();
     window.location.href = "/login";
   };
-
-  const handleProfile = () => {
-    window.location.href = "/profile";
-  };
-
-  const handleChangePassword = () => {
-    window.location.href = "/ChangePassword";
-  };
-
+  const handleProfile = () => (window.location.href = "/profile");
+  const handleChangePassword = () => (window.location.href = "/ChangePassword");
   const handleSearch = () => {
     if (keyword.trim()) {
       window.location.href = `/search?keyword=${encodeURIComponent(keyword)}`;
     }
   };
-
   const handleChatClick = () => {
-    setIsChatOpen(!isChatOpen);
-    setUnreadCount(0); // Reset số lượng tin nhắn chưa đọc sau khi mở chat
+    setIsChatOpen((prev) => !prev);
+    setUnreadCount(0);
   };
 
   useEffect(() => {
@@ -57,7 +48,6 @@ const Header = () => {
     return () => document.removeEventListener("cartUpdated", updateCartCount);
   }, []);
 
-  // Kết nối WebSocket để lắng nghe tin nhắn mới
   useEffect(() => {
     const socket = new SockJS("https://datn.up.railway.app/ws");
     const stompClient = Stomp.over(socket);
@@ -66,86 +56,85 @@ const Header = () => {
       stompClient.subscribe(`/admin/send/customer/${customerId}`, (message) => {
         const data = JSON.parse(message.body);
         if (data) {
-          setUnreadCount((prevCount) => prevCount + 1); // Tăng số lượng tin nhắn chưa đọc
+          setUnreadCount((prevCount) => prevCount + 1);
         }
       });
     });
 
-    return () => {
-      stompClient.disconnect();
-    };
-  }, []);
+    return () => stompClient.disconnect();
+  }, [customerId]);
 
   return (
     <>
-      <header className="header">
-        <div className="logo">
-          <a href="/home">PTIT STORE</a>
-        </div>
-        <div className="dm">
-          <a href="/search">Giới thiệu</a>
-        </div>
-        <div className="dm">
-          <a href="/search">Sản phẩm</a>
-        </div>
-        <div className="dm">
-          <a href="/search">Tin tức</a>
-        </div>
-        <div className="header-center">
-          {/* Ô tìm kiếm */}
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Tìm kiếm sản phẩm..."
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          />
-          <button className="search-btn" onClick={handleSearch}>
-            <i className="fas fa-search"></i>
-          </button>
-        </div>
-        <div className="header-right">
-          {/* Biểu tượng chat */}
-          <div className="chat-icon" onClick={handleChatClick}>
-            <i className="fas fa-comments"></i>
-            {unreadCount > 0 && (
-              <span className="chat-count">{unreadCount}</span>
-            )}
-          </div>
-          {/* Biểu tượng đơn hàng */}
-          <div className="order-icon" onClick={toggleOrder}>
-            <i className="fas fa-file-alt"></i> {/* Biểu tượng đơn hàng */}
-          </div>
+      <header className="header navbar navbar-expand-lg navbar-light bg-light">
+  <div className="container-fluid">
+  <a className="navbar-brand fw-bold fs-3" href="/home">
+  PTIT STORE
+</a>
 
-          {/* Biểu tượng giỏ hàng */}
-          <div className="cart-icon" onClick={toggleCart}>
-            <i className="fas fa-shopping-cart"></i>
-            {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span className="navbar-toggler-icon"></span>
+    </button>
+    <div className="collapse navbar-collapse" id="navbarNav">
+      <ul className="navbar-nav me-auto">
+        <li className="nav-item"><a className="nav-link" href="/search">Giới thiệu</a></li>
+        <li className="nav-item"><a className="nav-link" href="/search">Sản phẩm</a></li>
+        <li className="nav-item"><a className="nav-link" href="/search">Tin tức</a></li>
+      </ul>
+      <div className="d-flex align-items-center justify-content-between w-75">
+        <div className="search-container mx-auto w-75">
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Tìm kiếm sản phẩm..."
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            />
+            <button className="btn btn-outline-secondary" onClick={handleSearch}>
+              <i className="fas fa-search"></i>
+            </button>
           </div>
+        </div>
 
-          {/* Biểu tượng người dùng */}
-          <div className="user-icon" onClick={toggleMenu}>
+        {/* Các biểu tượng khác */}
+        <div className="icon-container me-3" onClick={handleChatClick}>
+          <i className="fas fa-comments"></i>
+          {unreadCount > 0 && <span className="badge bg-danger">{unreadCount}</span>}
+        </div>
+        <div className="icon-container me-3" onClick={toggleOrder}>
+          <i className="fas fa-file-alt"></i>
+        </div>
+        <div className="icon-container me-3" onClick={toggleCart}>
+          <i className="fas fa-shopping-cart"></i>
+          {cartCount > 0 && <span className="badge bg-primary">{cartCount}</span>}
+        </div>
+        <div className="dropdown">
+          <button className="btn btn-outline-secondary dropdown-toggle" type="button" onClick={toggleMenu}>
             <i className="fas fa-user-circle"></i>
-            {isMenuOpen && (
-              <div className="dropdown-menu">
-                <button onClick={handleProfile}>Profile</button>
-                <button onClick={handleChangePassword}>ChangePassword</button>
-                <button onClick={handleLogout}>Logout</button>
-              </div>
-            )}
-          </div>
+          </button>
+          {isMenuOpen && (
+            <ul className="dropdown-menu show custom-dropdown c-dropdown">
+              <li><button className="dropdown-item" onClick={handleProfile}>Profile</button></li>
+              <li><button className="dropdown-item" onClick={handleChangePassword}>Change Password</button></li>
+              <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
+            </ul>
+          )}
         </div>
-      </header>
+      </div>
+    </div>
+  </div>
+</header>
 
-      {/* Sidebar Giỏ Hàng */}
+
+      {/* Cart Sidebar */}
       <CartSidebar isOpen={isCartOpen} onClose={toggleCart} />
 
-      {/* Pop-up Chat (Trượt ra từ dưới lên) */}
-      <div className={`chat-container ${isChatOpen ? 'open' : ''}`}>
-        <Chat /> {/* Đưa component Chat vào đây */}
+      {/* Chat Container */}
+      <div className={`chat-container ${isChatOpen ? "open" : ""}`}>
+        <Chat />
       </div>
-
     </>
   );
 };

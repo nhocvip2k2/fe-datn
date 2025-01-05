@@ -5,7 +5,7 @@ import Header from '../header/HeaderUser';
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import "../../PaymentQR.css"; 
-const PaymentQR = () => {
+const RefundPaymentQR = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -62,7 +62,7 @@ const PaymentQR = () => {
     <div className="payment-container">
       <div className="payment-success-header">
         <div className="success-icon">✓</div>
-        <h1>Đặt hàng thành công</h1>
+        <h1>Hoàn tiền</h1>
         <p>Mã đơn hàng: <strong>#{orderId}</strong></p>
       </div>
 
@@ -94,4 +94,4 @@ const PaymentQR = () => {
  
 };
 
-export default PaymentQR;
+export default RefundPaymentQR;

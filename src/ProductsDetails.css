@@ -9,14 +9,16 @@
     height: calc(100vh - 64px); /* Trừ đi chiều cao của Header */
     margin-top: 50px;
   }
-  
+  .mt-6 {
+    margin-top: 5rem !important;
+}
   .productsdetails-content {
     flex: 1;
     padding: 24px;
     overflow-y: auto;
     background-color: #f4f4f4;
   }
-
+  
   /* form */
   .product-form {
     max-width: 100%;

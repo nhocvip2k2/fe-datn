@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaHome, FaBox, FaUsers, FaCogs } from "react-icons/fa";
+import { FaHome, FaBox, FaUsers, FaCogs, FaBars } from "react-icons/fa";
+
 import "../../MenuBar.css";
 
 const MenuBar = () => {
-  const location = useLocation(); // Để lấy URL hiện tại
+  const location = useLocation();
   const [selected, setSelected] = useState(location.pathname);
+  const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
     { id: "home", label: "Trang chủ", icon: <FaHome />, link: "/admin/dashboard" },
@@ -23,7 +25,6 @@ const MenuBar = () => {
       label: "Người dùng",
       icon: <FaUsers />,
       children: [
-        { id: "staff", label: "Nhân viên", link: "/staff" },
         { id: "customers", label: "Khách hàng", link: "/admin/accounts" },
         { id: "orders", label: "Đơn hàng", link: "/admin/order" },
       ],
@@ -38,37 +39,80 @@ const MenuBar = () => {
 
   const handleSelect = (link) => {
     setSelected(link);
+    setIsOpen(false);
   };
 
+  const isActive = (link) => (selected === link ? "bg-dark" : "");
+
   return (
-    <div className="menu-bar">
-      <div className="menu-logo">MENU</div>
-      <ul className="menu-list">
-        {menuItems.map((item) => (
-          <li key={item.id} className={selected === item.link ? "selected" : ""}>
-            <Link to={item.link || "#"} onClick={() => handleSelect(item.link)}>
-              <div className="menu-item">
-                {item.icon}
-                <span>{item.label}</span>
-              </div>
-            </Link>
-            {item.children && (
-              <ul className="submenu">
-                {item.children.map((subItem) => (
-                  <li
-                    key={subItem.id}
-                    className={selected === subItem.link ? "selected" : ""}
+    <div className="d-flex h-100">
+      {/* Toggle button for small screens */}
+      <button
+        className="btn btn-primary d-md-none"
+        onClick={() => setIsOpen(!isOpen)}
+        style={{ position: "absolute", top: "10px", left: "10px", zIndex: 1000 }}
+      >
+        <FaBars />
+      </button>
+
+      <nav
+  className={`bg-primary text-white p-3 ${isOpen ? "d-block" : "d-none"} d-md-block`}
+  style={{
+    position: "fixed",
+    top: 46,
+    left: 0,
+    width: "250px",
+    height: "100vh",
+    overflowY: "auto",
+    zIndex: 1000,
+  }}
+>
+
+        <div className="menu-logo mb-4"></div>
+        <ul className="nav flex-column">
+          {menuItems.map((item) => (
+            <li key={item.id} className={`nav-item ${isActive(item.link)}`}>
+              {!item.children ? (
+                <Link
+                  className="nav-link text-white d-flex align-items-center"
+                  to={item.link}
+                  onClick={() => handleSelect(item.link)}
+                >
+                  {item.icon} <span className="ms-2">{item.label}</span>
+                </Link>
+              ) : (
+                <>
+                  <div
+                    className="nav-link text-white d-flex align-items-center justify-content-between"
+                    data-bs-toggle="collapse"
+                    data-bs-target={`#${item.id}-submenu`}
+                    aria-expanded={isActive(item.link) ? "true" : "false"}
+                    aria-controls={`${item.id}-submenu`}
                   >
-                    <Link to={subItem.link} onClick={() => handleSelect(subItem.link)}>
-                      {subItem.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
+                    <div className="d-flex align-items-center">
+                      {item.icon} <span className="ms-2">{item.label}</span>
+                    </div>
+                    <span className="dropdown-toggle"></span>
+                  </div>
+                  <ul className="collapse list-unstyled ps-3" id={`${item.id}-submenu`}>
+                    {item.children.map((subItem) => (
+                      <li key={subItem.id} className={`nav-item ${isActive(subItem.link)}`}>
+                        <Link
+                          className="nav-link text-white"
+                          to={subItem.link}
+                          onClick={() => handleSelect(subItem.link)}
+                        >
+                          {subItem.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
     </div>
   );
 };

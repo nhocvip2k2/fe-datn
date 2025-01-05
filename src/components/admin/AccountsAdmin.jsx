@@ -3,6 +3,7 @@ import "../../AccountsAdmin.css";
 import MenuBar from "../menu/MenuBar"; // Thanh MenuBar có sẵn
 import Header from "../header/Header"; // Header có sẵn
 import { getToken } from "../../services/Cookies";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const token = getToken();
 
@@ -46,64 +47,90 @@ const AccountsAdmin = () => {
   };
 
   return (
-    <div className="accounts-container">
+    <div className="container-fluid">
       <Header />
-
-      <div className="accounts-main">
-        <MenuBar />
-
-        <div className="accounts-content">
+      <div className="row">
+        {/* MenuBar */}
+        <div className="col-lg-2 col-md-3 col-4 p-0 bg-light border-end mt-5">
+          <MenuBar />
+        </div>
+  
+        {/* Nội dung chính */}
+        <div className="col-lg-10 col-md-9 col-8 p-4 mt-6 ">
           {loading ? (
-            <p>Đang tải dữ liệu...</p>
+            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "50vh" }}>
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Đang tải dữ liệu...</span>
+              </div>
+            </div>
           ) : (
             <>
-              <table className="accounts-table">
-                <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Tên người dùng</th>
-                    <th>Email</th>
-                    <th>Vai trò</th>
-                    <th>Ngày tạo</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((user, index) => (
-                    <tr key={user.id}>
-                      <td>{index + 1 + currentPage * 10}</td>
-                      <td>{user.name}</td>
-                      <td>{user.email}</td>
-                      <td>{user.role}</td>
-                      <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+              <h2 className="mb-4 text-primary">Danh sách người dùng</h2>
+              <div className="table-responsive">
+                <table className="table table-hover table-striped table-bordered">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>STT</th>
+                      <th>Tên người dùng</th>
+                      <th>Email</th>
+                      <th>Vai trò</th>
+                      <th>Ngày tạo</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {/* Thanh phân trang */}
-              <div className="pagination">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 0}
-                >
-                  Trang trước
-                </button>
-                <span>
-                  Trang {currentPage + 1} / {totalPages}
-                </span>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages - 1}
-                >
-                  Trang sau
-                </button>
+                  </thead>
+                  <tbody>
+                    {data.map((user, index) => (
+                      <tr key={user.id}>
+                        <td>{index + 1 + currentPage * 10}</td>
+                        <td>{user.name}</td>
+                        <td>{user.email}</td>
+                        <td>
+                          <span
+                            className={`badge ${
+                              user.role === "Admin" ? "bg-success" : "bg-secondary"
+                            }`}
+                          >
+                            {user.role}
+                          </span>
+                        </td>
+                        <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
+  
+              {/* Thanh phân trang */}
+              <nav aria-label="Page navigation" className="mt-4">
+                <ul className="pagination justify-content-center">
+                  <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                    <button
+                      className="page-link"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                    >
+                      Trang trước
+                    </button>
+                  </li>
+                  <li className="page-item disabled">
+                    <span className="page-link">
+                      Trang {currentPage + 1} / {totalPages}
+                    </span>
+                  </li>
+                  <li className={`page-item ${currentPage === totalPages - 1 ? "disabled" : ""}`}>
+                    <button
+                      className="page-link"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                    >
+                      Trang sau
+                    </button>
+                  </li>
+                </ul>
+              </nav>
             </>
           )}
         </div>
       </div>
     </div>
   );
-};
+}  
 
 export default AccountsAdmin;

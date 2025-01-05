@@ -1,9 +1,29 @@
 .orders-container-admin {
-    margin-top: 50px;
+    
     font-family: Arial, sans-serif;
     display: flex;
   }
-  
+  .customer-column, 
+.customer-column + td {
+  width: 30%;
+  word-wrap: break-word;
+}
+.money-column, 
+.money-column + td {
+  width: 10%;
+  word-wrap: break-word;
+}
+.payment-column, 
+.payment-column + td {
+  width: 30%;
+  word-wrap: break-word;
+}
+.address-column, 
+.address-column + td {
+  width: 40%;
+  word-wrap: break-word;
+}
+
   h2 {
     color: #333;
     margin-bottom: 10px;
@@ -92,7 +112,7 @@
   }
   
   .layout-content {
-    width: 80%;
+    width: 100%;
     padding: 20px;
     box-sizing: border-box;
   }

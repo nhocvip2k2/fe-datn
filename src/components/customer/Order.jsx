@@ -3,6 +3,7 @@ import '../../order.css'; // File CSS đã chỉnh màu sắc
 import Header from '../header/HeaderUser';
 import { getToken } from "../../services/Cookies";
 import dayjs from 'dayjs';
+import { FaPhoneAlt, FaMapMarkerAlt, FaCheckCircle, FaTimesCircle, FaCreditCard } from 'react-icons/fa'; // Import FontAwesome icons
 
 const Orders = () => {
   const [orders, setOrders] = useState([]); // State lưu đơn hàng
@@ -40,96 +41,91 @@ const Orders = () => {
     };
 
     fetchOrders();
-  }, []);
-
+  }, [token]);
+ 
   return (
     <div className="orders-container">
       <Header />
       <h2>Đơn hàng</h2>
-      {loading && <p>Đang tải...</p>}
-      {error && <p style={{ color: 'red' }}>Lỗi: {error}</p>}
-      {!loading && !error && (
-        <table>
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th>Khách hàng</th>
-              <th>Địa chỉ</th>
-              <th>Giá tiền</th>
-              <th>Cổng thanh toán</th>
-              <th>Sản phẩm</th>
-              <th>Ngày Đặt Hàng</th>
-              <th>Cập nhật</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map((order, index) => (
-              <tr key={index}>
-                <td>
-                  <a href={`orderdetails/${order.order.id}`} style={{ color: '#007bff' }}>
-                    {order.order.id}
-                  </a>
-                </td>
-                <td>
-                  <div>
-                    <strong>👤 {order.order.user.name}</strong>
-                  </div>
-                  <div>📞 {order.order.currentPhone}</div>
-                </td>
-                <td>📍 {order.order.currentAddress}</td>
-                <td>
-                  {order.orderDetails.reduce(
-                    (total, item) => total + item.currentPrice * item.quantity,
-                    0
-                  )}
-                </td>
-                <td>{order.order.payment}</td>
-                
-                <td>
-  {order.orderDetails.map((detail, detailIndex) => (
-    <div key={detailIndex} style={{ marginBottom: '8px' }}>
-      {/* Hiển thị thông tin sản phẩm */}
-      <div>
-        <strong>{detail.productDetail.type}</strong>
-      </div>
-
-      {/* Hiển thị trạng thái sản phẩm */}
-      <div style={{ fontSize: '14px', color: 'gray', marginTop: '4px' }}>
-        {(() => {
-          const detailStatusMapping = {
-            1: 'Chưa thanh toán',
-            2: 'Đã thanh toán',
-            3: 'Đang giao',
-            4: 'Đã giao đến nơi',
-            5: 'Đang trả hàng',
-            6: 'Đang kiểm tra hàng',
-            7: 'Đã giao hoàn tất',
-            8: 'Đã hủy',
-          };
-
-          // Hiển thị trạng thái nếu có trong mapping, nếu không hiển thị trạng thái khác
-          return detailStatusMapping[detail.status] || 'Trạng thái khác';
-        })()}
-      </div>
-
-      {/* Dòng kẻ ngang tách biệt */}
-      {detailIndex < order.orderDetails.length - 1 && (
-        <div style={{ margin: '8px 0' }}>
-          <hr style={{ border: '1px solid #ccc', margin: 0, width: '100%' }} />
+      {loading && (
+        <div className="loading-container">
+          <div className="spinner-border text-primary" role="status">
+            <span className="sr-only">Đang tải...</span>
+          </div>
         </div>
       )}
-    </div>
-  ))}
-</td>
-
-
-
-                <td>{formatDate(order.createdAt)}</td>
-                <td>{formatDate(order.updatedAt)}</td>
+      {error && <p className="text-danger">Lỗi: {error}</p>}
+      {!loading && !error && (
+        <div className="table-responsive">
+          <table className="table table-striped table-hover table-bordered">
+            <thead className="thead-dark success">
+              <tr>
+                <th>STT</th>
+                <th>Khách hàng</th>
+                <th>Địa chỉ</th>
+                <th>Giá tiền</th>
+                <th>Cổng thanh toán</th>
+                <th>Sản phẩm</th>
+                <th>Ngày Đặt Hàng</th>
+                <th>Cập nhật</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {orders.map((order, index) => (
+                <tr key={order.order.id} className="order-row">
+                  <td>
+                    <a href={`orderdetails/${order.order.id}`} className="text-primary">
+                      {order.order.id}
+                    </a>
+                  </td>
+                  <td>
+                    <div><strong>👤 {order.order.user.name}</strong></div>
+                    <div><FaPhoneAlt /> {order.order.currentPhone}</div>
+                  </td>
+                  <td>
+                    <FaMapMarkerAlt /> {order.order.currentAddress}
+                  </td>
+                  <td>
+                    {order.orderDetails.reduce(
+                      (total, item) => total + item.currentPrice * item.quantity,
+                      0
+                    )}
+                    VND
+                  </td>
+                  <td>{order.order.payment}</td>
+                  <td>
+                    {order.orderDetails.map((detail, detailIndex) => (
+                      <div key={detailIndex} style={{ marginBottom: '8px' }}>
+                        <div><strong>{detail.productDetail.type}</strong></div>
+                        <div className="text-muted" style={{ fontSize: '14px' }}>
+                          {(() => {
+                            const detailStatusMapping = {
+                              1: 'Chưa thanh toán',
+                              2: 'Đã thanh toán',
+                              3: 'Đang giao',
+                              4: 'Đã giao đến nơi',
+                              5: 'Đang trả hàng',
+                              6: 'Đang kiểm tra hàng',
+                              7: 'Đã giao hoàn tất',
+                              8: 'Đã hủy',
+                            };
+
+                            return detailStatusMapping[detail.status] || 'Trạng thái khác';
+                          })()}
+                        </div>
+                        {detailIndex < order.orderDetails.length - 1 && (
+                          <hr className='hr-oder' style={{ border: '1px solid #ccc', margin: 0, width: '100%' }} />
+                        )}
+                      </div>
+                    ))}
+                  </td>
+                  <td>{formatDate(order.createdAt)}</td>
+                  <td>{formatDate(order.updatedAt)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

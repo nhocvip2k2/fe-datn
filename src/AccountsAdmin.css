@@ -9,7 +9,12 @@
     height: calc(100vh - 64px); /* Trừ đi chiều cao của Header */
     margin-top: 50px;
   }
-  
+  .mt-40{
+    margin-top: 107px;
+  }
+  .mt-6 {
+    margin-top: 5rem !important;
+}
   .accounts-content {
     flex: 1;
     padding: 24px;

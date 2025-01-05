@@ -3,7 +3,18 @@
     flex-direction: column;
     height: 100vh;
   }
-  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with 50% opacity */
+    z-index: 1040; /* Ensure it appears below the modal */
+  }
+  .mt-6 {
+    margin-top: 5rem !important;
+}
   .categoryadmin-main {
     display: flex;
     height: calc(100vh - 64px); /* Trừ đi chiều cao của Header */

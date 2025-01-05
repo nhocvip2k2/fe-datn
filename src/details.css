@@ -3,12 +3,21 @@
     margin-top: 80px;
     margin-bottom: 20px;
     font-size: 14px;
-    color: #555;
+   
   }
   
   .breadcrumb a {
     color: #007bff;
     text-decoration: none;
+  }
+  .product-title {
+    font-size: 1.5rem;  /* Smaller font size for a clean and minimal look */
+    font-weight: 500;   /* Slightly bold but not too heavy */
+    color: #4a4a4a;     /* A soft dark gray color for a modern feel */
+    line-height: 1.3;   /* Adjusts the space between lines */
+    margin-bottom: 10px;/* Space below the title */
+    text-transform: capitalize; /* Capitalizes first letters of each word */
+    letter-spacing: 0.5px; /* Adds slight spacing between letters for a cleaner look */
   }
   
   /* Product Section */

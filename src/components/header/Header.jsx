@@ -1,6 +1,6 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import React, { useState, useEffect } from "react";
 import "../../headerUser.css";
-import CartSidebar from "../customer/CartSideBar";
 import { logOut } from "../../services/authenticationService";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
@@ -10,11 +10,8 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [keyword, setKeyword] = useState(""); // Từ khóa tìm kiếm
-  const [unreadCount, setUnreadCount] = useState(0); // Số lượng tin nhắn chưa đọc
-  const [isChatOpen, setIsChatOpen] = useState(false); // Trạng thái pop-up chat
-
-  const customerId = 2; // Thay đổi theo ID khách hàng thực tế
+  const [keyword, setKeyword] = useState("");
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleCart = () => setIsCartOpen(!isCartOpen);
@@ -26,16 +23,15 @@ const Header = () => {
     window.location.href = "/login";
   };
 
+  const handleChatClick = () => {
+    window.location.href = "/admin/adminchat";
+    setUnreadCount(0);
+  };
 
   const handleSearch = () => {
     if (keyword.trim()) {
       window.location.href = `/search?keyword=${encodeURIComponent(keyword)}`;
     }
-  };
-
-  const handleChatClick = () => {
-    window.location.href = "/admin/adminchat";
-    setUnreadCount(0); // Reset số lượng tin nhắn chưa đọc sau khi mở chat
   };
 
   useEffect(() => {
@@ -50,7 +46,6 @@ const Header = () => {
     return () => document.removeEventListener("cartUpdated", updateCartCount);
   }, []);
 
-  // Kết nối WebSocket để lắng nghe tin nhắn mới
   useEffect(() => {
     const socket = new SockJS("https://datn.up.railway.app/ws");
     const stompClient = Stomp.over(socket);
@@ -59,7 +54,7 @@ const Header = () => {
       stompClient.subscribe(`/customer/send/admin`, (message) => {
         const data = JSON.parse(message.body);
         if (data) {
-          setUnreadCount((prevCount) => prevCount + 1); // Tăng số lượng tin nhắn chưa đọc
+          setUnreadCount((prevCount) => prevCount + 1);
         }
       });
     });
@@ -70,51 +65,60 @@ const Header = () => {
   }, []);
 
   return (
-    <>
-      <header className="header">
-        <div className="logo">
-          <a href="/admin/dashboard">PTIT STORE</a>
+    <header className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <div className="container-fluid">
+      <a className="navbar-brand text-decoration-none" href="/admin/dashboard">
+  PTIT STORE
+</a>
+
+        <div className="collapse navbar-collapse">
+          <div className="d-flex mx-auto w-100 justify-content-center">
+            <div className="input-group w-75">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Tìm kiếm sản phẩm..."
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              />
+              <button className="btn btn-outline-secondary" onClick={handleSearch}>
+                <i className="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="header-center">
-          {/* Ô tìm kiếm */}
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Tìm kiếm sản phẩm..."
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          />
-          <button className="search-btn" onClick={handleSearch}>
-            <i className="fas fa-search"></i>
-          </button>
-        </div>
-        <div className="header-right">
-          {/* Biểu tượng chat */}
-          <div className="chat-icon" onClick={handleChatClick}>
-            <i className="fas fa-comments"></i>
+        <div className="d-flex ms-auto justify-content-between align-items-center w-10">
+          <div className="position-relative ms-3" onClick={handleChatClick}>
+            <i className="fas fa-comments fs-4"></i>
             {unreadCount > 0 && (
-              <span className="chat-count">{unreadCount}</span>
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {unreadCount}
+              </span>
             )}
           </div>
-          {/* Biểu tượng đơn hàng */}
-          <div className="order-icon" onClick={toggleOrder}>
-            <i className="fas fa-file-alt"></i> {/* Biểu tượng đơn hàng */}
+          <div className="ms-3" onClick={toggleOrder}>
+            <i className="fas fa-file-alt fs-4"></i>
           </div>
-
-          {/* Biểu tượng người dùng */}
-          <div className="user-icon" onClick={toggleMenu}>
-            <i className="fas fa-user-circle"></i>
+          <div className="dropdown ms-3">
+            <button
+              className="btn btn-link text-decoration-none"
+              onClick={toggleMenu}
+              aria-expanded={isMenuOpen ? "true" : "false"}
+            >
+              <i className="fas fa-user-circle fs-4"></i>
+            </button>
             {isMenuOpen && (
-              <div className="dropdown-menu">
-                <button onClick={handleLogout}>Logout</button>
-              </div>
+              <ul className="dropdown-menu show custom-dropdown c-dropdown">
+                <li>
+                  <button className="dropdown-item" onClick={handleLogout}>Logout</button>
+                </li>
+              </ul>
             )}
           </div>
         </div>
-      </header>
-
-    </>
+      </div>
+    </header>
   );
 };
 

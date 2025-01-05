@@ -3,13 +3,18 @@
     flex-direction: column;
     height: 100vh;
   }
-  
+  .dashboard-content {
+    margin-left: 270px; /* Đặt khoảng cách tương ứng với độ rộng MenuBar */
+    padding: 20px; /* Thêm padding để nội dung thoáng hơn */
+  }
   .dashboard-main {
     display: flex;
     height: calc(100vh - 64px); /* Trừ đi chiều cao của Header */
-    margin-top: 50px;
+
   }
-  
+  .mt-6 {
+    margin-top: 5rem !important;
+}
   .dashboard-content {
     flex: 1;
     padding: 24px;

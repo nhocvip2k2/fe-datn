@@ -1,83 +1,89 @@
 import React, { useState, useEffect } from "react";
 import "../../categoryadmin.css";
-import MenuBar from "../menu/MenuBar"; // Thanh MenuBar có sẵn
-import Header from "../header/Header"; // Header có sẵn
+import MenuBar from "../menu/MenuBar";
+import Header from "../header/Header";
 import { getToken } from "../../services/Cookies";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const token = getToken();
 
 const AccountsAdmin = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
-  const [totalPages, setTotalPages] = useState(1); // Tổng số trang
-  const [editingId, setEditingId] = useState(null); // Hàng đang được chỉnh sửa
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [editingId, setEditingId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [newCategory, setNewCategory] = useState({ categoryName: "", file: null });
 
-const handleEdit = (id) => {
-  setEditingId(id);
-};
 
-const handleCancelEdit = () => {
-  setEditingId(null);
-};
+  const handleEdit = (id) => {
+    setEditingId(id);
+  };
 
-const handleFieldChange = (id, field, value) => {
-  setData((prevData) =>
-    prevData.map((item) =>
-      item.id === id ? { ...item, [field]: value } : item
-    )
-  );
-};
+  const handleCancelEdit = () => {
+    setEditingId(null);
+  };
 
-const handleSave = (id) => {
-  const updatedCategory = data.find((item) => item.id === id);
-
-  // Gửi API cập nhật
-  fetch(`https://datn.up.railway.app/api/admin/categories/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(updatedCategory),
-  })
-    .then((response) => {
-      if (response.ok) {
-        alert("Cập nhật thành công!");
-        setEditingId(null);
-      } else {
-        alert("Có lỗi xảy ra!");
-      }
-    })
-    .catch((error) => {
-      console.error("Error updating category:", error);
-    });
-};
-
-const handleDelete = (id) => {
-  if (window.confirm("Bạn có chắc chắn muốn xóa?")) {
-    // Gửi API xóa
-    fetch(`https://datn.up.railway.app/api/admin/categories/${id}`, {
-      method: "DELETE",
+  const handleFieldChange = (id, field, value) => {
+    setData((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    );
+  };
+  const handleSave = (id) => {
+   
+      const updatedCategory = data.find((item) => item.id === id).name;
+    
+      // Gửi API cập nhật
+    const updateParam = encodeURIComponent(updatedCategory);
+    console.log("Update Param:", updateParam);
+    fetch(`https://datn.up.railway.app/api/admin/categories/${id}?categoryName=${updateParam}`, {
+      method: "PUT",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`, // Use correct string interpolation
+        "Content-Type": "application/json", // Include Content-Type header if needed
       },
     })
       .then((response) => {
         if (response.ok) {
-          alert("Xóa thành công!");
-          setData((prevData) => prevData.filter((item) => item.id !== id));
+          alert("Cập nhật thành công!");
+          setEditingId(null);
         } else {
           alert("Có lỗi xảy ra!");
         }
       })
       .catch((error) => {
-        console.error("Error deleting category:", error);
+        console.error("Error:", error);
+        alert("Đã xảy ra lỗi!");
       });
-  }
-};
+  };
+  
+ 
+  
 
-
+  const handleDelete = (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa?")) {
+      fetch(`https://datn.up.railway.app/api/admin/categories/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            alert("Xóa thành công!");
+            setData((prevData) => prevData.filter((item) => item.id !== id));
+          } else {
+            alert("Có lỗi xảy ra!");
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting category:", error);
+        });
+    }
+  };
   const fetchData = async (page) => {
     try {
       setLoading(true);
@@ -92,8 +98,8 @@ const handleDelete = (id) => {
         }
       );
       const result = await response.json();
-      setData(result.content || []); // 
-      setTotalPages(result.totalPages || 1); // Lấy tổng số trang từ API
+      setData(result.content || []);
+      setTotalPages(result.totalPages || 1);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -101,131 +107,251 @@ const handleDelete = (id) => {
     }
   };
 
+  const handleAddCategory = async () => {
+    const formData = new FormData();
+    formData.append("categoryName", newCategory.categoryName);
+    formData.append("file", newCategory.file);
+
+    try {
+      const response = await fetch(`https://datn.up.railway.app/api/admin/categories`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        alert("Thêm danh mục thành công!");
+        setShowModal(false);
+        fetchData(currentPage); // Refresh data
+      } else {
+        const error = await response.json();
+        alert(`Lỗi: ${error.message || "Có lỗi xảy ra"}`);
+      }
+    } catch (error) {
+      console.error("Error adding category:", error);
+      alert("Đã xảy ra lỗi!");
+    }
+  };
+
   useEffect(() => {
     fetchData(currentPage);
   }, [currentPage]);
 
-  const handlePageChange = (page) => {
-    if (page >= 0 && page < totalPages) {
-      setCurrentPage(page);
-    }
-  };
-
   return (
-    <div className="categoryadmin-container">
+    <div className="container-fluid">
       <Header />
-
-      <div className="categoryadmin-main">
-        <MenuBar />
-
-        <div className="categoryadmin-content">
-          {loading ? (
-            <p>Đang tải dữ liệu...</p>
-          ) : (
+      <div className="row">
+        <div className="col-lg-2 col-md-3 col-4 p-0 bg-light border-end mt-5">
+          <MenuBar />
+        </div>
+        <div className="col-lg-10 col-md-9 col-8 position-relative p-4">
+          {loading && (
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Đang tải...</span>
+            </div>
+          )}
+          {!loading && (
             <>
-              <table className="categoryadmin-table">
-                <thead>
-                  <tr>
-                    <th>STT</th>
-                    <th>Tên danh mục</th>
-                    <th>Hình ảnh </th>
-                    <th>Vai trò</th>
-                    <th>Ngày tạo</th>
-                  </tr>
-                </thead>
-                <tbody>
-  {data.map((category, index) => (
-    <tr key={category.id}>
-      <td>{index + 1 + currentPage * 10}</td>
-      <td>
-        {editingId === category.id ? (
-          <input
-            type="text"
-            value={category.name}
-            onChange={(e) =>
-              handleFieldChange(category.id, "name", e.target.value)
-            }
-          />
-        ) : (
-          category.name
-        )}
-      </td>
-      <td>
-        {editingId === category.id ? (
-          <input
-            type="email"
-            value={category.email}
-            onChange={(e) =>
-              handleFieldChange(category.id, "email", e.target.value)
-            }
-          />
-        ) : (
-          category.email
-        )}
-      </td>
-      <td>{category.role}</td>
-      <td>{new Date(category.createdAt).toLocaleDateString()}</td>
-      <td>
-        {editingId === category.id ? (
-          <>
-            <button
-              className="btn-save"
-              onClick={() => handleSave(category.id)}
-            >
-              Lưu
-            </button>
-            <button
-              className="btn-cancel"
-              onClick={() => handleCancelEdit()}
-            >
-              Hủy
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              className="btn-edit"
-              onClick={() => handleEdit(category.id)}
-            >
-              Sửa
-            </button>
-            <button
-              className="btn-delete"
-              onClick={() => handleDelete(category.id)}
-            >
-              Xóa
-            </button>
-          </>
-        )}
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-              </table>
-
-              {/* Thanh phân trang */}
-              <div className="pagination">
+              <div className="d-flex justify-content-between align-items-center mb-4 mt-6">
+                <h2 className="text-primary">Quản lý danh mục</h2>
                 <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 0}
+                  className="btn btn-success"
+                  onClick={() => setShowModal(true)}
                 >
-                  Trang trước
-                </button>
-                <span>
-                  Trang {currentPage + 1} / {totalPages}
-                </span>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages - 1}
-                >
-                  Trang sau
+                  Thêm mới
                 </button>
               </div>
+
+              <div className="table-responsive">
+                <table className="table table-hover table-bordered">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>STT</th>
+                      <th>Tên danh mục</th>
+                      <th>Email</th>
+                      <th>Vai trò</th>
+                      <th>Ngày tạo</th>
+                      <th>Hành động</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.map((category, index) => (
+                      <tr key={category.id}>
+                        <td>{index + 1 + currentPage * 10}</td>
+                        <td>
+                          {editingId === category.id ? (
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={category.name}
+                              onChange={(e) =>
+                                handleFieldChange(category.id, "name", e.target.value)
+                              }
+                            />
+                          ) : (
+                            category.name
+                          )}
+                        </td>
+                        <td>{category.email}</td>
+                        <td>
+                          <span
+                            className={`badge ${
+                              category.role === "Admin" ? "bg-success" : "bg-secondary"
+                            }`}
+                          >
+                            {category.role}
+                          </span>
+                        </td>
+                        <td>{new Date(category.createdAt).toLocaleDateString()}</td>
+                        <td>
+                          {editingId === category.id ? (
+                            <>
+                              <button
+                                className="btn btn-primary btn-sm me-2"
+                                onClick={() => handleSave(category.id)}
+                              >
+                                Lưu
+                              </button>
+                              <button
+                                className="btn btn-secondary btn-sm"
+                                onClick={() => handleCancelEdit()}
+                              >
+                                Hủy
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                className="btn btn-warning btn-sm me-2"
+                                onClick={() => handleEdit(category.id)}
+                              >
+                                Sửa
+                              </button>
+                              <button
+                                className="btn btn-danger btn-sm"
+                                onClick={() => handleDelete(category.id)}
+                              >
+                                Xóa
+                              </button>
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <nav className="mt-4">
+                <ul className="pagination justify-content-center">
+                  <li className={`page-item ${currentPage === 0 ? "disabled" : ""}`}>
+                    <button
+                      className="page-link"
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                    >
+                      Trang trước
+                    </button>
+                  </li>
+                  <li className="page-item disabled">
+                    <span className="page-link">
+                      Trang {currentPage + 1} / {totalPages}
+                    </span>
+                  </li>
+                  <li
+                    className={`page-item ${
+                      currentPage === totalPages - 1 ? "disabled" : ""
+                    }`}
+                  >
+                    <button
+                      className="page-link"
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                    >
+                      Trang sau
+                    </button>
+                  </li>
+                </ul>
+              </nav>
             </>
           )}
         </div>
       </div>
+
+      {/* Modal for adding a new category */}
+      {showModal && (
+  <>
+    {/* Overlay */}
+    <div className="modal-overlay"></div>
+
+    {/* Modal */}
+    <div className="modal d-block" tabIndex="-1" role="dialog">
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Thêm danh mục mới</h5>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={() => setShowModal(false)}
+            ></button>
+          </div>
+          <div className="modal-body">
+            <div className="mb-3">
+              <label htmlFor="categoryName" className="form-label">
+                Tên danh mục
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="categoryName"
+                value={newCategory.categoryName}
+                onChange={(e) =>
+                  setNewCategory((prev) => ({
+                    ...prev,
+                    categoryName: e.target.value,
+                  }))
+                }
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="file" className="form-label">
+                Hình ảnh
+              </label>
+              <input
+                type="file"
+                className="form-control"
+                id="file"
+                onChange={(e) =>
+                  setNewCategory((prev) => ({
+                    ...prev,
+                    file: e.target.files[0],
+                  }))
+                }
+              />
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleAddCategory}
+            >
+              Thêm mới
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowModal(false)}
+            >
+              Hủy
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </>
+)}
     </div>
   );
 };

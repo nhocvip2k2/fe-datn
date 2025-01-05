@@ -10,7 +10,88 @@ body {
     background-color: #f8f9fa;
     color: #333;
 }
-
+/* Cải thiện giao diện thẻ sản phẩm */
+.card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card-title {
+    white-space: nowrap;        /* Prevent text from wrapping to the next line */
+    overflow: hidden;           /* Hide anything that overflows the container */
+    text-overflow: ellipsis;    /* Add ellipsis (...) when text overflows */
+    display: block;             /* Ensure it behaves as a block element for proper styling */
+    max-width: 100%;            /* Ensure it doesn’t exceed the container’s width */
+  }
+  
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-img-top {
+    width: 100%;
+    height: 250px; /* You can adjust this to suit your design */
+    object-fit: cover; /* or use 'contain' if you want the whole image to fit within */
+    border-radius: 8px 8px 0 0; /* Optional: adds rounded corners to the top */
+  }
+  
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  /* Cải thiện slider (Range) */
+  .range-track {
+    border-radius: 5px;
+    height: 8px;
+  }
+  
+  .range-thumb {
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    background-color: #007bff;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+  }
+  
+  .range-thumb:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Tạo hiệu ứng hover cho nút danh mục */
+  .list-group-item button {
+    border-radius: 20px;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .list-group-item button:hover {
+    background-color: #007bff;
+    color: white;
+    transform: scale(1.05);
+  }
+  
+  /* Cải thiện giao diện pagination */
+  .pagination button {
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .pagination button:hover {
+    background-color: #007bff;
+    color: white;
+    transform: scale(1.1);
+  }
+  
+  .pagination button:focus {
+    outline: none;
+  }
+  
 /* Tổng thể */
 .store-content {
     display: flex;
@@ -68,7 +149,9 @@ body {
 .sidebar ul li button.active:hover {
   background-color: #444;
 }
-
+.mt-15{
+    margin-top: 90px;
+}
 
 /* Thanh lọc giá */
 .price-range-container {
@@ -202,7 +285,7 @@ body {
   
 /* Footer */
 .footer {
-    margin-top:400px;
+    margin-top:150px;
     background-color: #222;
     color: #fff;
     padding: 20px 10%;
