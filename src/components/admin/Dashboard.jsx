@@ -37,7 +37,7 @@ const Dashboard = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${getToken()}`,
             },
           }
         );
@@ -62,7 +62,7 @@ const Dashboard = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${getToken()}`,
           },
         }
       );
@@ -93,7 +93,7 @@ const Dashboard = () => {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${getToken()}`,
               },
             }
           );
@@ -209,7 +209,7 @@ const Dashboard = () => {
             <div className="col-12 col-md-4">
               <div className="card">
                 <h3>Revenue</h3>
-                <p>${data.revenue || 0}</p>
+                <p>{data.totalRevenues || 0}</p>
               </div>
             </div>
           </div>
