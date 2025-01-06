@@ -1,0 +1,81 @@
+.invoice-container {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 90px;
+  }
+  
+  .invoice-header {
+    text-align: center;
+    color: #B30000;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 24px;
+    text-transform: uppercase;
+  }
+  
+  .invoice-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #B30000;
+    padding-bottom: 10px;
+  }
+  
+  .customer-info h3,
+  .invoice-details p {
+    margin: 5px 0;
+  }
+  
+  .invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  .invoice-table th,
+  .invoice-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .invoice-table thead tr {
+    background-color: #F8F8F8;
+    border-bottom: 2px solid #B30000;
+  }
+  
+  .total-label {
+    text-align: right;
+    font-weight: bold;
+  }
+  
+  .total-amount {
+    font-weight: bold;
+  }
+  
+  .payment-info h3,
+  .contact-info h3 {
+    color: #B30000;
+    margin-bottom: 10px;
+  }
+  
+  .payment-info p,
+  .contact-info p {
+    margin: 5px 0;
+  }
+  
+  .contact-info a {
+    color: #B30000;
+    text-decoration: none;
+  }
+  
+  .contact-info a:hover {
+    text-decoration: underline;
+  }
+  

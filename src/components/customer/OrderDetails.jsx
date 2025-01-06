@@ -44,7 +44,7 @@ const OrderDetails = () => {
   if (error) return <div className="error">Error: {error}</div>;
 
   const handleReturnRequest = async (productId, status) => {
-    if ( status === 2) {
+    if (status === 4) {
       const confirmed = window.confirm("Bạn có chắc chắn muốn yêu cầu trả hàng cho sản phẩm này?");
       if (confirmed) {
         try {
@@ -65,7 +65,7 @@ const OrderDetails = () => {
 
           const data = await response.json();
           alert("Yêu cầu trả hàng thành công!");
-          navigate(`/orderDetails/${orderId}`);
+          window.location.reload();
         } catch (err) {
           alert("Có lỗi xảy ra khi yêu cầu trả hàng.");
           console.error(err);
@@ -94,8 +94,8 @@ const OrderDetails = () => {
           <div>
             <strong>Trạng thái:</strong>{" "}
             <span className="status">
-  {order.orderDetails[0].status === 1 ? "Chưa thanh toán" : "Đã thanh toán"}
-</span>
+              {order.orderDetails[0].status === 1 ? "Chưa thanh toán" : "Đã thanh toán"}
+            </span>
 
           </div>
         </div>
@@ -106,8 +106,8 @@ const OrderDetails = () => {
               <li key={item.id} className="item">
                 <img
                   src={
-                    item.productDetail.image
-                      ? item.productDetail.image
+                    item.productDetail.image.url
+                      ? item.productDetail.image.url
                       : "/placeholder-image.png" // Hình ảnh mặc định nếu không có ảnh
                   }
                   alt={item.productDetail.type}
@@ -115,7 +115,7 @@ const OrderDetails = () => {
                 />
                 <div className="item-info">
                   <div className="item-name">
-                    {item.productDetail.type} 
+                    {item.productDetail.type}
                     {/* Hiển thị trạng thái của sản phẩm bên cạnh tên sản phẩm */}
                     <span className="item-status">
                       ({(() => {
@@ -135,24 +135,40 @@ const OrderDetails = () => {
                     </span>
                   </div>
                   <div className="item-price">
-                    {item.currentPrice.toLocaleString()} VND
+                    {(item.currentPrice + item.currentDeposit).toLocaleString()} VND
                   </div>
                   <div className="item-quantity">
                     Số lượng: {item.quantity}
                   </div>
+                  <div className="item-quantity">
+                    Số ngày: {item.rentalDay}
+                  </div>
                 </div>
 
-                {/* Nút yêu cầu trả hàng nếu trạng thái là "Chưa thanh toán" hoặc "Đã thanh toán" */}
-                {( item.status === 2) && (
+                {/* Nút yêu cầu trả hàng nếu trạng thái là  "Đã thanh toán" */}
+                {item.status === 4 && (
                   <div className="return-request-button-container">
                     <button
                       className="return-request-button"
-                      onClick={() => handleReturnRequest(item.productDetail.id, item.status)}
+                      onClick={() => handleReturnRequest(item.id, item.status)}
                     >
                       Yêu cầu trả hàng
                     </button>
                   </div>
                 )}
+
+                {/* Nút hiện hóa đơn nếu trạng thái là "Tạo hóa đơn trả" */}
+                {(item.status === 7 || item.status === 8) && (
+                  <div className="invoice-button-container">
+                    <button
+                      className="invoice-button"
+                      onClick={() => navigate(`/invoice/${item.id}/${item.orderReturn.id}`)} // Điều hướng đến trang hóa đơn
+                    >
+                      Hóa đơn
+                    </button>
+                  </div>
+                )}
+
               </li>
             ))}
           </ul>
@@ -160,15 +176,19 @@ const OrderDetails = () => {
         <div className="order-total">
           <strong>Tổng cộng:</strong>{" "}
           {order.orderDetails
-            .reduce((total, item) => total + item.quantity * item.currentPrice, 0)
+            .reduce(
+              (total, item) => total + item.currentPrice + item.currentDeposit,
+              0
+            )
             .toLocaleString()}{" "}
           VND
         </div>
+
         {order.orderDetails[0].status === 1 && (
           <div className="payment-button-container">
             <a
               href={`/PaymentQR?orderId=${order.order.id}&amount=${order.orderDetails.reduce(
-                (total, item) => total + item.quantity * item.currentPrice,
+                (total, item) => total + item.currentPrice + item.currentDeposit,
                 0
               )}`}
               className="payment-button"

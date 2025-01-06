@@ -161,6 +161,18 @@
   .payment-button:hover {
     background-color: #0056b3;
   }
+  .invoice-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .invoice-button:hover {
+    background-color: #0056b3;
+  }
   
   
   

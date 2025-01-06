@@ -86,12 +86,12 @@ const Orders = () => {
                     <FaMapMarkerAlt /> {order.order.currentAddress}
                   </td>
                   <td>
-                    {order.orderDetails.reduce(
-                      (total, item) => total + item.currentPrice * item.quantity,
-                      0
-                    )}
-                    VND
-                  </td>
+  {order.orderDetails.reduce(
+    (total, item) => total + item.currentPrice + item.currentDeposit,
+    0
+  ).toLocaleString('vi-VN')} VND
+</td>
+
                   <td>{order.order.payment}</td>
                   <td>
                     {order.orderDetails.map((detail, detailIndex) => (
@@ -100,14 +100,14 @@ const Orders = () => {
                         <div className="text-muted" style={{ fontSize: '14px' }}>
                           {(() => {
                             const detailStatusMapping = {
-                              1: 'Chưa thanh toán',
-                              2: 'Đã thanh toán',
-                              3: 'Đang giao',
-                              4: 'Đã giao đến nơi',
-                              5: 'Đang trả hàng',
-                              6: 'Đang kiểm tra hàng',
-                              7: 'Đã giao hoàn tất',
-                              8: 'Đã hủy',
+                              1: "Chưa thanh toán",
+    2: "Đã thanh toán",
+    3: "Đang giao",
+    4: "Đã giao thành công",
+    5: "Đang trả hàng",
+    6: "Nhận hàng thành công",
+    7: "Tạo hóa đơn trả",
+    8: "Hoàn tiền thành công",
                             };
 
                             return detailStatusMapping[detail.status] || 'Trạng thái khác';

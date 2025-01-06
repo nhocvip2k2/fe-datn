@@ -19,6 +19,7 @@ const ProductsDetails = () => {
     description: "",
     categoryId: "",
   });
+
   const [newVariant, setNewVariant] = useState({
     color: "",
     type: "",
@@ -26,7 +27,9 @@ const ProductsDetails = () => {
     deposit: "",
     inventory: "",
     status: true,
+    condition: "", // Add a default value for condition
   });
+  
   const [productDetails, setProductDetails] = useState([]);
   const [image, setImage] = useState(null);
 
@@ -40,7 +43,7 @@ const ProductsDetails = () => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${getToken()}`,
             },
           }
         );
@@ -65,7 +68,7 @@ const ProductsDetails = () => {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${getToken()}`,
               },
             }
           );
@@ -107,17 +110,7 @@ const ProductsDetails = () => {
       setImage(file);
     }
   };
-  const addVariant = () => {
-    setProductDetails((prev) => [...prev, newVariant]);
-    setNewVariant({
-      color: "",
-      type: "",
-      price: "",
-      deposit: "",
-      inventory: "",
-      status: true,
-    });
-  };
+  
 
   const updateVariant = (index, field, value) => {
     setProductDetails((prev) =>
@@ -186,58 +179,120 @@ const ProductsDetails = () => {
       alert("Đã xảy ra lỗi. Vui lòng thử lại.");
     }
   };
+  const handleAddVariantToList = async (productId) => {
+    // Check for duplicates
+    const duplicate = productDetails.some(
+      (variant) =>
+        variant.type === newVariant.type && variant.color === newVariant.color
+    );
   
-const handleSubmitVariants = async (productId) => {
-  if (productDetails.length === 0) return;
-
-  try {
-    for (const variant of productDetails) {
-      const variantData = {
-        color: variant.color,
-        type: variant.type,
-        price: variant.price,
-        deposit: variant.deposit,
-        inventory: variant.inventory,
-        condition: variant.condition,
-        status: variant.status,
-      };
-
-      if (variant.id) {
-        // Nếu đã có ID, cập nhật
-        const response = await fetch(
-          `https://datn.up.railway.app/api/admin/product_details/${variant.id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(variantData),
-          }
-        );
-        if (!response.ok) throw new Error("Failed to update variant");
-      } else {
-        // Nếu chưa có ID, thêm mới
-        const response = await fetch(
-          `https://datn.up.railway.app/api/admin/products/${productId}/product_details`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(variantData),
-          }
-        );
-        if (!response.ok) throw new Error("Failed to add new variant");
-      }
+    if (duplicate) {
+      alert("Biến thể với loại và màu sắc này đã tồn tại trong danh sách!");
+      return;
     }
-  } catch (error) {
-    console.error("Error updating variants:", error);
-    alert("Đã xảy ra lỗi khi cập nhật biến thể. Vui lòng thử lại.");
-  }
-};
-
+  
+    try {
+      // Call addVariant to save the new variant to the backend
+      await addVariant(productId, newVariant);
+  
+      // Add the new variant to the local list
+      setProductDetails((prevDetails) => [...prevDetails, { ...newVariant }]);
+  
+      // Clear the new variant form
+      setNewVariant({
+        color: "",
+        type: "",
+        price: "",
+        deposit: "",
+        inventory: "",
+        status: true,
+        condition: "", // Reset the condition field
+      });
+  
+      alert("Biến thể đã được thêm thành công!");
+    } catch (error) {
+      console.error("Error adding variant:", error.message);
+      alert(`Đã xảy ra lỗi khi thêm biến thể: ${error.message}`);
+    }
+  };
+  
+  
+  const addVariant = async (productId, variantData) => {
+    const url = `https://datn.up.railway.app/api/admin/product_details`;
+    try {
+      const payload = { ...variantData, product_id: productId }; // Ensure key matches backend
+      console.log("Sending payload to API:", payload);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        const errorDetails = await response.json();
+        console.error("API Error Details:", errorDetails);
+  
+        // Handle 409 Conflict specifically
+        if (response.status === 409) {
+          throw new Error(
+            `Conflict: ProductDetail with type "${variantData.type}" and color "${variantData.color}" already exists.`
+          );
+        }
+  
+        throw new Error(
+          errorDetails.message || `Failed to add variant: ${response.statusText}`
+        );
+      }
+  
+      console.log("Variant added successfully");
+    } catch (error) {
+      console.error("Error in addVariant:", error.message);
+      throw error; // Allow caller to handle errors
+    }
+  };
+  
+  
+  
+  const handleSubmitVariants = async (productId) => {
+    if (productDetails.length === 0) return;
+  
+    try {
+      for (const variant of productDetails) {
+        const variantData = {
+          productId: productId, // Gửi ID sản phẩm liên quan
+          color: variant.color,
+          type: variant.type,
+          price: variant.price,
+          deposit: variant.deposit,
+          inventory: variant.inventory,
+          condition: variant.condition,
+          status: variant.status,
+        };
+  
+        if (variant.id) {
+          // Nếu đã có ID, cập nhật
+          const response = await fetch(
+            `https://datn.up.railway.app/api/admin/product_details/${variant.id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getToken()}`,
+              },
+              body: JSON.stringify(variantData),
+            }
+          );
+          if (!response.ok) throw new Error("Failed to update variant");
+        } 
+      }
+    } catch (error) {
+      console.error("Error updating variants:", error);
+      alert("Đã xảy ra lỗi khi cập nhật biến thể. Vui lòng thử lại.");
+    }
+  };
   return (
     <div className="container-fluid">
       <Header />
@@ -320,37 +375,34 @@ const handleSubmitVariants = async (productId) => {
   
             {/* Danh mục */}
             <div className="mb-3">
-              <label htmlFor="categoryId" className="form-label">
-                Danh mục:
-              </label>
-              {method === "view" ? (
-                <input
-                  type="text"
-                  value={
-                    categories.find((cat) => cat.id === formValues.categoryId)
-                      ?.name || ""
-                  }
-                  readOnly
-                  className="form-control"
-                />
-              ) : (
-                <select
-                  id="categoryId"
-                  name="categoryId"
-                  value={formValues.categoryId}
-                  onChange={handleChange}
-                  className="form-select"
-                >
-                  <option value="">Chọn danh mục</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-  
+  <label htmlFor="categoryId" className="form-label">Danh mục:</label>
+  {method === "view" ? (
+    <input
+      type="text"
+      value={
+        categories?.find((cat) => cat.id === formValues.categoryId)?.name || ""
+      }
+      readOnly
+      className="form-control"
+    />
+  ) : (
+    <select
+      id="categoryId"
+      name="categoryId"
+      value={formValues.categoryId}
+      onChange={handleChange}
+      className="form-select"
+    >
+      <option value="">Chọn danh mục</option>
+      {categories?.map((category) => (
+        <option key={category.id} value={category.id}>
+          {category.name}
+        </option>
+      ))}
+    </select>
+  )}
+</div>
+
             {/* Hình ảnh */}
             <div className="mb-3">
               <label className="form-label">Hình ảnh sản phẩm hiện tại:</label>
@@ -468,78 +520,80 @@ const handleSubmitVariants = async (productId) => {
 </table>
 
   {/* Thêm biến thể mới */}
-  {/* <div className="row g-3">
-    <div className="col-md-6">
-      <input
-        type="text"
-        name="color"
-        value={newVariant.color}
-        onChange={handleVariantChange}
-        placeholder="Màu sắc"
-        className="form-control"
-      />
-    </div>
-    <div className="col-md-6">
-      <input
-        type="text"
-        name="type"
-        value={newVariant.type}
-        onChange={handleVariantChange}
-        placeholder="Loại"
-        className="form-control"
-      />
-    </div>
-    <div className="col-md-4">
-      <input
-        type="number"
-        name="price"
-        value={newVariant.price}
-        onChange={handleVariantChange}
-        placeholder="Giá"
-        className="form-control"
-      />
-    </div>
-    <div className="col-md-4">
-      <input
-        type="number"
-        name="deposit"
-        value={newVariant.deposit}
-        onChange={handleVariantChange}
-        placeholder="Đặt cọc"
-        className="form-control"
-      />
-    </div>
-    <div className="col-md-4">
-      <input
-        type="number"
-        name="inventory"
-        value={newVariant.inventory}
-        onChange={handleVariantChange}
-        placeholder="Tồn kho"
-        className="form-control"
-      />
-    </div>
-    <div className="col-md-12">
-      <select
-        name="status"
-        value={newVariant.status}
-        onChange={handleVariantChange}
-        className="form-select"
-      >
-        <option value={true}>Còn hàng</option>
-        <option value={false}>Hết hàng</option>
-      </select>
-    </div>
-    <div className="col-md-12 text-end">
-      <button
-        type="button"
-        onClick={addVariant}
-        className="btn btn-primary"
-      >
-        Thêm biến thể
-      </button>
-    </div>
-  </div> */}
+  <div className="row g-3">
+  <h5>Thêm biến thể mới</h5>
+  <div className="col-md-6">
+    <input
+      type="text"
+      name="color"
+      value={newVariant.color}
+      onChange={handleVariantChange}
+      placeholder="Màu sắc"
+      className="form-control"
+    />
+  </div>
+  <div className="col-md-6">
+    <input
+      type="text"
+      name="type"
+      value={newVariant.type}
+      onChange={handleVariantChange}
+      placeholder="Loại"
+      className="form-control"
+    />
+  </div>
+  <div className="col-md-4">
+    <input
+      type="number"
+      name="price"
+      value={newVariant.price}
+      onChange={handleVariantChange}
+      placeholder="Giá"
+      className="form-control"
+    />
+  </div>
+  <div className="col-md-4">
+    <input
+      type="number"
+      name="deposit"
+      value={newVariant.deposit}
+      onChange={handleVariantChange}
+      placeholder="Đặt cọc"
+      className="form-control"
+    />
+  </div>
+  <div className="col-md-4">
+    <input
+      type="number"
+      name="inventory"
+      value={newVariant.inventory}
+      onChange={handleVariantChange}
+      placeholder="Tồn kho"
+      className="form-control"
+    />
+  </div>
+  <div className="col-md-12">
+    <select
+      name="status"
+      value={newVariant.status}
+      onChange={handleVariantChange}
+      className="form-select"
+    >
+      <option value={true}>Còn hàng</option>
+      <option value={false}>Hết hàng</option>
+    </select>
+  </div>
+  <div className="col-md-12 text-end">
+  <button
+  type="button"
+  onClick={() => handleAddVariantToList(productId)}
+  className="btn btn-primary"
+>
+  Thêm vào danh sách
+</button>
+
+  </div>
+</div>
 </div>
 
   

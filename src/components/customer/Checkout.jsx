@@ -90,7 +90,7 @@ const CheckoutPage = () => {
   };
 
   const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cartItems.reduce((total, item) => total + item.price * item.quantity* item.rentalDays+item.deposit * item.quantity, 0);
   };
 
   const handleCheckout = async (e) => {
@@ -106,7 +106,7 @@ const CheckoutPage = () => {
       productItems: cartItems.map((item) => ({
         productDetailId: item.id,
         quantity: item.quantity,
-        rentalDay: 1,
+        rentalDay: item.rentalDays,
         note: "",
       })),
       currentAddress: fullAddress,
@@ -255,7 +255,7 @@ const CheckoutPage = () => {
             {item.name}-{item.type}
           </span>
           <span>
-            {item.quantity} x {item.price.toLocaleString()} VND
+               x {item.quantity} / {item.rentalDays} Ngày
           </span>
         </li>
       ))

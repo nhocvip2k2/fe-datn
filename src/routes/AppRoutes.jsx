@@ -22,6 +22,7 @@ import Profile from "../components/customer/Profile"
 import ChangePassword from "../components/customer/ChangePassword"
 import Test from "../components/customer/test"
 import Order from "../components/customer/Order"
+import Invoice from "../components/customer/Invoice"
 import OrderAdmin from "../components/admin/OrderAdmin"
 import AddProducts from "../components/admin/AddProducts"
 import Return  from "../components/customer/Return"
@@ -58,8 +59,9 @@ const AppRoutes = () => {
         <Route path="/OrderProduct/:orderDetailId" element={<OrderProduct/>} />
         <Route path="/admin/CategoryAdmin" element={<CategoryAdmin/>} />
         <Route path="/admin/ProductsDetails/:productId/:method" element={<ProductsDetails/>} />
-        <Route path="/admin/TraCoc/:orderDetailId" element={<TraCoc/>} />
+        <Route path="/admin/TraCoc/:orderDetailId/:depositAmount" element={<TraCoc/>} />
         <Route path="/admin/bill" element={<Bill/>} />
+        <Route path="/invoice/:productId/:orderDetailId" element={<Invoice/>} />
         <Route
           path="/admin/Accounts"
           element={

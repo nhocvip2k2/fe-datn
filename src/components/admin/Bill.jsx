@@ -13,7 +13,7 @@ const Bill = () => {
     const fetchOrderReturn = async () => {
       try {
         const response = await fetch(
-          "https://datn.up.railway.app/api/admin/order_returns/1",
+          "https://datn.up.railway.app/api/customer/orderReturns/1",
           {
             method: "GET",
             headers: {

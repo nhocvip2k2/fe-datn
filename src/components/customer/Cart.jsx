@@ -2,42 +2,57 @@ import React, { useState, useEffect } from "react";
 import "../../cart.css"; // Import CSS từ file riêng
 import Header from "../header/HeaderUser";
 import { useNavigate } from "react-router-dom";
+
 const Cart = () => {
     const [cartItems, setCartItems] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
+    const [totalDeposit, setTotalDeposit] = useState(0); // Tổng tiền cọc
 
     useEffect(() => {
         const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
         setCartItems(storedCart);
-        calculateTotal(storedCart);
+        calculateTotals(storedCart);
     }, []);
 
-    const calculateTotal = (items) => {
-        const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const calculateTotals = (items) => {
+        const total = items.reduce(
+            (acc, item) => acc + item.price * item.quantity * item.rentalDays,
+            0
+        );
+        const deposit = items.reduce((acc, item) => acc + item.deposit * item.quantity, 0);
         setTotalPrice(total);
+        setTotalDeposit(deposit);
     };
 
     const handleQuantityChange = (index, quantity) => {
         const updatedCart = [...cartItems];
         updatedCart[index].quantity = quantity > 0 ? quantity : 1;
         setCartItems(updatedCart);
-        calculateTotal(updatedCart);
+        calculateTotals(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+    };
+
+    const handleRentalDaysChange = (index, rentalDays) => {
+        const updatedCart = [...cartItems];
+        updatedCart[index].rentalDays = rentalDays > 0 ? rentalDays : 1;
+        setCartItems(updatedCart);
+        calculateTotals(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart));
     };
 
     const handleRemoveItem = (index) => {
         const updatedCart = cartItems.filter((_, i) => i !== index);
         setCartItems(updatedCart);
-        calculateTotal(updatedCart);
+        calculateTotals(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart));
-        // Gửi sự kiện "cartUpdated" để thông báo các component khác
         document.dispatchEvent(new Event("cartUpdated"));
     };
-    const navigate = useNavigate(); // Khởi tạo hàm điều hướng
+
+    const navigate = useNavigate();
     const handleCheckout = () => {
-        navigate("/Checkout"); // Dẫn đến trang thanh toán
+        navigate("/Checkout");
     };
-    
+
     return (
         <>
             <Header />
@@ -48,10 +63,12 @@ const Cart = () => {
                         <table className="cart-table">
                             <thead>
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Subtotal</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Giá thuê</th>
+                                    <th>Số lượng</th>
+                                    <th>Số ngày</th>
+                                    <th>Tiền cọc</th> {/* Cột Tiền cọc */}
+                                    <th>Tiền thuê</th>
                                     <th>Remove</th>
                                 </tr>
                             </thead>
@@ -62,7 +79,7 @@ const Cart = () => {
                                             <img src={item.image} alt={item.name} className="product-image-cart" />
                                             <span>{item.name}</span>
                                         </td>
-                                        <td>${item.price.toFixed(2)}</td>
+                                        <td>{item.price.toFixed(0)}</td>
                                         <td>
                                             <input
                                                 type="number"
@@ -71,7 +88,29 @@ const Cart = () => {
                                                 onChange={(e) => handleQuantityChange(index, parseInt(e.target.value))}
                                             />
                                         </td>
-                                        <td>${(item.price * item.quantity).toFixed(2)}</td>
+                                        <td>
+                                            <input
+                                                type="number"
+                                                value={item.rentalDays}
+                                                min="1"
+                                                onChange={(e) => handleRentalDaysChange(index, parseInt(e.target.value))}
+                                            />
+                                        </td>
+                                        <td>
+                                            {(
+                                                item.deposit
+                                            ).toFixed(0)} x {(
+                                                item.rentalDays
+                                            ).toFixed(0)}
+                                        </td>
+                                        <td>
+                                            
+                                            {(
+                                                item.price *
+                                                item.quantity *
+                                                item.rentalDays
+                                            ).toFixed(0)}
+                                        </td>
                                         <td>
                                             <button onClick={() => handleRemoveItem(index)}>X</button>
                                         </td>
@@ -84,25 +123,22 @@ const Cart = () => {
                             <h3>Cart Totals</h3>
                             <div className="summary-details">
                                 <p>
-                                    <span>Subtotal:</span> <span className="price">${totalPrice.toFixed(2)}</span>
+                                    <span>Tiền thuê:</span> <span className="price">{totalPrice.toLocaleString()}</span>
                                 </p>
-                                <div className="shipping-info">
-                                    <p>
-                                        <span>Shipping:</span>
-                                        <div className="shipping-details">
-                                            <p><span>FreeShip</span></p> {/* Giả sử miễn phí vận chuyển */}
-                                            <p><span>Shipping to Nam Định</span></p> {/* Địa chỉ vận chuyển */}
-                                            <p><span>Change Address</span></p> {/* Thay đổi địa chỉ */}
-                                        </div>
-                                    </p>
-                                </div>
-
+                                <p>
+                                    <span>Tiền Cọc:</span> <span className="price">{totalDeposit.toLocaleString()}</span>
+                                </p>
                                 <p className="total">
-                                    <span>Total:</span> <span className="price">${(totalPrice + 5 + 1.5).toFixed(2)}</span> {/* Tổng cộng bao gồm Subtotal, Shipping và Tax */}
+                                    <span>Tổng:</span>{" "}
+                                    <span className="price">
+                                        {(totalPrice + totalDeposit).toLocaleString()}
+                                    </span>
                                 </p>
                             </div>
 
-                            <button className="checkout-button" onClick={handleCheckout}>Proceed to Checkout</button>
+                            <button className="checkout-button" onClick={handleCheckout}>
+                                Tiến hành thanh toán
+                            </button>
                         </div>
                     </div>
                 ) : (

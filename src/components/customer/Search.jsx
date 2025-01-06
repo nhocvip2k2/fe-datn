@@ -43,7 +43,7 @@ const StorePage = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        let url = `https://datn.up.railway.app/api/customer/products/search?keyword=${keyword}&page=${currentPage}&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`;
+        let url = `https://datn.up.railway.app/api/customer/products/search?keyword=${keyword}&page=${currentPage}&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}&size=9`;
         
         if (selectedCategory) {
           url = `https://datn.up.railway.app/api/customer/categories/${selectedCategory}/products?page=${currentPage}&minPrice=${priceRange[0]}&maxPrice=${priceRange[1]}`;

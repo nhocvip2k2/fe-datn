@@ -25,6 +25,7 @@ const OrderProduct = () => {
     6: "Nhận hàng thành công",
     7: "Tạo hóa đơn trả",
     8: "Hoàn tiền thành công",
+
   };
 
   const formatDate = (isoDate) => dayjs(isoDate).format("DD/MM/YYYY HH:mm");
@@ -85,12 +86,14 @@ const OrderProduct = () => {
 
       if (!response.ok) {
         throw new Error('Có lỗi xảy ra khi cập nhật trạng thái');
+        window.location.reload();
       }
 
       alert("Cập nhật trạng thái thành công!");
       window.location.reload();
     } catch (error) {
       alert('Không thể cập nhật trạng thái: ' + error.message);
+      window.location.reload();
     }
   };
 
@@ -103,7 +106,7 @@ const OrderProduct = () => {
       </div>
     );
   }
-  
+
 
   if (error) {
     return <div className="error">Lỗi: {error}</div>;
@@ -121,11 +124,11 @@ const OrderProduct = () => {
         <div className="col-lg-2 col-md-3 col-4 p-0 bg-light border-end mt-5">
           <MenuBar />
         </div>
-  
+
         {/* Nội dung chính */}
         <div className="col-lg-10 col-md-9 col-8 p-4 mt-6">
           <h2 className="text-primary mb-4">Chi tiết đơn hàng</h2>
-  
+
           {/* Bảng chi tiết đơn hàng */}
           <div className="table-responsive">
             <table className="table table-hover table-bordered">
@@ -134,7 +137,9 @@ const OrderProduct = () => {
                   <th>Mã sản phẩm thuê</th>
                   <th>Tên sản phẩm</th>
                   <th>Ngày thuê</th>
-                  <th>Giá</th>
+                  <th>Số lượng</th>
+                  <th>Giá thuê</th>
+                  <th>Cọc</th>
                   <th>Đơn Hàng</th>
                   <th>Trạng Thái</th>
                   <th>Hành động</th>
@@ -145,7 +150,9 @@ const OrderProduct = () => {
                   <td>{orderDetail.id}</td>
                   <td>{orderDetail.productDetail.type}</td>
                   <td>{formatDate(orderDetail.createdAt)}</td>
-                  <td>{orderDetail.currentPrice.toLocaleString()}₫</td>
+                  <td>{orderDetail.id}</td>
+                  <td>{(orderDetail.currentPrice + orderDetail.currentDeposit).toLocaleString()}₫</td>
+                  <td>{(orderDetail.currentDeposit).toLocaleString()}₫</td>
                   <td>{orderDetail.order.id}</td>
                   <td>
                     {isEditing ? (
@@ -154,26 +161,34 @@ const OrderProduct = () => {
                         onChange={(e) => setNewStatus(Number(e.target.value))}
                         className="form-select"
                       >
-                        {Object.entries(statusMapping).map(([key, value]) => (
-                          <option key={key} value={key}>
-                            {value}
-                          </option>
-                        ))}
+                        {Object.entries(statusMapping)
+                          .filter(
+                            ([key]) =>
+                              Number(key) >= orderDetail.status && // Lớn hơn hoặc bằng trạng thái hiện tại
+                              Number(key) >= 3 && // Trạng thái từ 3 trở đi
+                              Number(key) <= 8 && // Trạng thái không vượt quá 8
+                              Number(key) === orderDetail.status + 1 // Chỉ lớn hơn trạng thái hiện tại đúng 1
+                          )
+                          .map(([key, value]) => (
+                            <option key={key} value={key}>
+                              {value}
+                            </option>
+                          ))}
                       </select>
                     ) : (
                       <span
-                        className={`badge ${
-                          orderDetail.status === 1
+                        className={`badge ${orderDetail.status === 1
                             ? "bg-warning"
                             : orderDetail.status === 2
-                            ? "bg-success"
-                            : "bg-info"
-                        }`}
+                              ? "bg-success"
+                              : "bg-info"
+                          }`}
                       >
                         {statusMapping[orderDetail.status]}
                       </span>
                     )}
                   </td>
+
                   <td>
                     {isEditing ? (
                       <button className="btn btn-success btn-sm me-2" onClick={handleSaveClick}>
@@ -181,13 +196,21 @@ const OrderProduct = () => {
                       </button>
                     ) : (
                       <>
-                        <button className="btn btn-warning btn-sm me-2" onClick={handleEditClick}>
-                          Sửa
-                        </button>
-                        {orderDetail.status === 7 && (
+                        {orderDetail.status !== 1 && orderDetail.status !== 6 ? (
+                          <button className="btn btn-warning btn-sm me-2" onClick={handleEditClick}>
+                            Sửa
+                          </button>
+                        ) : (
+                          <span className="text-muted">
+                            {orderDetail.status === 1 ? "Không thể sửa" : ""}
+                          </span>
+                        )}
+                        {orderDetail.status === 6 && (
                           <button
                             className="btn btn-primary btn-sm"
-                            onClick={() => navigate(`/admin/TraCoc/${orderDetail.id}`)}
+                            onClick={() =>
+                              navigate(`/admin/TraCoc/${orderDetail.id}/${orderDetail.currentDeposit}`)
+                            }
                           >
                             Trả Cọc
                           </button>
@@ -195,6 +218,8 @@ const OrderProduct = () => {
                       </>
                     )}
                   </td>
+
+
                 </tr>
               </tbody>
             </table>
@@ -203,7 +228,7 @@ const OrderProduct = () => {
       </div>
     </div>
   );
-  
+
 };
 
 export default OrderProduct;

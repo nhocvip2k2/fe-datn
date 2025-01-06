@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getToken } from "../../services/Cookies";
-import Header from '../header/HeaderUser';
+import Header from '../header/Header';
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import "../../PaymentQR.css"; 
@@ -82,7 +82,7 @@ const RefundPaymentQR = () => {
           <p><strong>Chủ tài khoản:</strong> Trần Đăng Thành</p>
           <p><strong>Số TK:</strong> {account}</p>
           <p><strong>Số tiền:</strong> {amount1}đ</p>
-          <p><strong>Nội dung CK:</strong> {`SEVQR1KH${userId}DH${orderId}`}</p>
+          <p><strong>Nội dung CK:</strong> {`SEVQR2KH${userId}DH${orderId}`}</p>
           <p className="note">
             Lưu ý: Vui lòng giữ nguyên nội dung chuyển khoản để hệ thống tự động xác nhận thanh toán.
           </p>

@@ -109,7 +109,7 @@ const Orders = () => {
                           <td>
                             <i className="fa fa-map-marker"></i> {order.order.currentAddress}
                           </td>
-                          <td>{order.currentPrice} ₫</td>
+                          <td>{order.currentPrice+order.currentDeposit} </td>
                           <td>{order.order.payment}</td>
                           <td>
                             {(() => {

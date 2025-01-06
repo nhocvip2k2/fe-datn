@@ -23,7 +23,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
   };
 
   const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + item.price * item.quantity*item.rentalDays,
     0
   );
 
@@ -50,7 +50,8 @@ const CartSidebar = ({ isOpen, onClose }) => {
               <div className="ms-3">
                 <h6>{item.name} - {item.type} - {item.color}</h6>
                 <p>Số lượng: {item.quantity}</p>
-                <p>Giá: ${item.price}</p>
+                <p>Số ngày thuê: {item.rentalDays}</p>
+                <p>Giá thuê/ngày: {item.price} vnd</p>
               </div>
               <button
   className="btn btn-danger btn-sm ms-auto  text-center p-0"
@@ -67,7 +68,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
         )}
         <div className="d-flex justify-content-between mt-3">
           <span className="fw-bold">Tổng số tiền:</span>
-          <span className="fw-bold">${totalPrice.toFixed(2)}</span>
+          <span className="fw-bold">{totalPrice.toFixed(0)}</span>
         </div>
       </div>
       <div className="offcanvas-footer mt-3">
