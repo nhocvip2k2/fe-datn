@@ -15,6 +15,7 @@ const DetailsPage = () => {
   const [selectedColor, setSelectedColor] = useState(null); // Selected color
   const [selectedCondition, setSelectedCondition] = useState(null); // Selected condition
   const [selectedPrice, setSelectedPrice] = useState(null); // Selected price
+  const [selectedTonkho, setSelectedTonkho] = useState(null); 
   const [selectedDeposit, setSelectedDeposit] = useState(null); // Selected price
   const [availableTypes, setAvailableTypes] = useState([]); // Available types
   const [availableColors, setAvailableColors] = useState([]); // Available colors
@@ -81,6 +82,7 @@ const DetailsPage = () => {
     setSelectedCondition(detail?.condition || "Không xác định");
     setSelectedPrice(detail?.price || "Không xác định");
     setSelectedDeposit(detail?.deposit || "Không xác định");
+    setSelectedTonkho(detail?.inventory || "Không xác định");
   };
   const handleAddToCart = () => {
     if (!selectedType) {
@@ -259,6 +261,13 @@ const DetailsPage = () => {
               <p className="font-weight-bold">
                 <strong>Giá thuê: </strong>
                 {selectedPrice.toLocaleString() || "Chưa chọn"} / ngày
+              </p>
+            )}
+             {/* Price */}
+             {selectedColor && (
+              <p className="font-weight-bold">
+                <strong>Còn hàng: </strong>
+                {selectedTonkho.toLocaleString() || "Chưa chọn"} 
               </p>
             )}
  
