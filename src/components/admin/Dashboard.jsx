@@ -208,8 +208,8 @@ const Dashboard = () => {
             </div>
             <div className="col-12 col-md-4">
               <div className="card">
-                <h3>Revenue</h3>
-                <p>{data.totalRevenues || 0}</p>
+                <h3>Products</h3>
+                <p>{data.totalProducts || 0}</p>
               </div>
             </div>
           </div>
