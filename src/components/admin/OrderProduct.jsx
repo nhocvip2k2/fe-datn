@@ -165,9 +165,8 @@ const OrderProduct = () => {
                           .filter(
                             ([key]) =>
                               Number(key) >= orderDetail.status && // Lớn hơn hoặc bằng trạng thái hiện tại
-                              Number(key) >= 3 && // Trạng thái từ 3 trở đi
-                              Number(key) <= 8 && // Trạng thái không vượt quá 8
-                              Number(key) === orderDetail.status + 1 // Chỉ lớn hơn trạng thái hiện tại đúng 1
+                              Number(key) >= 3  // Trạng thái từ 3 trở đi
+                              
                           )
                           .map(([key, value]) => (
                             <option key={key} value={key}>
