@@ -164,8 +164,8 @@ const OrderProduct = () => {
                         {Object.entries(statusMapping)
                           .filter(
                             ([key]) =>
-                              Number(key) >= orderDetail.status && // Lớn hơn hoặc bằng trạng thái hiện tại
-                              Number(key) >= 3  // Trạng thái từ 3 trở đi
+                              Number(key) >= orderDetail.status  // Lớn hơn hoặc bằng trạng thái hiện tại
+                               // Trạng thái từ 3 trở đi
                               
                           )
                           .map(([key, value]) => (
