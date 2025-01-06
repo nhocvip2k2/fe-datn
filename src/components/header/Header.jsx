@@ -51,7 +51,7 @@ const Header = () => {
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
-      stompClient.subscribe(`/customer/send/admin`, (message) => {
+      stompClient.subscribe(`/customer/send/admin/2`, (message) => {
         const data = JSON.parse(message.body);
         if (data) {
           setUnreadCount((prevCount) => prevCount + 1);

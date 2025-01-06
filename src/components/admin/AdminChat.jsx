@@ -11,6 +11,7 @@ const AdminChat = () => {
   const [users, setUsers] = useState([]); // Danh sách người dùng
   const [selectedUser, setSelectedUser] = useState(null); // User đang được chọn
   const [conversationId, setConversationId] = useState(null); // ID cuộc trò chuyện
+  const [userId, setUserId] = useState(null); // ID người dùng
   const messagesEndRef = useRef(null); // Tham chiếu đến vị trí cuối tin nhắn
   const token = getToken();
   let stompClient = useRef(null); // Tham chiếu đến WebSocket client
@@ -28,12 +29,22 @@ const AdminChat = () => {
     stompClient.current = Stomp.over(socket);
 
     stompClient.current.connect({}, () => {
-      if (conversationId) {
-        stompClient.current.subscribe(`/customer/send/admin/${conversationId}`, (message) => {
+      users.forEach((user) => {
+        stompClient.current.subscribe(`/customer/send/admin/${user.customerId}`, (message) => {
           const msgContent = JSON.parse(message.body);
-          setMessages((prev) => sortMessages([...prev, msgContent]));
+          setUsers((prevUsers) =>
+            prevUsers.map((u) =>
+              u.customerId === user.customerId
+                ? { ...u, unreadMessages: (u.unreadMessages || 0) + 1 }
+                : u
+            )
+          );
+
+          if (selectedUser?.customerId === user.customerId) {
+            setMessages((prev) => sortMessages([...prev, msgContent]));
+          }
         });
-      }
+      });
     });
   };
 
@@ -43,17 +54,6 @@ const AdminChat = () => {
       stompClient.current.disconnect();
     }
   };
-
-  // Kết nối lại WebSocket khi conversationId thay đổi
-  useEffect(() => {
-    disconnectWebSocket();
-    if (conversationId) {
-      connectWebSocket();
-      fetchMessages(); // Gọi API để lấy tin nhắn
-    }
-
-    return () => disconnectWebSocket(); // Ngắt kết nối khi unmount
-  }, [conversationId]);
 
   // Lấy danh sách người dùng từ API
   useEffect(() => {
@@ -66,7 +66,11 @@ const AdminChat = () => {
         if (!response.ok) throw new Error("Lỗi mạng");
 
         const data = await response.json();
-        setUsers(data.content);
+        const usersWithUnread = data.content.map((user) => ({
+          ...user,
+          unreadMessages: 0, // Mặc định số lượng tin nhắn chưa đọc là 0
+        }));
+        setUsers(usersWithUnread);
       } catch (error) {
         console.error("Lỗi khi lấy danh sách người dùng:", error);
       }
@@ -75,9 +79,9 @@ const AdminChat = () => {
     fetchUsers();
   }, [token]);
 
-  // Hàm lấy tin nhắn từ API
+  // Lấy tin nhắn từ API
   const fetchMessages = async () => {
-    if (!conversationId) return; // Không tải nếu chưa chọn user
+    if (!conversationId) return;
 
     try {
       const response = await fetch(
@@ -101,14 +105,46 @@ const AdminChat = () => {
     }
   };
 
+  // Xử lý chọn user
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+    setConversationId(user.id);
+    setUserId(user.customerId);
+
+    // Reset số lượng tin nhắn chưa đọc của user này
+    setUsers((prevUsers) =>
+      prevUsers.map((u) =>
+        u.customerId === user.customerId ? { ...u, unreadMessages: 0 } : u
+      )
+    );
+
+    setMessages([]); // Làm sạch tin nhắn trước khi tải lại
+  };
+
   // Cuộn xuống cuối cùng mỗi khi tin nhắn thay đổi
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
+  // Kết nối WebSocket khi danh sách người dùng thay đổi
+  useEffect(() => {
+    if (users.length > 0) {
+      disconnectWebSocket(); // Ngắt kết nối cũ
+      connectWebSocket(); // Kết nối lại
+    }
+    return () => disconnectWebSocket();
+  }, [users]);
+
+  // Lấy tin nhắn mỗi khi `selectedUser` hoặc `conversationId` thay đổi
+  useEffect(() => {
+    if (selectedUser && conversationId) {
+      fetchMessages();
+    }
+  }, [selectedUser, conversationId]);
+
   // Hàm sắp xếp tin nhắn theo thời gian
   const sortMessages = (msgs) => {
-    return msgs.sort((a, b) => a.createdAt - b.createdAt);
+    return msgs.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
   };
 
   // Xử lý gửi tin nhắn
@@ -138,13 +174,6 @@ const AdminChat = () => {
     }
   };
 
-  // Xử lý chọn user
-  const handleUserSelect = (user) => {
-    setSelectedUser(user);
-    setConversationId(user.id); // Cập nhật conversationId dựa trên user
-    setMessages([]); // Làm sạch tin nhắn trước khi tải lại
-  };
-
   return (
     <>
       <Header />
@@ -156,11 +185,15 @@ const AdminChat = () => {
               {users.map((user) => (
                 <li
                   key={user.customerId}
-                  className={`list-group-item d-flex justify-content-between align-items-center ${selectedUser?.customerId === user.customerId ? "active" : ""}`}
+                  className={`list-group-item d-flex justify-content-between align-items-center ${
+                    selectedUser?.customerId === user.customerId ? "active" : ""
+                  }`}
                   onClick={() => handleUserSelect(user)}
                 >
                   {user.email}
-                  <span className="badge bg-secondary">{user.customerId}</span>
+                  <span className="badge bg-secondary">
+                    {user.unreadMessages > 0 ? user.unreadMessages : ""}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -169,7 +202,9 @@ const AdminChat = () => {
         <div className="col-12 col-md-9 p-3">
           <div className="card shadow-lg border-light rounded">
             <h2 className="card-header bg-success text-white">
-              {selectedUser ? `Chat với ${selectedUser.name || `User ${selectedUser.customerId}`}` : "Chọn người dùng để trò chuyện"}
+              {selectedUser
+                ? `Chat với ${selectedUser.name || `User ${selectedUser.customerId}`}`
+                : "Chọn người dùng để trò chuyện"}
             </h2>
             <div className="card-body">
               <div className="messages" style={{ maxHeight: "400px", overflowY: "scroll" }}>
@@ -177,10 +212,14 @@ const AdminChat = () => {
                   messages.map((msg, index) => (
                     <div
                       key={index}
-                      className={`message p-2 mb-2 rounded-3 ${msg.senderRole === "admin" ? "bg-info text-white" : "bg-light text-dark"}`}
+                      className={`message p-2 mb-2 rounded-3 ${
+                        msg.senderRole === "admin" ? "bg-info text-white" : "bg-light text-dark"
+                      }`}
                     >
                       <p>{msg.content}</p>
-                      <small className="text-muted">{new Date(msg.createdAt).toLocaleTimeString()}</small>
+                      <small className="text-muted">
+                        {new Date(msg.createdAt).toLocaleTimeString()}
+                      </small>
                     </div>
                   ))
                 ) : (
