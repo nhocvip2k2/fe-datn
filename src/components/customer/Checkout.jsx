@@ -140,7 +140,7 @@ const CheckoutPage = () => {
       }
     } catch (error) {
       console.error("Lỗi khi gửi request:", error);
-      alert("Đã xảy ra lỗi khi đặt hàng. Vui lòng thử lại!");
+      alert("số lượng vượt quá");
     }
   };
 
