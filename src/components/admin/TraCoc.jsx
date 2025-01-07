@@ -7,7 +7,7 @@ import { getToken } from '../../services/Cookies'; // Giả sử bạn có hàm 
 
 const TraCoc = () => {
   const navigate = useNavigate();
-  const { depositAmount, orderDetailId } = useParams(); // Extract từ URL
+  const { depositAmount, orderDetailId, userId } = useParams(); // Extract từ URL
   const [status, setStatus] = useState('');
   const [condition, setCondition] = useState('Mới');
   const [quantity, setQuantity] = useState(1);
@@ -60,9 +60,9 @@ const TraCoc = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Thêm token vào header
+          'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(requestBody), // Convert body sang JSON string
+        body: JSON.stringify(requestBody), 
       });
   
       // Kiểm tra phản hồi
@@ -73,8 +73,7 @@ const TraCoc = () => {
   
       const data = await response.json();
       alert('Hoàn trả thành công!');
-      // navigate(`/RefundPaymentQR?orderId=${orderDetailId}&amount=${refundAmount}`); 
-      navigate(`/OrderProduct/${orderDetailId}`); 
+      navigate(`/RefundPaymentQR?userId=${userId}&amount=${refundAmount}&orderId=${orderDetailId}`); 
     } catch (error) {
       alert(`Lỗi: ${error.message}`);
     }

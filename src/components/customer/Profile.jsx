@@ -126,7 +126,7 @@ const Profile = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Số điện thoại</label>
+                <label>Số tài khoản</label>
                 <input
                   type="tel"
                   name="phone"

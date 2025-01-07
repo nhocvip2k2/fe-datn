@@ -31,9 +31,12 @@ const MenuBar = () => {
     },
     {
       id: "system",
-      label: "Hệ thống",
+      label: "Thống Kê Hệ thống",
       icon: <FaCogs />,
-      children: [{ id: "permissions", label: "Phân quyền hệ thống", link: "/admin/role" }],
+      children: [
+        { id: "statproduct", label: "Sản phẩm thuê nhiều", link: "/admin/statproduct" },
+        { id: "revenue", label: "Chi tiết doanh thu", link: "/admin/revenue" }
+      ],
     },
   ];
 
@@ -56,17 +59,17 @@ const MenuBar = () => {
       </button>
 
       <nav
-  className={`bg-primary text-white p-3 ${isOpen ? "d-block" : "d-none"} d-md-block`}
-  style={{
-    position: "fixed",
-    top: 46,
-    left: 0,
-    width: "250px",
-    height: "100vh",
-    overflowY: "auto",
-    zIndex: 1000,
-  }}
->
+        className={`bg-primary text-white p-3 ${isOpen ? "d-block" : "d-none"} d-md-block`}
+        style={{
+          position: "fixed",
+          top: 46,
+          left: 0,
+          width: "250px",
+          height: "100vh",
+          overflowY: "auto",
+          zIndex: 1000,
+        }}
+      >
 
         <div className="menu-logo mb-4"></div>
         <ul className="nav flex-column">

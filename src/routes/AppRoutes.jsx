@@ -4,7 +4,7 @@ import AccountsAdmin from "../components/admin/AccountsAdmin"
 import Dashboard from "../components/admin/Dashboard"
 import Register from "../components/Register"
 import Client from "../components/Client"
-import Role from "../components/admin/Role"
+import StatProduct from "../components/admin/StatProduct"
 import RefundPaymentQR from "../components/admin/RefundPaymentQR"
 import AdminChat from "../components/admin/AdminChat"
 import Products from "../components/admin/Products"
@@ -31,7 +31,7 @@ import CategoryAdmin from "../components/admin/CategoryAdmin"
 import ProductsDetails from "../components/admin/ProductsDetails"
 import OrderProduct from "../components/admin/OrderProduct"
 import TraCoc from "../components/admin/TraCoc"
-import Bill from "../components/admin/Bill";
+import Revenue from "../components/admin/Revenue";
 
 const AppRoutes = () => {
   return (
@@ -59,8 +59,8 @@ const AppRoutes = () => {
         <Route path="/OrderProduct/:orderDetailId" element={<OrderProduct/>} />
         <Route path="/admin/CategoryAdmin" element={<CategoryAdmin/>} />
         <Route path="/admin/ProductsDetails/:productId/:method" element={<ProductsDetails/>} />
-        <Route path="/admin/TraCoc/:orderDetailId/:depositAmount" element={<TraCoc/>} />
-        <Route path="/admin/bill" element={<Bill/>} />
+        <Route path="/admin/TraCoc/:orderDetailId/:depositAmount/:userId" element={<TraCoc/>} />
+        <Route path="/admin/revenue" element={<Revenue/>} />
         <Route path="/invoice/:productId/:orderDetailId" element={<Invoice/>} />
         <Route
           path="/admin/Accounts"
@@ -79,10 +79,10 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path="/admin/role"
+          path="/admin/statproduct"
           element={
             <RequireAuth requiredRole="admin">
-              <Role />
+              <StatProduct />
             </RequireAuth>
           }
         />

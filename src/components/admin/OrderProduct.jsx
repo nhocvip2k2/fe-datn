@@ -208,7 +208,7 @@ const OrderProduct = () => {
                           <button
                             className="btn btn-primary btn-sm"
                             onClick={() =>
-                              navigate(`/admin/TraCoc/${orderDetail.id}/${orderDetail.currentDeposit}`)
+                              navigate(`/admin/TraCoc/${orderDetail.id}/${orderDetail.currentDeposit}/${orderDetail.order.user.id}`)
                             }
                           >
                             Trả Cọc
