@@ -260,7 +260,7 @@ const DetailsPage = () => {
             {selectedColor && (
               <p className="font-weight-bold">
                 <strong>Giá thuê: </strong>
-                {selectedPrice.toLocaleString() || "Chưa chọn"} / ngày
+                {selectedPrice.toLocaleString() || "Chưa chọn"} đ/ ngày
               </p>
             )}
              {/* Price */}

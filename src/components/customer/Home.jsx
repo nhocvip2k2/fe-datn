@@ -78,7 +78,7 @@ const Home = () => {
       {/* Hero Section */}
       <section className="hero-section text-center py-5 bg-primary text-white">
         <div className="container">
-          <h1 className="display-4 fw-bold">Welcome to PtitStore</h1>
+          <h1 className="display-4 fw-bold"  style={{ color: "red" }}>Welcome to PtitStore</h1>
           <p className="lead">Ưu đãi lên đến <span className="fw-bold">50%</span> hôm nay!</p>
           <button className="btn btn-light btn-lg mt-3" onClick={handleButtonClick}>
             Thuê ngay
@@ -123,7 +123,7 @@ const Home = () => {
                       <h5 className="card-title text-truncate">{product.product.name}</h5>
                       <p className="card-text text-muted">{product.product.brand}</p>
                       <p className="card-text fw-bold text-primary">
-                        ${product.minPrice} - ${product.maxPrice}
+                        {product.minPrice}đ - {product.maxPrice}đ
                       </p>
                     </div>
                   </div>

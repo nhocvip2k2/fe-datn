@@ -70,6 +70,7 @@ const AppRoutes = () => {
             </RequireAuth>
           }
         />
+        
         <Route
           path="/admin/Products"
           element={

@@ -20,6 +20,7 @@ const Header = () => {
   };
   const handleLogout = () => {
     logOut();
+    
     window.location.href = "/login";
   };
 
