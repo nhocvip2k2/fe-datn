@@ -13,11 +13,11 @@ const MenuBar = () => {
     { id: "home", label: "Trang chủ", icon: <FaHome />, link: "/admin/dashboard" },
     {
       id: "products",
-      label: "Sản phẩm",
+      label: "Đồ điện tử",
       icon: <FaBox />,
       children: [
-        { id: "product-category", label: "Danh mục sản phẩm", link: "/admin/categoryadmin" },
-        { id: "product-list", label: "Sản phẩm", link: "/admin/products" },
+        { id: "product-category", label: "Danh mục đồ điện tử", link: "/admin/categoryadmin" },
+        { id: "product-list", label: "Đồ điện tử", link: "/admin/products" },
       ],
     },
     {
@@ -26,7 +26,7 @@ const MenuBar = () => {
       icon: <FaUsers />,
       children: [
         { id: "customers", label: "Khách hàng", link: "/admin/accounts" },
-        { id: "orders", label: "Đơn hàng", link: "/admin/order" },
+        { id: "orders", label: "Đơn thuê", link: "/admin/order" },
       ],
     },
     {
@@ -35,7 +35,8 @@ const MenuBar = () => {
       icon: <FaCogs />,
       children: [
         { id: "statproduct", label: "Sản phẩm thuê nhiều", link: "/admin/statproduct" },
-        { id: "revenue", label: "Chi tiết doanh thu", link: "/admin/revenue" }
+        { id: "revenue", label: "Chi tiết doanh thu", link: "/admin/revenue" },
+        { id: "giaodich", label: "Giao dịch", link: "/admin/giaodich" }
       ],
     },
   ];

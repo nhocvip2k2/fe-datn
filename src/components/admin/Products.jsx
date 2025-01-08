@@ -221,7 +221,7 @@ const Products = () => {
           <div className="col-9 ">
             <div className="layout-content mt-6">
               <div className="d-flex justify-content-between align-items-center mb-3">
-                <h4>Danh sách sản phẩm</h4>
+                <h4>Danh sách Đồ điện tử</h4>
                 <button
                   className="btn btn-primary"
                   onClick={handleAddClick}

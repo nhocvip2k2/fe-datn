@@ -32,6 +32,7 @@ import ProductsDetails from "../components/admin/ProductsDetails"
 import OrderProduct from "../components/admin/OrderProduct"
 import TraCoc from "../components/admin/TraCoc"
 import Revenue from "../components/admin/Revenue";
+import Giaodich from "../components/admin/Giaodich";
 
 const AppRoutes = () => {
   return (
@@ -48,6 +49,7 @@ const AppRoutes = () => {
         <Route path="/RefundPaymentQR" element={<RefundPaymentQR/>} />
         <Route path="/PaymentQR" element={<PaymentQR />} />
         <Route path="/Search" element={<Search />} />
+        <Route path="/admin/Giaodich" element={<Giaodich />} />
         <Route path="/Categories" element={<Categories />} />
         <Route path="/Profile" element={<Profile />} />
         <Route path="/ChangePassword" element={<ChangePassword />} />

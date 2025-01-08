@@ -196,19 +196,19 @@ const Dashboard = () => {
           <div className="row mb-4">
             <div className="col-12 col-md-4">
               <div className="card">
-                <h3>Users</h3>
+                <h3>Người dùng</h3>
                 <p>{data.totalUsers || 0}</p>
               </div>
             </div>
             <div className="col-12 col-md-4">
               <div className="card">
-                <h3>Orders</h3>
+                <h3>Đơn thuê</h3>
                 <p>{data.totalOrders || 0}</p>
               </div>
             </div>
             <div className="col-12 col-md-4">
               <div className="card">
-                <h3>Products</h3>
+                <h3>Sản phẩm</h3>
                 <p>{data.totalProducts || 0}</p>
               </div>
             </div>
@@ -222,7 +222,7 @@ const Dashboard = () => {
             {/* Monthly Revenue */}
             <div className="col-12 col-md-6 mb-4">
               <div className="chart-container">
-                <div className="chart-title">Monthly Revenue</div>
+                <div className="chart-title">Doanh thu theo tháng</div>
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={revenueChartData}>
                     <XAxis dataKey="name" />
@@ -237,7 +237,7 @@ const Dashboard = () => {
             {/* Sales by Category */}
             <div className="col-12 col-md-6 mb-4">
               <div className="chart-container">
-                <div className="chart-title">Sales by Category</div>
+                <div className="chart-title">Thuê nhiều</div>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
                     <Pie

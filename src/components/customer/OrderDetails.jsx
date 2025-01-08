@@ -152,7 +152,7 @@ const OrderDetails = () => {
                       className="return-request-button"
                       onClick={() => handleReturnRequest(item.id, item.status)}
                     >
-                      Yêu cầu trả hàng
+                      Yêu cầu trả đồ
                     </button>
                   </div>
                 )}
