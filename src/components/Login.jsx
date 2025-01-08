@@ -120,7 +120,7 @@ export default function Login() {
               onSubmit={handleSubmit}
             >
               <TextField
-                label="Username"
+                label="Email"
                 variant="outlined"
                 fullWidth
                 margin="normal"

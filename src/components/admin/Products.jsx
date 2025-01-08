@@ -186,8 +186,8 @@ const Products = () => {
 
   const handleDeleteClick = (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
-      fetch(`https://datn.up.railway.app/api/admin/products/${id}`, {
-        method: 'DELETE',
+      fetch(`https://datn.up.railway.app/api/admin/products/${id}/?status=false`, {
+        method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
         },

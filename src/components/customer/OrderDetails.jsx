@@ -158,7 +158,7 @@ const OrderDetails = () => {
                 )}
 
                 {/* Nút hiện hóa đơn nếu trạng thái là "Tạo hóa đơn trả" */}
-                {(item.status === 7 || item.status === 8) && (
+                {( item.status === 8) && (
                   <div className="invoice-button-container">
                     <button
                       className="invoice-button"

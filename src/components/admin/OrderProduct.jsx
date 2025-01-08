@@ -71,6 +71,11 @@ const OrderProduct = () => {
       alert("Trạng thái không hợp lệ");
       return;
     }
+    // Kiểm tra nếu trạng thái mới lớn hơn trạng thái hiện tại quá 2 đơn vị
+  if (newStatus > orderDetail.status + 2) {
+    alert("Bạn không thể chuyển trạng thái lớn hơn trạng thái hiện tại quá 2 đơn vị.");
+    return;
+  }
 
     try {
       const response = await fetch(
@@ -85,15 +90,15 @@ const OrderProduct = () => {
       );
 
       if (!response.ok) {
-        throw new Error('Có lỗi xảy ra khi cập nhật trạng thái');
-        window.location.reload();
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Đã xảy ra lỗi.");
       }
 
       alert("Cập nhật trạng thái thành công!");
       window.location.reload();
     } catch (error) {
       alert('Không thể cập nhật trạng thái: ' + error.message);
-      window.location.reload();
+      
     }
   };
 
@@ -164,7 +169,7 @@ const OrderProduct = () => {
                         {Object.entries(statusMapping)
                           .filter(
                             ([key]) =>
-                              Number(key) >= orderDetail.status  // Lớn hơn hoặc bằng trạng thái hiện tại
+                              Number(key) >= (orderDetail.status)  // Lớn hơn hoặc bằng trạng thái hiện tại
                                // Trạng thái từ 3 trở đi
                               
                           )

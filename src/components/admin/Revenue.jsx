@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Header from "../header/Header";
 import MenuBar from "../menu/MenuBar";
 import { getToken } from "../../services/Cookies";
+import { Bar } from "react-chartjs-2";
 
 const Revenue = () => {
   const [revenue, setRevenue] = useState(null);
@@ -28,9 +29,8 @@ const Revenue = () => {
 
       if (!response.ok) throw new Error("Failed to fetch revenue data");
 
-      const data = await response.json();
+      const data = await response.json(); // API trả về số doanh thu
       setRevenue(data);
-      console.log(data)
     } catch (error) {
       console.error("Error fetching revenue data:", error);
       setError("Không thể tải dữ liệu doanh số.");
@@ -47,6 +47,39 @@ const Revenue = () => {
     }
   };
 
+  // Dữ liệu cho biểu đồ
+  const chartData = {
+    labels: ["Doanh thu"],
+    datasets: [
+      {
+        label: `Doanh thu từ ${startDate} đến ${endDate}`,
+        data: [revenue || 0], // Nếu revenue null thì mặc định là 0
+        backgroundColor: ["rgba(75, 192, 192, 0.6)"],
+        borderColor: ["rgba(75, 192, 192, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: "top",
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: (value) => value.toLocaleString("vi-VN") + "đ", // Hiển thị đơn vị VNĐ
+        },
+      },
+    },
+  };
+
   return (
     <div className="container-fluid">
       <Header />
@@ -54,17 +87,21 @@ const Revenue = () => {
         <div className="col-lg-2 col-md-3 bg-light p-0">
           <MenuBar />
         </div>
-        <div className="col-lg-10 col-md-9 p-4" 
-        style={{
-          marginTop:100,
-        }}>
+        <div
+          className="col-lg-10 col-md-9 p-4"
+          style={{
+            marginTop: 100,
+          }}
+        >
           <h2 className="mb-4">Thống kê doanh thu</h2>
 
           {/* Bộ lọc ngày */}
           <div className="mb-4">
             <div className="row g-3">
               <div className="col-md-4">
-                <label htmlFor="startDate" className="form-label">Ngày bắt đầu</label>
+                <label htmlFor="startDate" className="form-label">
+                  Ngày bắt đầu
+                </label>
                 <input
                   type="datetime-local"
                   id="startDate"
@@ -74,7 +111,9 @@ const Revenue = () => {
                 />
               </div>
               <div className="col-md-4">
-                <label htmlFor="endDate" className="form-label">Ngày kết thúc</label>
+                <label htmlFor="endDate" className="form-label">
+                  Ngày kết thúc
+                </label>
                 <input
                   type="datetime-local"
                   id="endDate"
@@ -93,46 +132,21 @@ const Revenue = () => {
 
           {/* Hiển thị trạng thái */}
           {loading ? (
-            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "50vh" }}>
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ minHeight: "50vh" }}
+            >
               <div className="spinner-border text-primary" role="status">
                 <span className="visually-hidden">Loading...</span>
               </div>
             </div>
           ) : error ? (
             <div className="alert alert-danger text-center">{error}</div>
-          ) : (
-            revenue && (
-              <div className="table-responsive">
-                <table className="table table-bordered table-hover">
-                  <thead className="table-light">
-                    <tr>
-                      <th>#</th>
-                      <th>Ngày</th>
-                      <th>Doanh số (VNĐ)</th>
-                      <th>Số đơn hàng</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {revenue.revenues.map((item, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{item.date}</td>
-                        <td>{item.revenue.toLocaleString()}đ</td>
-                        <td>{item.orderCount}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr className="table-secondary">
-                      <td colSpan="2"><strong>Tổng cộng</strong></td>
-                      <td><strong>{revenue.totalRevenue.toLocaleString()}đ</strong></td>
-                      <td><strong>{revenue.totalOrders}</strong></td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            )
-          )}
+          ) : revenue !== null ? (
+            <div style={{ height: "500px", width: "100%" }}>
+              <Bar data={chartData} options={chartOptions} />
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

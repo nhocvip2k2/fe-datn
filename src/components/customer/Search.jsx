@@ -115,7 +115,7 @@ const StorePage = () => {
           {/* Sidebar */}
           <aside className="col-md-3 mb-4">
   <div className="border p-4 rounded shadow-sm bg-white">
-    {/* Lọc giá */}
+    {/* Lọc giá
     <h5 className="font-weight-bold mb-4 text-primary">Lọc giá</h5>
     <div className="mb-4">
       <Range
@@ -164,7 +164,7 @@ const StorePage = () => {
         <span>{priceRange[0].toLocaleString()} VND</span>
         <span>{priceRange[1].toLocaleString()} VND</span>
       </div>
-    </div>
+    </div> */}
 
     {/* Danh mục */}
     <h5 className="font-weight-bold mb-4 text-primary">Danh mục</h5>
