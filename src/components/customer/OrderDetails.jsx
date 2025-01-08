@@ -81,7 +81,7 @@ const OrderDetails = () => {
       <Header />
       <div className="order-details-container">
         <div className="order-header">
-          <h1>Chi Tiết Đơn Hàng</h1>
+          <h1>Chi Tiết Đơn Thuê</h1>
         </div>
         <div className="order-info">
           <div>

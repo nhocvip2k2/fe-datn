@@ -122,6 +122,7 @@ const Home = () => {
                     <div className="card-body d-flex flex-column justify-content-between">
                       <h5 className="card-title text-truncate">{product.product.name}</h5>
                       <p className="card-text text-muted">{product.product.brand}</p>
+                      <p className="card-text text-muted">Đã thuê : {product.hired}</p>
                       <p className="card-text fw-bold text-primary">
                         {product.minPrice}đ - {product.maxPrice}đ
                       </p>

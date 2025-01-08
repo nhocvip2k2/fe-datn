@@ -229,6 +229,7 @@ const StorePage = () => {
                         <p className="card-text text-muted">
                           {product.product.brand}
                         </p>
+                        <p className="card-text text-muted">Đã thuê : {product.hired}</p>
                         <p className="card-text fw-bold text-primary">
                           {product.minPrice} - {product.maxPrice} VND
                         </p>
