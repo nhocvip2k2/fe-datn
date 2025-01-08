@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Header from "../header/Header";
 import MenuBar from "../menu/MenuBar";
 import { getToken } from "../../services/Cookies";
-import { Bar } from "react-chartjs-2";
 
 const Revenue = () => {
   const [revenue, setRevenue] = useState(null);
@@ -45,39 +44,6 @@ const Revenue = () => {
     } else {
       setError("Vui lòng chọn ngày bắt đầu và ngày kết thúc.");
     }
-  };
-
-  // Dữ liệu cho biểu đồ
-  const chartData = {
-    labels: ["Doanh thu"],
-    datasets: [
-      {
-        label: `Doanh thu từ ${startDate} đến ${endDate}`,
-        data: [revenue || 0], // Nếu revenue null thì mặc định là 0
-        backgroundColor: ["rgba(75, 192, 192, 0.6)"],
-        borderColor: ["rgba(75, 192, 192, 1)"],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: true,
-        position: "top",
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: (value) => value.toLocaleString("vi-VN") + "đ", // Hiển thị đơn vị VNĐ
-        },
-      },
-    },
   };
 
   return (
@@ -143,8 +109,17 @@ const Revenue = () => {
           ) : error ? (
             <div className="alert alert-danger text-center">{error}</div>
           ) : revenue !== null ? (
-            <div style={{ height: "500px", width: "100%" }}>
-              <Bar data={chartData} options={chartOptions} />
+            <div className="text-center">
+              <h3>Doanh thu:</h3>
+              <p
+                style={{
+                  fontSize: "2rem",
+                  fontWeight: "bold",
+                  color: "#007bff",
+                }}
+              >
+                {revenue.toLocaleString("vi-VN")}đ
+              </p>
             </div>
           ) : null}
         </div>
