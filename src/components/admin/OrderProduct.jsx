@@ -72,7 +72,7 @@ const OrderProduct = () => {
       return;
     }
     // Kiểm tra nếu trạng thái mới lớn hơn trạng thái hiện tại quá 2 đơn vị
-  if (newStatus > orderDetail.status + 2) {
+  if (newStatus > orderDetail.status + 1) {
     alert("Bạn không thể chuyển trạng thái lớn hơn trạng thái hiện tại quá 2 đơn vị.");
     return;
   }

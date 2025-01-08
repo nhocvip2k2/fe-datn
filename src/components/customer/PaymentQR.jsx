@@ -45,7 +45,7 @@ const PaymentQR = () => {
             clearInterval(timer);
             navigate("/home");
           }
-        }, 2000);
+        }, 1500);
 
         return () => clearInterval(timer);
       });
